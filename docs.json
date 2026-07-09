@@ -38,8 +38,8 @@
             "expanded": true,
             "pages": [
               "release-management/release-handbook",
-              "release-management/hotfix-flow",
               "release-management/versioning",
+              "release-management/hotfix-flow",
               "release-management/upgrade-guide",
               "release-management/database-migration-rollback"
             ]
