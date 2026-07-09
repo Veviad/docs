@@ -1,0 +1,176 @@
+---
+title: "Versioning"
+sidebarTitle: "Versioning"
+description: "Version numbering, BASE_VERSION, prereleases, Docker tags, and patch increment rules for Veviad releases."
+icon: "git-branch"
+---
+
+# Versioning
+
+Veviad uses Semantic Versioning for stable releases, explicit prerelease tags for release candidates, and development-only version strings for rolling `develop` builds.
+
+The practical rule is: a customer-facing production release is identified by an immutable GitHub Release tag and Docker image digest. A rolling development image is never treated as production.
+
+## External basis
+
+This policy is based on:
+
+- [Semantic Versioning 2.0.0](https://semver.org/), using `MAJOR.MINOR.PATCH` as the stable version core.
+- [GitHub Releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases), where releases are based on Git tags.
+- [GitHub artifact attestations](https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds), when provenance is available for published artifacts.
+
+## Version forms
+
+| Form | Example | Used for | Notes |
+| --- | --- | --- | --- |
+| Stable tag | `v1.0.0` | Production release | Immutable once published |
+| Stable Docker tag | `1.0.0`, `v1.0.0` | Production deployment | Both tags must point to the same digest |
+| Release candidate tag | `v1.1.0-rc.1` | Prerelease validation | Must be marked as a GitHub prerelease |
+| Release candidate Docker tag | `1.1.0-rc.1`, `v1.1.0-rc.1` | Staging or customer validation | Not production unless explicitly approved |
+| Development app version | `1.2.0-dev.20260709.412` | Rolling `develop` image | Never deploy to production |
+| Development Docker tags | `develop`, `dev-YYYYMMDD.N`, `sha-<short>` | CI and validation | `sha-<short>` is the immutable candidate tag |
+
+Veviad intentionally does not publish a moving `latest` tag from `develop`.
+
+## Where versions come from
+
+| Source | Current role | Rule |
+| --- | --- | --- |
+| `VERSION` | Repository fallback base version | Keep valid `MAJOR.MINOR.PATCH`; currently `1.0.0` in the repo |
+| GitHub Actions variable `BASE_VERSION` | Preferred development base version | Used by the rolling develop image workflow when set |
+| `.github/scripts/generate-version.sh` | Version generator | Emits `core_version`, `app_version`, channel, SHA tag, and traceability fields |
+| GitHub Release tag | Production release source | Controls stable/prerelease release image metadata |
+| `release-image.json` | Release evidence | Records source commit, release tag, digest, SBOM, and attestation state |
+
+For development builds, `BASE_VERSION` overrides the `VERSION` file. This is why maintainers must check the GitHub Actions variable when asking what version `develop` is currently building toward.
+
+## Bump rules
+
+| Change type | Bump | Example | Branch source |
+| --- | --- | --- | --- |
+| Backward-compatible production fix | PATCH | `v1.0.0` to `v1.0.1` | `release/1.0` |
+| Backward-compatible feature release | MINOR | `v1.0.1` to `v1.1.0` | `release/1.1` |
+| Breaking change | MAJOR | `v1.1.0` to `v2.0.0` | `release/2.0` |
+| Candidate for a stable release | RC | `v1.1.0-rc.1` | `release/1.1` |
+| Rolling development build | dev suffix | `1.2.0-dev.YYYYMMDD.N` | `develop` |
+
+Patch releases must keep the same major and minor version. If `v1.0.0` is already released, the next patch in that line is `v1.0.1`. Do not skip directly to `v1.0.2`.
+
+## `BASE_VERSION` rules for `develop`
+
+`develop` must always build a development version that is strictly ahead of the latest stable release.
+
+Examples:
+
+| Latest stable | Valid `BASE_VERSION` for `develop` | Invalid |
+| --- | --- | --- |
+| none | `1.0.0` | empty or malformed values |
+| `v1.0.0` | `1.1.0` | `1.0.0`, `0.9.0` |
+| `v1.0.1` | `1.1.0` | `1.0.1`, `1.0.2` |
+| `v1.1.0` | `1.2.0` or `2.0.0` | `1.1.0` |
+
+Patch releases on old stable lines do not usually change `BASE_VERSION`. For example, if production has `v1.0.0` and `develop` is building toward `1.1.0`, shipping `v1.0.1` from `release/1.0` does not require `develop` to move to `1.0.2`.
+
+Check and update the variable:
+
+```bash
+gh variable get BASE_VERSION --repo veviad/veviad_app
+gh variable set BASE_VERSION --repo veviad/veviad_app --body 1.2.0
+```
+
+The first stable `v1.0.0` workflow attempts to set `BASE_VERSION=1.1.0` automatically. If GitHub token permissions block that write, the workflow prints the manual command in a warning.
+
+## Tag grammar
+
+Stable release tags must be:
+
+```text
+vX.Y.Z
+```
+
+Release candidate tags must be:
+
+```text
+vX.Y.Z-rc.N
+```
+
+Rules:
+
+- `X`, `Y`, `Z`, and `N` are non-negative integers.
+- Numeric identifiers must not have leading zeroes.
+- A `-rc.N` tag must be published as a GitHub prerelease.
+- A stable `vX.Y.Z` tag must not be published as a GitHub prerelease.
+- Tags are immutable after publication.
+
+Valid examples:
+
+```text
+v1.0.0
+v1.0.1
+v1.1.0-rc.1
+v2.0.0
+```
+
+Invalid examples:
+
+```text
+1.0.0
+v01.0.0
+v1.0
+v1.0.0-beta.1
+v1.0.0-rc.01
+```
+
+## Patch increment gate
+
+For stable patch releases, the release workflow enforces the `PATCH+1` rule.
+
+If `v1.0.0` exists, `v1.0.1` is valid. If `v1.0.1` exists, `v1.0.2` is valid. If no prior `v1.0.z` stable tag exists, `v1.0.1` is invalid because it has no `v1.0.0` base.
+
+This prevents accidental skipped patch versions and makes customer upgrade instructions predictable.
+
+## Branch and version alignment
+
+| Branch | Allowed release versions |
+| --- | --- |
+| `develop` | Development builds only, such as `1.2.0-dev.YYYYMMDD.N` |
+| `release/1.0` | `v1.0.0`, `v1.0.1`, `v1.0.2`, and matching `v1.0.0-rc.N` before the first stable |
+| `release/1.1` | `v1.1.0`, `v1.1.1`, and matching `v1.1.0-rc.N` |
+| `release/2.0` | `v2.0.0`, `v2.0.1`, and matching `v2.0.0-rc.N` |
+
+Do not publish `v1.0.1` from `develop` once `develop` contains `1.1.0` or later work. Use `release/1.0`.
+
+## Docker tag contract
+
+Development workflow tags:
+
+- `develop`: moving development channel marker.
+- `dev-YYYYMMDD.N`: dated development build.
+- `sha-<short>`: immutable per-commit candidate image.
+
+Production workflow tags:
+
+- `X.Y.Z`: stable or prerelease core without leading `v`.
+- `vX.Y.Z`: stable or prerelease tag with leading `v`.
+
+For a production release, both Docker tags must resolve to the same digest. Customer deployments should use the exact version tag or, preferably, the resolved digest recorded in release evidence.
+
+## Maintainer checklist
+
+Before publishing a release:
+
+- Confirm the tag matches the intended release type.
+- Confirm the source branch matches the version line.
+- Confirm CI is green for the exact source commit.
+- Confirm `sha-<short>` exists for the exact source commit.
+- Confirm release notes are non-empty for stable releases.
+- Confirm `BASE_VERSION` on `develop` is strictly ahead of the latest stable release.
+- Confirm published Docker tags point to one digest.
+- Confirm `release-image.json`, SBOMs, and attestation state are attached.
+
+## Related guides
+
+- [Release Handbook](/release-management/release-handbook) - full maintainer release process.
+- [Hotfix Flow](/release-management/hotfix-flow) - urgent patch flow for supported stable lines.
+- [Upgrade Guide](/release-management/upgrade-guide) - operator upgrade procedure.
+- [Database migration rollback](/release-management/database-migration-rollback) - rollback planning for database changes.

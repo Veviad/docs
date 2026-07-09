@@ -1,0 +1,229 @@
+---
+title: "Upgrade Guide"
+sidebarTitle: "Upgrade Guide"
+description: "Operator checklist for upgrading Veviad by exact release tag or digest with verification and rollback readiness."
+icon: "arrow-up-circle"
+---
+
+# Upgrade Guide
+
+This guide is for upgrading a Veviad production instance to a stable release or approved release candidate.
+
+The rule is simple: upgrade production to an exact release version or digest. Do not upgrade production to `develop`, `latest`, `dev-*`, or an unverified local build.
+
+## Upgrade types
+
+| Upgrade type | Example | Risk level | Notes |
+| --- | --- | --- | --- |
+| Patch | `v1.0.0` to `v1.0.1` | Lowest | Fix-only release on the same stable line |
+| Minor | `v1.0.1` to `v1.1.0` | Medium | Backward-compatible features and fixes |
+| Major | `v1.1.0` to `v2.0.0` | Highest | Breaking change possible; needs explicit plan |
+| Release candidate | `v1.1.0-rc.1` | Validation only | Use for staging or approved early validation, not normal production |
+
+## Before you upgrade
+
+Collect the current state:
+
+```bash
+CURRENT_TAG=<current-version>
+CURRENT_DIGEST=<current-image-digest>
+TARGET_TAG=v1.0.1
+IMAGE=ghcr.io/veviad/veviad_app
+```
+
+Confirm the target release exists and has notes:
+
+```bash
+gh release view "$TARGET_TAG" --repo veviad/veviad_app --json tagName,targetCommitish,isPrerelease,body,assets
+```
+
+Confirm the Docker image exists:
+
+```bash
+docker buildx imagetools inspect "$IMAGE:$TARGET_TAG"
+docker buildx imagetools inspect "$IMAGE:${TARGET_TAG#v}"
+```
+
+Both release tags must point to the same digest:
+
+```bash
+DIGEST_V=$(docker buildx imagetools inspect "$IMAGE:$TARGET_TAG" \
+  --format '{{json .Manifest.Digest}}' | tr -d '"')
+DIGEST_CORE=$(docker buildx imagetools inspect "$IMAGE:${TARGET_TAG#v}" \
+  --format '{{json .Manifest.Digest}}' | tr -d '"')
+
+test "$DIGEST_V" = "$DIGEST_CORE"
+echo "Target digest: $DIGEST_V"
+```
+
+Download release evidence:
+
+```bash
+gh release download "$TARGET_TAG" --repo veviad/veviad_app \
+  --pattern release-image.json \
+  --pattern sbom.spdx.json \
+  --pattern sbom.cyclonedx.json
+```
+
+If the release records an available attestation, verify it:
+
+```bash
+gh attestation verify "oci://$IMAGE@$DIGEST_V" \
+  --repo veviad/veviad_app
+```
+
+## Read the release notes
+
+Do not upgrade from only the version number. Read the release notes and confirm:
+
+- fixed issues and new behavior;
+- security impact and disclosure timing;
+- database migrations;
+- required environment variable changes;
+- queue, scheduler, or worker changes;
+- expected downtime;
+- rollback notes.
+
+If release notes are missing or unclear for a stable release, stop and ask the release owner to correct them.
+
+## Backup requirements
+
+Before a production upgrade, create and verify backups for:
+
+- PostgreSQL database;
+- persistent application storage;
+- environment configuration;
+- current Docker image tag and digest;
+- current deployment configuration.
+
+Record the previous image digest. Rollback should deploy the digest, not a moving tag.
+
+```bash
+echo "Previous image: $IMAGE@$CURRENT_DIGEST"
+echo "Target image:   $IMAGE@$DIGEST_V"
+```
+
+For database changes, follow [Database migration rollback](/release-management/database-migration-rollback) before starting the upgrade.
+
+## Staging validation
+
+Run the target release in staging before production when possible.
+
+Minimum staging checks:
+
+- app boots successfully;
+- `/health` or the configured health check returns healthy;
+- login works;
+- asset, license, accessory, user, and settings pages load;
+- queue worker can process at least one job;
+- scheduled tasks are not failing;
+- migrations complete successfully;
+- logs are free of repeated errors;
+- app version and image digest match the target release.
+
+For security patches, staging validation should be focused and fast, but it should still prove the patched behavior and basic application health.
+
+## Production upgrade flow
+
+1. Announce the maintenance window if downtime or migration risk exists.
+2. Pause scheduled jobs or queue workers if the deployment platform requires it.
+3. Take database and storage backups.
+4. Deploy the exact target image tag or digest.
+5. Run database migrations if the release requires them.
+6. Restart queue workers after the new code is active.
+7. Run the post-upgrade checks.
+8. Keep the previous release digest and backup available until validation is complete.
+
+Example deployment variables:
+
+```bash
+TARGET_TAG=v1.0.1
+TARGET_DIGEST=sha256:<resolved-digest>
+IMAGE=ghcr.io/veviad/veviad_app
+```
+
+Prefer deploying by digest when the platform supports it:
+
+```text
+ghcr.io/veviad/veviad_app@sha256:<resolved-digest>
+```
+
+Otherwise deploy the exact immutable version tag:
+
+```text
+ghcr.io/veviad/veviad_app:v1.0.1
+```
+
+Do not deploy:
+
+```text
+ghcr.io/veviad/veviad_app:develop
+ghcr.io/veviad/veviad_app:dev-YYYYMMDD.N
+ghcr.io/veviad/veviad_app:latest
+```
+
+## Laravel application steps
+
+The exact container command depends on the deployment platform. The operational intent is:
+
+```bash
+php artisan migrate --force
+php artisan optimize:clear
+php artisan queue:restart
+```
+
+Use `migrate --force` only after backups exist and migration impact is understood.
+
+If the release has no migrations, still restart workers so long-running processes load the new code.
+
+## Post-upgrade verification
+
+Confirm the running application matches the release:
+
+- image digest equals the target digest;
+- application version reports the target version;
+- health check passes;
+- web login works;
+- critical pages load without server errors;
+- queue workers are running;
+- scheduled jobs are not failing;
+- application logs show no repeated exceptions;
+- integrations still authenticate;
+- customer-visible workflows affected by the release notes work.
+
+For a security fix, include the regression check that proves the vulnerable behavior is closed.
+
+## Rollback decision
+
+Prefer roll-forward when the application is healthy enough to accept a small corrective patch. Roll back when the release causes data corruption risk, an outage, failed migrations, or a security regression.
+
+| Situation | Default action |
+| --- | --- |
+| Deployment fails before migrations | Redeploy the previous image digest |
+| App error after backward-compatible migration | Roll back image or roll forward with a hotfix |
+| Migration failed before commit | Restore cleanly if needed, then redeploy previous image |
+| Destructive migration ran | Restore database backup and previous image together |
+| Security patch fails | Coordinate with the release owner before exposing the previous vulnerable version |
+
+Do not run database rollback commands in production as a reflex. Use the database rollback guide to decide whether image rollback is enough or a backup restore is required.
+
+## Upgrade record
+
+Record this evidence in the change ticket or release log:
+
+- previous tag and digest;
+- target tag and digest;
+- release notes link;
+- backup timestamp and location;
+- migration status;
+- post-upgrade health result;
+- rollback decision and owner;
+- operator who performed the upgrade;
+- final customer-visible status.
+
+## Related guides
+
+- [Release Handbook](/release-management/release-handbook) - maintainer release process.
+- [Versioning](/release-management/versioning) - version and Docker tag rules.
+- [Hotfix Flow](/release-management/hotfix-flow) - urgent stable patch flow.
+- [Database migration rollback](/release-management/database-migration-rollback) - database rollback and restore rules.
