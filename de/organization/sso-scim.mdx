@@ -5,8 +5,6 @@ description: "Single Sign-On mit Microsoft Entra ID, SCIM-Bereitstellung und die
 icon: "key-round"
 ---
 
-# SSO und SCIM
-
 Veviad lässt sich für zwei zusammenhängende Identitäts-Workflows mit Microsoft Entra ID integrieren:
 
 - **Single Sign-On (SSO):** Benutzer authentifizieren sich über Microsoft Entra ID.
@@ -32,7 +30,7 @@ Verwenden Sie für Rollenzuordnungen nach Möglichkeit die **Object IDs** der En
 Veviad speichert pro lokaler Rolle einen Gruppenwert des Identitätsanbieters. Der Wert kann eine Object ID einer Entra-Gruppe oder ein Gruppenname sein, muss aber exakt dem Wert entsprechen, den Entra an Veviad sendet.
 
 | Veviad-Bereich | Auslöser | Gruppenquelle | Was passiert |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | SSO-Anmeldung | Benutzer meldet sich über Microsoft Entra ID an | `groups`-Claim im OIDC-Token | Veviad kann Rollen während der Anmeldung synchronisieren, wenn **Rollen bei Anmeldung synchronisieren** aktiviert ist. |
 | SCIM-Bereitstellung | Microsoft Entra erstellt oder aktualisiert einen Benutzer | SCIM-Attribut `groups` | Veviad berücksichtigt die SCIM-Gruppenmitgliedschaften und wendet passende Rollenzuordnungen an. |
 
@@ -98,7 +96,7 @@ Für jede Veviad-Rolle, die über Entra gesteuert werden soll:
 Beispiel:
 
 | Veviad-Rolle | Entra-Gruppenwert |
-|---|---|
+| --- | --- |
 | `admin` | Object ID der Entra-Gruppe für Administratoren |
 | `asset-manager` | Object ID der Entra-Gruppe für Asset Manager |
 | `department-manager` | Object ID der Entra-Gruppe für Abteilungsverantwortliche |
@@ -111,7 +109,7 @@ Nicht zugeordnete Entra-Gruppen blockieren weder die Anmeldung noch die Bereitst
 Der Bereich **Einstellungen zur Rollensynchronisierung** steuert die Fallback-Rolle und die Synchronisierung bei der SSO-Anmeldung.
 
 | Einstellung | Wirkung |
-|---|---|
+| --- | --- |
 | **Standardrolle** | Wird bei der SSO-Anmeldung zugewiesen, wenn keine Gruppenzuordnung passt, sowie bei der SCIM-Benutzererstellung, wenn keine Gruppenzuordnung passt. Verwenden Sie hier eine sichere Basisrolle wie `user`. |
 | **Rollen bei Anmeldung synchronisieren** | Wenn aktiviert, wertet Veviad die Entra-Gruppenmitgliedschaften bei jeder SSO-Anmeldung des Benutzers neu aus. |
 
@@ -188,7 +186,7 @@ Für die SCIM-Bereitstellung ist **Rollen bei Anmeldung synchronisieren** nicht 
 Verwenden Sie eines dieser Muster:
 
 | Muster | Empfohlen, wenn | Erforderliche Konfiguration |
-|---|---|---|
+| --- | --- | --- |
 | Nur SSO | Benutzer bei der ersten Anmeldung erstellt werden und Rollen bei der Anmeldung aktualisiert werden sollen. | SSO aktiviert, Gruppenansprüche konfiguriert, Rollenzuordnungen gespeichert, **Rollen bei Anmeldung synchronisieren** aktiviert. |
 | SCIM plus SSO | Benutzer schon vor der ersten Anmeldung existieren sollen und der Lifecycle den Entra-Zuweisungen folgen soll. | SSO aktiviert, SCIM-Token konfiguriert, Bereitstellung läuft, Rollenzuordnungen gespeichert. Aktivieren Sie **Rollen bei Anmeldung synchronisieren**, wenn auch die Anmeldung Rollen aktualisieren soll. |
 | Nur SCIM für den Lifecycle, manuelle Rollen | Der Identitäts-Lifecycle automatisiert ist, die Veviad-Rollen aber manuell verwaltet werden. | SCIM konfiguriert, Rollenzuordnungen leer gelassen, **Rollen bei Anmeldung synchronisieren** deaktiviert. |

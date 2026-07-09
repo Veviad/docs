@@ -5,8 +5,6 @@ description: "Configure Microsoft Entra ID single sign-on, SCIM provisioning, an
 icon: "key-round"
 ---
 
-# SSO and SCIM
-
 Veviad can integrate with Microsoft Entra ID for two related identity workflows:
 
 - **Single Sign-On (SSO):** users authenticate with Microsoft Entra ID.
@@ -32,7 +30,7 @@ Use Entra group **Object IDs** for role mappings whenever possible. Display name
 Veviad stores one identity-provider group value per local role. The value can be an Entra group Object ID or a group name, but it must match the value Entra sends to Veviad exactly.
 
 | Veviad area | Trigger | Group source | What happens |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | SSO login | User signs in through Microsoft Entra ID | OIDC token `groups` claim | Veviad can sync roles during login when **Sync Roles on Login** is enabled. |
 | SCIM provisioning | Microsoft Entra creates or updates a user | SCIM `groups` attribute | Veviad considers the SCIM group memberships and applies matching role mappings. |
 
@@ -98,7 +96,7 @@ For each Veviad role that should be controlled by Entra:
 Example:
 
 | Veviad role | Entra group value |
-|---|---|
+| --- | --- |
 | `admin` | Object ID of the Entra administrators group |
 | `asset-manager` | Object ID of the Entra asset managers group |
 | `department-manager` | Object ID of the Entra department managers group |
@@ -111,7 +109,7 @@ Unmapped Entra groups do not block login or provisioning. They are ignored for r
 The **Role Sync Settings** section controls fallback and SSO login synchronization.
 
 | Setting | Effect |
-|---|---|
+| --- | --- |
 | **Default Role** | Assigned on SSO login when no group mapping matches, and on SCIM user creation when no group mapping matches. Use this for a safe baseline role such as `user`. |
 | **Sync Roles on Login** | When enabled, Veviad re-evaluates Entra group memberships every time the user signs in with SSO. |
 
@@ -188,7 +186,7 @@ SCIM provisioning does not require **Sync Roles on Login**. That toggle only con
 Use one of these patterns:
 
 | Pattern | Recommended when | Required configuration |
-|---|---|---|
+| --- | --- | --- |
 | SSO only | Users are created on first login and roles should update at login. | SSO enabled, group claims configured, role mappings saved, **Sync Roles on Login** enabled. |
 | SCIM plus SSO | Users should exist before first login and lifecycle should follow Entra assignments. | SSO enabled, SCIM token configured, provisioning running, role mappings saved. Enable **Sync Roles on Login** if login should also refresh roles. |
 | SCIM only for lifecycle, manual roles | Identity lifecycle is automated but Veviad roles are managed manually. | SCIM configured, role mappings left blank, **Sync Roles on Login** disabled. |

@@ -5,8 +5,6 @@ description: "How Veviad runs operational work once per deploy key without repea
 icon: "list-checks"
 ---
 
-# Startup tasks and seeding
-
 Container startup must be repeatable. Veviad handles this by separating normal migrations from one-time operational tasks. The task ledger lives in the application database, so multiple containers can start together without running the same task more than once.
 
 ## Startup sequence
@@ -25,7 +23,7 @@ Migrations are allowed to run on every deploy. Seeders, search setup, search rei
 ## Configuration
 
 | Variable | Default | Purpose |
-|---|---:|---|
+| --- | --: | --- |
 | `STARTUP_TASKS` | empty | Comma-separated one-time tasks in `task-name:key` format. |
 | `STARTUP_TASK_TIMEOUT_MINUTES` | `120` | Time before a running task is considered stale and reclaimable. |
 | `STARTUP_TASK_POLL_SECONDS` | `5` | Wait interval when another container owns a task. |
@@ -55,7 +53,7 @@ Do not use random keys for routine deploys. A changed key means "run this task a
 ## Supported tasks
 
 | Task | What it does | Safe for production |
-|---|---|---|
+| --- | --- | --- |
 | `essential-seeders:<key>` | Runs reference-data seeders such as roles, categories, statuses, locations, and report templates. | Yes |
 | `search-ensure-settings:<key>` | Creates or configures search indexes and waits for settings tasks in strict mode. | Yes |
 | `search-reindex:<key>` | Rebuilds search documents from primary application data and waits for search tasks in strict mode. | Yes, schedule during a maintenance window for large datasets |

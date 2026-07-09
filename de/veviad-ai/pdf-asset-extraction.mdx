@@ -5,17 +5,26 @@ description: "Asset-Informationen aus PDF-Rechnungen extrahieren und vor der Anl
 icon: "file-text"
 ---
 
-# PDF-Asset-Extraktion
+Die PDF-Asset-Extraktion ist ein optionaler Veviad-AI-Workflow, mit dem Rechnungs- oder Lieferanten-PDFs in Entwürfe für Asset-Datensätze umgewandelt werden. Der Workflow reduziert manuelle Eingaben und behält gleichzeitig einen menschlichen Prüfschritt bei.
 
-Veviad unterstützt die KI-gestützte Extraktion von Asset-Daten aus PDF-Rechnungen und ähnlichen Dokumenten. Der Workflow reduziert manuelle Eingaben und behält gleichzeitig einen Prüfschritt bei.
+## Verfügbarkeit
+
+Die Extraktionsaktion erscheint in **Assets** nur, wenn Veviad AI aktiviert und ein KI-Anbieter konfiguriert ist.
+
+![Die Integrationsseite mit dem Status von Veviad AI und Single-Sign-On](/images/screenshots/de/admin-integrations.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/admin/integrations`_
+
+Wenn die Aktion nicht sichtbar ist, öffnen Administratoren **Organisation → Admin → Integrationen**, aktivieren **Veviad AI** und konfigurieren den Anbieter. Die Demo-Umgebung kann Veviad AI als inaktiv anzeigen, bis diese Einrichtung abgeschlossen ist.
 
 ## Der Workflow im Überblick
 
-1. Laden Sie ein unterstütztes PDF-Dokument hoch.
-2. Lassen Sie die Extraktion den Inhalt lesen und klassifizieren.
-3. Prüfen Sie die extrahierten Werte in der geführten Oberfläche.
-4. Korrigieren oder ergänzen Sie die Ergebnisse bei Bedarf.
-5. Erstellen Sie die resultierenden Asset-Datensätze.
+1. Öffnen Sie **Assets** und wählen Sie die KI-PDF-Extraktionsaktion, sobald sie verfügbar ist.
+2. Laden Sie ein unterstütztes PDF-Dokument hoch, zum Beispiel eine Rechnung, Bestellung oder Packliste.
+3. Lassen Sie die Extraktion den Inhalt lesen und klassifizieren.
+4. Prüfen Sie die extrahierten Werte in der geführten Oberfläche.
+5. Korrigieren oder ergänzen Sie die Ergebnisse bei Bedarf.
+6. Erstellen Sie die resultierenden Asset-Datensätze.
 
 ## Was den Workflow nützlich macht
 

@@ -5,13 +5,12 @@ description: "Rollen, Benutzer, Einladungen, Integrationen und Systemzustand."
 icon: "shield-check"
 ---
 
-# Admin
-
 Im Admin-Bereich (`Organisation → Admin`) werden Authentifizierung, Zugriff und Integrationen auf Organisationsebene konfiguriert. Er umfasst fünf Unterseiten: **Allgemein**, **Rollen**, **Benutzer**, **Einladungen** und **Integrationen**.
 
 ![Das Admin-Dashboard mit Benutzern, Assets, Lizenzplätzen und Systemzustand](/images/screenshots/de/admin.webp)
 
 _Gezeigte Ansicht: `demo.veviad.cloud/admin`_
+
 ## Allgemein (Admin-Dashboard)
 
 Die Startseite des Admin-Bereichs. Auf einen Blick:
@@ -80,7 +79,7 @@ _Gezeigte Ansicht: `demo.veviad.cloud/admin/integrations`_
 Zwei Integrationen sind standardmäßig enthalten und werden hier aktiviert oder deaktiviert:
 
 - **Single-Sign-On** — standardmäßig inaktiv; Konfiguration über das Zahnrad-Symbol in der jeweiligen Zeile.
-- **Veviad AI (Chat-Assistent)** — standardmäßig aktiv; konfigurieren Sie über das Zahnrad-Symbol in der jeweiligen Zeile den KI-Anbieter (derzeit wird Anthropic Claude unterstützt — siehe `Veviad AI → Assistent`).
+- **Veviad AI (Chat-Assistent)** — inaktiv, bis die Integration aktiviert und konfiguriert wurde; über das Zahnrad-Symbol in der jeweiligen Zeile konfigurieren Sie den KI-Anbieter und aktivieren anschließend Assistent- und PDF-Extraktions-Workflows.
 
 Aktivieren Sie SSO, bevor Sie bei größeren Rollouts Benutzer einladen — eine nachträgliche Umstellung der Authentifizierung nach angenommenen Einladungen verursacht zusätzlichen operativen Aufwand.
 

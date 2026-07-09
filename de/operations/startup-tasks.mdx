@@ -5,8 +5,6 @@ description: "Wie Veviad operative Aufgaben einmal pro Deployment-Schlüssel aus
 icon: "list-checks"
 ---
 
-# Startup-Tasks und Seeding
-
 Container-Starts müssen wiederholbar sein. Veviad trennt deshalb normale Migrationen von einmaligen operativen Aufgaben. Das Task-Protokoll liegt in der Anwendungsdatenbank, sodass mehrere Container gleichzeitig starten können, ohne dieselbe Aufgabe mehrfach auszuführen.
 
 ## Startreihenfolge
@@ -25,7 +23,7 @@ Migrationen dürfen bei jedem Deployment laufen. Seeder, Suchkonfiguration, Rein
 ## Konfiguration
 
 | Variable | Standard | Zweck |
-|---|---:|---|
+| --- | --: | --- |
 | `STARTUP_TASKS` | leer | Kommagetrennte Tasks im Format `task-name:key`. |
 | `STARTUP_TASK_TIMEOUT_MINUTES` | `120` | Zeit, nach der ein laufender Task als veraltet gilt. |
 | `STARTUP_TASK_POLL_SECONDS` | `5` | Warteintervall, wenn ein anderer Container den Task besitzt. |
@@ -55,7 +53,7 @@ Keine zufälligen Schlüssel für normale Deployments verwenden. Ein geänderter
 ## Unterstützte Tasks
 
 | Task | Wirkung | Produktion |
-|---|---|---|
+| --- | --- | --- |
 | `essential-seeders:<key>` | Führt Referenzdaten-Seeder aus, zum Beispiel Rollen, Kategorien, Status, Standorte und Report-Vorlagen. | Ja |
 | `search-ensure-settings:<key>` | Erstellt oder konfiguriert Suchindizes und wartet im Strict-Modus auf Settings-Tasks. | Ja |
 | `search-reindex:<key>` | Baut Suchdokumente aus primären Anwendungsdaten neu auf und wartet im Strict-Modus auf Such-Tasks. | Ja, bei großen Datenmengen mit Wartungsfenster |

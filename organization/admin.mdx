@@ -5,13 +5,12 @@ description: "Roles, users, invitations, integrations, and system health."
 icon: "shield-check"
 ---
 
-# Admin
-
 The Admin area (`Organization → Admin`) is where authentication, access, and org-level integrations are configured. It has five subpages: **General**, **Roles**, **Users**, **Invitations**, and **Integrations**.
 
 ![The Admin Dashboard with users, assets, license seats, and system health](/images/screenshots/admin.webp)
 
 _View shown: `demo.veviad.cloud/admin`_
+
 ## General (Admin Dashboard)
 
 Landing page for the admin area. At a glance:
@@ -80,7 +79,7 @@ _View shown: `demo.veviad.cloud/admin/integrations`_
 Two integrations ship by default and are toggled here:
 
 - **Single-Sign-On** — inactive by default; configure via the per-row gear icon.
-- **Veviad AI (Chat Assistant)** — active by default; use the per-row gear to configure the AI provider (currently supports Anthropic Claude — see `Veviad AI → Assistant`).
+- **Veviad AI (Chat Assistant)** — inactive until enabled and configured; use the per-row gear icon to configure the AI provider, then enable the integration for Assistant and PDF extraction workflows.
 
 Enable SSO before you invite users in larger rollouts — reassigning authentication after invitations are accepted adds operational friction.
 

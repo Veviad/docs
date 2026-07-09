@@ -5,17 +5,26 @@ description: "Extract asset information from PDF invoices and review it before c
 icon: "file-text"
 ---
 
-# PDF Asset Extraction
+PDF Asset Extraction is an optional Veviad AI workflow for turning invoice or supplier PDFs into draft asset records. It is designed to reduce manual entry while keeping a human review step in place.
 
-Veviad supports AI-assisted extraction of asset data from PDF invoices and similar documents. This workflow is intended to reduce manual entry while keeping a review step in place.
+## Availability
+
+The extraction action appears in **Assets** only when Veviad AI is enabled and an AI provider is configured.
+
+![The Integrations page showing Veviad AI and Single-Sign-On status](/images/screenshots/admin-integrations.webp)
+
+_View shown: `demo.veviad.cloud/admin/integrations`_
+
+If the action is not visible, ask an administrator to open **Organization → Admin → Integrations**, enable **Veviad AI**, and configure the provider. The demo environment may show Veviad AI as inactive until that setup is completed.
 
 ## Workflow at a glance
 
-1. upload a supported PDF document
-2. allow the extraction process to read and classify the content
-3. review extracted values in the guided interface
-4. correct or enrich the results where needed
-5. create the resulting asset records
+1. Open **Assets** and choose the AI PDF extraction action when it is available.
+2. Upload a supported PDF document, such as an invoice, purchase order, or packing list.
+3. Allow the extraction process to read and classify the content.
+4. Review extracted values in the guided interface.
+5. Correct or enrich the results where needed.
+6. Create the resulting asset records.
 
 ## What makes the workflow useful
 

@@ -5,8 +5,6 @@ description: "Was ein Betriebsteam braucht, um Veviad in verwalteten Umgebungen 
 icon: "server"
 ---
 
-# Betrieb
-
 Veviad hält operative Änderungen kontrolliert, wiederholbar und nachvollziehbar. Unterstützende Dienste wie die primäre Datenbank, Suche, Queues und Objektspeicher machen die Plattform zuverlässig, aber operative Aufgaben sollten immer bewusst gestartet und dauerhaft nachverfolgt werden.
 
 ## Betriebsmodell
@@ -22,7 +20,7 @@ Die Anwendung sollte als unveränderliches Anwendungs-Image mit Konfiguration ü
 ## Benötigte Dienste
 
 | Dienst | Zweck | Betriebshinweis |
-|---|---|---|
+| --- | --- | --- |
 | Primäre Datenbank | Verbindliche Anwendungsdaten | Vor Deployments und destruktiven Test-Resets sichern. |
 | Cache- und Queue-Dienst | Queue- und Cache-Unterstützung | In Produktion für Queue-Worker und Hintergrundjobs erforderlich. |
 | Suchdienst | Globale Suche | Service-Image fest pinnen; in Produktion kein `latest` verwenden. |

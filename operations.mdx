@@ -5,8 +5,6 @@ description: "What an operations team needs to install, upgrade, and run Veviad 
 icon: "server"
 ---
 
-# Operations
-
 Veviad keeps operational changes controlled, repeatable, and auditable. Supporting services such as the primary database, search service, queues, and object storage make the platform reliable, but operational tasks should always be started intentionally and tracked durably.
 
 ## Operating model
@@ -22,7 +20,7 @@ Run Veviad as immutable application images with environment-driven configuration
 ## Required services
 
 | Service | Purpose | Operations note |
-|---|---|---|
+| --- | --- | --- |
 | Primary database | Source-of-truth application data | Back up before deploys and before destructive test resets. |
 | Cache and queue service | Queue/cache support | Required for queue workers and background jobs in production. |
 | Search service | Global search | Pin the service image tag; do not run production on `latest`. |

@@ -5,13 +5,12 @@ description: "Track hardware and equipment with full lifecycle, warranty, deprec
 icon: "laptop"
 ---
 
-# Assets
-
 Assets are the core record type. Each asset carries its identity (tag, serial, model), its assignment state, purchase and warranty context, depreciation, and a full history trail.
 
 ![The assets list with default views, asset tags, names, and assignments](/images/screenshots/assets.webp)
 
 _View shown: `demo.veviad.cloud/assets`_
+
 ## The assets list (`/assets`)
 
 A second-level pane on the left organizes filtered views:
@@ -33,9 +32,9 @@ A second-level pane on the left organizes filtered views:
 From the table header (top-right):
 
 | Icon | Action |
-|---|---|
+| --- | --- |
 | `+` | Add a new asset |
-| ✨ | AI-assisted actions (e.g. PDF asset extraction) |
+| AI document action | PDF asset extraction, shown only when Veviad AI is enabled |
 | Bookmark | Save the current filter as a custom view |
 | Trash | Bulk delete selected rows |
 | Download | Export the current view |
@@ -57,13 +56,13 @@ Clicking a row opens a seven-tab panel:
 
 ## Common tasks
 
-- **Add an asset** — `+` toolbar action or `✨` for PDF-based bulk intake
+- **Add an asset** — use the `+` toolbar action, or use AI PDF extraction when Veviad AI is enabled
 - **Assign / unassign** — from the asset detail or the row menu
 - **Confirm handover** — use the Handover tab to review employee receipt and return records, including PDF previews and downloads
 - **Document maintenance** — open the asset's Maintenance tab to add performed work, schedule upcoming work, or mark records as completed
 - **Attach reports / invoices** — upload service reports and invoices directly on saved maintenance records
 - **Archive / dispose** — use Status Labels (configured in Settings → Status Labels) and let the default views pick them up
-- **Track warranty** — fill Warranty Expires + Period; the Warranty Status badge flags expired items
+- **Track warranty** — fill Warranty Expires \+ Period; the Warranty Status badge flags expired items
 
 ## Practical notes
 
