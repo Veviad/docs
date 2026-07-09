@@ -9,15 +9,15 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "languages": [
+    "tabs": [
       {
-        "language": "en",
-        "default": true,
-        "tabs": [
+        "tab": "User Manual",
+        "icon": "book-open",
+        "href": "/getting-started",
+        "languages": [
           {
-            "tab": "User Manual",
-            "icon": "book-open",
-            "href": "/getting-started",
+            "language": "en",
+            "default": true,
             "groups": [
               {
                 "group": "Getting Started",
@@ -111,53 +111,7 @@
             ]
           },
           {
-            "tab": "Internal",
-            "icon": "lock",
-            "groups": [
-              {
-                "group": "Release Management",
-                "icon": "rocket",
-                "expanded": true,
-                "pages": [
-                  "release-management/release-handbook",
-                  "release-management/versioning",
-                  "release-management/hotfix-flow",
-                  "release-management/upgrade-guide",
-                  "release-management/database-migration-rollback"
-                ]
-              },
-              {
-                "group": "Operations",
-                "icon": "server",
-                "expanded": false,
-                "pages": [
-                  "operations",
-                  "operations/startup-tasks",
-                  "operations/search"
-                ]
-              },
-              {
-                "group": "Release Notes",
-                "icon": "scroll-text",
-                "expanded": false,
-                "pages": [
-                  "release-notes",
-                  "release-notes/current"
-                ]
-              }
-            ],
-            "href": "/release-management/release-handbook"
-          }
-        ],
-        "href": "/getting-started"
-      },
-      {
-        "language": "de",
-        "tabs": [
-          {
-            "tab": "Benutzerhandbuch",
-            "icon": "book-open",
-            "href": "/de/getting-started",
+            "language": "de",
             "groups": [
               {
                 "group": "Erste Schritte",
@@ -249,10 +203,53 @@
                 "public": true
               }
             ]
+          }
+        ]
+      },
+      {
+        "tab": "Internal",
+        "icon": "lock",
+        "href": "/release-management/release-handbook",
+        "languages": [
+          {
+            "language": "en",
+            "default": true,
+            "groups": [
+              {
+                "group": "Release Management",
+                "icon": "rocket",
+                "expanded": true,
+                "pages": [
+                  "release-management/release-handbook",
+                  "release-management/versioning",
+                  "release-management/hotfix-flow",
+                  "release-management/upgrade-guide",
+                  "release-management/database-migration-rollback"
+                ]
+              },
+              {
+                "group": "Operations",
+                "icon": "server",
+                "expanded": false,
+                "pages": [
+                  "operations",
+                  "operations/startup-tasks",
+                  "operations/search"
+                ]
+              },
+              {
+                "group": "Release Notes",
+                "icon": "scroll-text",
+                "expanded": false,
+                "pages": [
+                  "release-notes",
+                  "release-notes/current"
+                ]
+              }
+            ]
           },
           {
-            "tab": "Intern",
-            "icon": "lock",
+            "language": "de",
             "groups": [
               {
                 "group": "Betrieb",
@@ -273,11 +270,9 @@
                   "de/release-notes/current"
                 ]
               }
-            ],
-            "href": "/de/operations"
+            ]
           }
-        ],
-        "href": "/de/getting-started"
+        ]
       }
     ]
   },
