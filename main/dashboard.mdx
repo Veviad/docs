@@ -1,0 +1,51 @@
+---
+title: "Dashboard"
+sidebarTitle: "Dashboard"
+description: "The workspace overview — asset totals, utilization, depreciation, and compliance at a glance."
+---
+
+# Dashboard
+
+The Dashboard (`/dashboard`) is the operational front page. Open it at the start of the day for a full-workspace snapshot, then dive into the module that needs attention.
+
+![The Veviad dashboard with KPI tiles, yearly overview chart, and compliance tiles](/images/screenshots/dashboard.webp)
+
+_View shown: `demo.veviad.cloud/dashboard`_
+## Top KPI tiles
+
+Four asset-level KPIs sit across the top of the dashboard:
+
+| Tile | What it shows |
+|---|---|
+| **Total Assets** | Count of assets in the workspace, with an "X available" badge for unassigned stock |
+| **Utilization Rate** | % of assets in use (assigned or deployed) |
+| **Depreciation** | Depreciated value (currency) with a % of purchase cost |
+| **Total Asset Value** | Current asset value with a % vs. purchase |
+
+"View Reports" (top-right) jumps to `Analytics → Reports`.
+
+## Yearly overview
+
+Below the KPIs, a bar chart titled "Yearly Overview — Assets Added" shows month-over-month new assets for the current year.
+
+## Second-row tiles (compliance + usage)
+
+Eight smaller tiles group compliance, license, and org signals:
+
+- **Incomplete Checklists** — needs attention
+- **Completed Checklists** — compliance records
+- **License Utilization (%)** — assigned seats / total
+- **Maintenance Rate (%)** — assets currently under maintenance
+- **Active Users** — active vs. total seats
+- **License Utilization (raw)** — assigned / total seats (absolute count)
+- **Categories** — number of active asset categories
+- **Locations** — number of physical locations configured
+
+## Typical dashboard flow
+
+1. scan the top KPIs for drift (utilization dropped? depreciation spiking?)
+2. check checklist and maintenance tiles for unaddressed work
+3. click **View Reports** for a structured deep-dive
+4. jump into `Assets`, `People`, or `Audit Logs` as the signals suggest
+
+Use the dashboard for orientation. If you already know the exact record, use global search (`Cmd+K` on macOS, `Ctrl+K` on Windows/Linux) or direct module navigation — it's faster.

@@ -1,0 +1,116 @@
+---
+title: "Suchbetrieb"
+sidebarTitle: "Suchbetrieb"
+description: "Wie Veviad globale Suche konfiguriert, neu aufbaut, überprüft und aktualisiert."
+---
+
+# Suchbetrieb
+
+Veviad nutzt einen dedizierten Suchdienst für schnelle globale Suche. Primäre Anwendungsdaten bleiben verbindlich. Suchindizes können aus den Anwendungsdaten neu aufgebaut werden, deshalb wird der Suchdienst betrieblich als wiederherstellbar behandelt, nicht als Primärdatenspeicher.
+
+## Was indexiert wird
+
+Die Anwendung pflegt Suchindizes für:
+
+- Assets
+- Benutzer
+- Lizenzen
+- Zubehör
+
+Indexnamen können über die Suchkonfiguration ein Präfix erhalten. Suchbare Attribute, filterbare Attribute und Ranking-Regeln werden durch die Anwendung verwaltet.
+
+## Suche aktivieren
+
+Suchoperationen benötigen aktivierte Suche in der Deployment-Konfiguration:
+
+- Suche ist für die Umgebung aktiviert;
+- Suchdienst-URL und Zugriffsschlüssel sind konfiguriert;
+- Produktionscontainer für den Suchdienst verwenden ein festes, freigegebenes Image-Tag.
+
+In Produktion kein `latest` verwenden. Nur auf eine für die Umgebung freigegebene Version aktualisieren.
+
+## Settings und Reindexing
+
+Settings synchronisieren, wenn sich die Indexkonfiguration ändert:
+
+```txt
+search-ensure-settings --strict --wait
+```
+
+Reindexing verwenden, wenn Dokumente aus der Datenbank neu aufgebaut werden müssen:
+
+```txt
+search-reindex --strict --wait
+```
+
+Nur einen Index neu aufbauen:
+
+```txt
+search-reindex --index=assets --strict --wait
+```
+
+`--wait` wartet auf Suchdienst-Tasks. `--strict` liefert einen Fehlercode, wenn Settings, Löschung, Ingestion oder Such-Tasks fehlschlagen. Startup-Tasks verwenden beide Optionen.
+
+## Verwendung als Startup-Task
+
+Für Arbeiten, die während eines Deployments genau einmal laufen sollen:
+
+```txt
+STARTUP_TASKS=search-ensure-settings:search-settings-v1,search-reindex:search-rebuild-YYYY-MM-DD
+```
+
+Einen neuen `search-reindex`-Schlüssel verwenden, wenn:
+
+- der Suchdienst mit einem frischen Datenvolume gestartet wurde;
+- sich das Dokumentformat der Indizes geändert hat;
+- ein Such-Engine-Upgrade einen Neuaufbau erfordert;
+- Suchergebnisse unvollständig sind und ein vollständiger Neuaufbau sicherer ist als eine gezielte Reparatur.
+
+Abgeschlossene Schlüssel können in `STARTUP_TASKS` stehen bleiben oder nach der Prüfung entfernt werden. Sie laufen erst wieder, wenn der Schlüssel geändert wird.
+
+## Suchdienst-Upgrades
+
+Vor einem Upgrade:
+
+1. Bestätigen, dass alle Suchdokumente aus primären Anwendungsdaten neu aufgebaut werden können.
+2. Primäre Datenbank sichern und das aktuelle Suchdatenvolume erhalten.
+3. Zielversion des Suchdienstes fest pinnen.
+4. Bei großen Indizes ein Wartungsfenster planen.
+5. Startup-Task-Schlüssel für Settings und Reindexing vorbereiten.
+
+Wenn die neue Such-Engine mit dem vorhandenen Volume startet, Settings synchronisieren und bei Bedarf neu indexieren.
+
+Wenn die Engine die alte On-Disk-Datenbank wegen einer inkompatiblen gespeicherten Datenversion ablehnt, den neuen Container nicht weiter gegen das alte Volume neu starten. Das alte Volume für Rollback behalten, die Zielversion mit einem neuen leeren Suchvolume starten und die Suche aus der Anwendung neu aufbauen:
+
+```txt
+STARTUP_TASKS=search-ensure-settings:<upgrade-key>,search-reindex:<upgrade-key>
+```
+
+Dump/Import nur verwenden, wenn der Suchdienst Daten enthält, die nicht aus primären Anwendungsdaten rekonstruiert werden können. Snapshots sind Sicherungen für dieselbe Version; Dumps sind der portable Weg für versionsübergreifende Suchmigrationen.
+
+## Prüfung
+
+Suchdienst prüfen:
+
+```txt
+Health-Endpunkt
+Versions-Endpunkt
+```
+
+Startup-Tasks prüfen:
+
+Das Startup-Task-Protokoll auf Task-Schlüssel, Status, Anzahl der Versuche und letzte Fehlermeldung prüfen.
+
+Danach Suchverhalten in der Anwendung mit Beispiel-Assets, Benutzern, Lizenzen und Zubehör testen.
+
+## Rollback
+
+Wenn Zielversion oder Reindex fehlschlagen:
+
+1. Zielcontainer des Suchdienstes stoppen.
+2. Das gesicherte vorherige Suchdatenvolume wieder einhängen.
+3. Das vorher funktionierende Image-Tag pinnen.
+4. Vorherige App- und Suchumgebungswerte wiederherstellen.
+5. Fehlgeschlagene Startup-Task-Zeilen und Container-Logs untersuchen, bevor erneut aktualisiert wird.
+
+Das gesicherte Volume erst löschen, wenn die neue Version verifiziert ist.

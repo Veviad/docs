@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Veviad Internal Documentation",
+  "name": "Veviad Documentation",
   "colors": {
     "primary": "#575BDE",
     "light": "#3F63FF",
@@ -9,39 +9,228 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "languages": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "groups": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ],
-        "public": true
-      },
-      {
-        "group": "Internal",
-        "icon": "lock",
-        "expanded": true,
-        "pages": [
+        "language": "en",
+        "default": true,
+        "groups": [
           {
-            "group": "Release Management",
-            "icon": "rocket",
+            "group": "User Manual",
+            "icon": "book-open",
+            "expanded": true,
+            "public": true,
+            "pages": [
+              "index",
+              {
+                "group": "Getting Started",
+                "icon": "rocket",
+                "expanded": true,
+                "pages": [
+                  "getting-started",
+                  "getting-started/access-and-navigation",
+                  "getting-started/your-first-workspace"
+                ]
+              },
+              {
+                "group": "Core Workflows",
+                "icon": "layout-dashboard",
+                "expanded": true,
+                "pages": [
+                  "main",
+                  "main/dashboard",
+                  "main/assets",
+                  "main/asset-handover",
+                  "main/maintenance",
+                  "main/licenses",
+                  "main/accessories",
+                  "main/people",
+                  "main/workflows"
+                ]
+              },
+              {
+                "group": "Analytics",
+                "icon": "chart-column",
+                "expanded": false,
+                "pages": [
+                  "analytics",
+                  "analytics/reports",
+                  "analytics/audit-logs"
+                ]
+              },
+              {
+                "group": "Veviad AI",
+                "icon": "sparkles",
+                "expanded": false,
+                "pages": [
+                  "veviad-ai",
+                  "veviad-ai/assistant",
+                  "veviad-ai/pdf-asset-extraction"
+                ]
+              },
+              {
+                "group": "FAQ",
+                "icon": "circle-help",
+                "expanded": false,
+                "pages": [
+                  "faq",
+                  "faq/common-questions"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Internal",
+            "icon": "lock",
             "expanded": true,
             "pages": [
-              "release-management/release-handbook",
-              "release-management/versioning",
-              "release-management/hotfix-flow",
-              "release-management/upgrade-guide",
-              "release-management/database-migration-rollback"
+              {
+                "group": "Release Management",
+                "icon": "rocket",
+                "expanded": true,
+                "pages": [
+                  "release-management/release-handbook",
+                  "release-management/versioning",
+                  "release-management/hotfix-flow",
+                  "release-management/upgrade-guide",
+                  "release-management/database-migration-rollback"
+                ]
+              },
+              {
+                "group": "Operations",
+                "icon": "server",
+                "expanded": false,
+                "pages": [
+                  "operations",
+                  "operations/startup-tasks",
+                  "operations/search"
+                ]
+              },
+              {
+                "group": "Organization & Administration",
+                "icon": "shield-check",
+                "expanded": false,
+                "pages": [
+                  "organization",
+                  "organization/settings",
+                  "organization/admin",
+                  "organization/sso-scim"
+                ]
+              },
+              {
+                "group": "Release Notes",
+                "icon": "scroll-text",
+                "expanded": false,
+                "pages": [
+                  "release-notes",
+                  "release-notes/current"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "de",
+        "groups": [
+          {
+            "group": "Benutzerhandbuch",
+            "icon": "book-open",
+            "expanded": true,
+            "public": true,
+            "pages": [
+              "de/index",
+              {
+                "group": "Erste Schritte",
+                "icon": "rocket",
+                "expanded": true,
+                "pages": [
+                  "de/getting-started",
+                  "de/getting-started/access-and-navigation",
+                  "de/getting-started/your-first-workspace"
+                ]
+              },
+              {
+                "group": "Zentrale Workflows",
+                "icon": "layout-dashboard",
+                "expanded": true,
+                "pages": [
+                  "de/main",
+                  "de/main/dashboard",
+                  "de/main/assets",
+                  "de/main/asset-handover",
+                  "de/main/maintenance",
+                  "de/main/licenses",
+                  "de/main/accessories",
+                  "de/main/people",
+                  "de/main/workflows"
+                ]
+              },
+              {
+                "group": "Analysen",
+                "icon": "chart-column",
+                "expanded": false,
+                "pages": [
+                  "de/analytics",
+                  "de/analytics/reports",
+                  "de/analytics/audit-logs"
+                ]
+              },
+              {
+                "group": "Veviad AI",
+                "icon": "sparkles",
+                "expanded": false,
+                "pages": [
+                  "de/veviad-ai",
+                  "de/veviad-ai/assistant",
+                  "de/veviad-ai/pdf-asset-extraction"
+                ]
+              },
+              {
+                "group": "FAQ",
+                "icon": "circle-help",
+                "expanded": false,
+                "pages": [
+                  "de/faq",
+                  "de/faq/common-questions"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Intern",
+            "icon": "lock",
+            "expanded": true,
+            "pages": [
+              {
+                "group": "Betrieb",
+                "icon": "server",
+                "expanded": false,
+                "pages": [
+                  "de/operations",
+                  "de/operations/startup-tasks",
+                  "de/operations/search"
+                ]
+              },
+              {
+                "group": "Organisation & Administration",
+                "icon": "shield-check",
+                "expanded": false,
+                "pages": [
+                  "de/organization",
+                  "de/organization/settings",
+                  "de/organization/admin",
+                  "de/organization/sso-scim"
+                ]
+              },
+              {
+                "group": "Versionshinweise",
+                "icon": "scroll-text",
+                "expanded": false,
+                "pages": [
+                  "de/release-notes",
+                  "de/release-notes/current"
+                ]
+              }
             ]
           }
         ]
@@ -53,11 +242,16 @@
     "dark": "/images/veviad-logo-dark.svg"
   },
   "navbar": {
-    "links": [],
+    "links": [
+      {
+        "label": "Veviad",
+        "href": "https://veviad.com"
+      }
+    ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Open Veviad",
+      "href": "https://app.veviad.com"
     }
   },
   "contextual": {
@@ -72,6 +266,14 @@
       "vscode"
     ]
   },
+  "description": "Public user manual and private internal operations documentation for Veviad.",
+  "redirects": [
+    {
+      "source": "/quickstart",
+      "destination": "/getting-started",
+      "permanent": true
+    }
+  ],
   "background": {
     "color": {
       "light": "#F7F8FD",

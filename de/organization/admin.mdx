@@ -1,0 +1,90 @@
+---
+title: "Admin"
+sidebarTitle: "Admin"
+description: "Rollen, Benutzer, Einladungen, Integrationen und Systemzustand."
+---
+
+# Admin
+
+Im Admin-Bereich (`Organisation → Admin`) werden Authentifizierung, Zugriff und Integrationen auf Organisationsebene konfiguriert. Er umfasst fünf Unterseiten: **Allgemein**, **Rollen**, **Benutzer**, **Einladungen** und **Integrationen**.
+
+![Das Admin-Dashboard mit Benutzern, Assets, Lizenzplätzen und Systemzustand](/images/screenshots/de/admin.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/admin`_
+## Allgemein (Admin-Dashboard)
+
+Die Startseite des Admin-Bereichs. Auf einen Blick:
+
+- **KPI-Kacheln:** Benutzer, Assets, Lizenzplätze, Abteilungen — jeweils mit Gesamtzahlen und einem Prozentbalken.
+- **Rollenverteilung** — Anzahl der Plätze und Anteil je Systemrolle (Admin, Asset Manager, Abteilungsmanager, Benutzer).
+- **Letzte Aktivitäten** — die neuesten admin-relevanten Aktionen.
+- **Systemzustand** — Anzahl der Berechtigungen, Anzahl der Rollen, Datenbankgröße, Speichernutzung.
+- **Integrationsstatus** — Single-Sign-On und Veviad AI mit Aktiv-/Inaktiv-Badges.
+
+## Rollen
+
+![Die Rollenübersicht mit Berechtigungen je Rolle](/images/screenshots/de/admin-roles.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/admin/roles`_
+
+Hier verwalten Sie die Berechtigungspakete, die Benutzern zugewiesen werden können. Der Standard-Rollensatz umfasst:
+
+- **Admin** — vollständiger Plattformzugriff
+- **Asset Manager** — Lifecycle-Verantwortung für Assets
+- **Abteilungsmanager** — eingeschränkter Zugriff innerhalb einer Abteilung
+- **Benutzer** — grundlegender Lese- und Nutzungszugriff
+
+Erstellen Sie eigene Rollen, wenn die Standardrollen nicht passen. Der Workspace zeigt die Gesamtzahl der Berechtigungen (≈79 in der Standardauslieferung) und die Anzahl der aktiven Rollen unter Systemzustand an.
+
+## Benutzer
+
+![Die Benutzerliste mit Rollen und Kontostatus](/images/screenshots/de/admin-users.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/admin/users`_
+
+Die Admin-Sicht auf das Benutzerverzeichnis — Anmeldekonten und ihre zugewiesenen Rollen. Sie unterscheidet sich von `Personen` (der HR- und Asset-Zuweisungssicht): Benutzer ist die Perspektive für Authentifizierung und Berechtigungen, Personen die operative Perspektive.
+
+## Einladungen
+
+![Die Einladungsansicht mit ausstehenden Einladungen](/images/screenshots/de/admin-invitations.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/admin/invitations`_
+
+Kontrolliertes Onboarding für neue Benutzer.
+
+**Ablauf für Administratoren:**
+
+1. Öffnen Sie `Admin → Benutzer` und wählen Sie `Benutzer einladen`
+2. Geben Sie die E-Mail-Adresse der empfangenden Person ein
+3. Weisen Sie eine oder mehrere Rollen zu
+4. Senden Sie die Einladung
+
+**Lebenszyklus einer Einladung:**
+
+- ausstehend, bis die Einladung angenommen wird
+- Ablauffrist (üblicherweise 72 Stunden, konfigurierbar)
+- erneutes Senden, wenn die E-Mail verloren geht oder abläuft
+- Widerruf, wenn der Zugriff vor der Annahme entzogen werden soll
+
+**Ablauf für eingeladene Personen:** Die Person erhält eine E-Mail mit einem sicheren Annahmelink und legt ihr Passwort über die Annahmeseite fest.
+
+**Wenn eine Einladung nicht ankommt:** Prüfen Sie den Spam-Ordner, kontrollieren Sie die E-Mail-Adresse, senden Sie die Einladung erneut und klären Sie die Mail-Zustellung mit Ihrer Administration, falls das Problem bestehen bleibt.
+
+## Integrationen
+
+![Die Integrationsliste mit Single-Sign-On und Veviad AI](/images/screenshots/de/admin-integrations.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/admin/integrations`_
+
+Zwei Integrationen sind standardmäßig enthalten und werden hier aktiviert oder deaktiviert:
+
+- **Single-Sign-On** — standardmäßig inaktiv; Konfiguration über das Zahnrad-Symbol in der jeweiligen Zeile.
+- **Veviad AI (Chat-Assistent)** — standardmäßig aktiv; konfigurieren Sie über das Zahnrad-Symbol in der jeweiligen Zeile den KI-Anbieter (derzeit wird Anthropic Claude unterstützt — siehe `Veviad AI → Assistent`).
+
+Aktivieren Sie SSO, bevor Sie bei größeren Rollouts Benutzer einladen — eine nachträgliche Umstellung der Authentifizierung nach angenommenen Einladungen verursacht zusätzlichen operativen Aufwand.
+
+Informationen zur Einrichtung von Microsoft Entra ID, zur SCIM-Bereitstellung und zur Synchronisation von Gruppen zu Rollen finden Sie unter [SSO und SCIM](/de/organization/sso-scim).
+
+## Systemtransparenz
+
+Das Admin-Dashboard ist die richtige Anlaufstelle, wenn Sie auf einen Blick wissen möchten, ob der Tenant gesund ist: Benutzer gesamt und aktiv, Assets gesamt und genutzt, Lizenzplätze, letzte Aktivitäten und Integrationsstatus. Details auf Ereignisebene finden Sie unter `Analysen → Audit-Logs`.

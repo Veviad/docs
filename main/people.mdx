@@ -1,0 +1,53 @@
+---
+title: "People"
+sidebarTitle: "People"
+description: "HR-side directory of users, managers, and the department / location links behind asset assignment."
+---
+
+# People
+
+People (`/people`) is the HR / asset-assignment view of your users. It sits alongside (but is distinct from) `Admin → Users`, which is the authentication-and-permission view.
+
+![The people list with employees and their assigned assets](/images/screenshots/people.webp)
+
+_View shown: `demo.veviad.cloud/people`_
+## The people list
+
+**Default views**
+
+- **All People** — every person on record
+- **Active** — currently active
+- **Inactive** — deactivated
+- **Managers** — people with management scope
+
+**Custom views** — save your own filter combinations.
+
+**Quick actions** (second pane, bottom):
+
+- **Manage Users** — jumps to the Admin user directory
+- **Manage Departments** — configure departments under Settings
+- **Manage Locations** — configure physical locations under Settings
+
+## Record fields
+
+- **ID / Avatar** — internal identifier and profile initials/image
+- **First Name / Last Name**
+- **Email**
+- **Title**
+- **Department**
+
+## When to use People vs. Users
+
+| You need to… | Use |
+|---|---|
+| Change login email, reset password, assign a role | `Organization → Admin → Users` |
+| Update department, title, or manager | `Main → People` |
+| Assign an asset to a person | `Main → People` (or the asset itself) |
+| Invite someone new | `Organization → Admin → Invitations` |
+| Deactivate login access | `Organization → Admin → Users` |
+
+## Practical notes
+
+- departments and locations referenced here are managed under `Settings → Departments` and `Settings → Locations`
+- managers are denoted by role assignment or reporting line — use the Managers view to see the subset
+- the Dashboard's **Active Users** tile counts the active set from this list

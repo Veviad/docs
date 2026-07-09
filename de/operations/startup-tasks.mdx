@@ -1,0 +1,114 @@
+---
+title: "Startup-Tasks und Seeding"
+sidebarTitle: "Startup-Tasks und Seeding"
+description: "Wie Veviad operative Aufgaben einmal pro Deployment-Schlüssel ausführt, ohne schwere oder destruktive Tasks bei jedem Container-Neustart zu wiederholen."
+---
+
+# Startup-Tasks und Seeding
+
+Container-Starts müssen wiederholbar sein. Veviad trennt deshalb normale Migrationen von einmaligen operativen Aufgaben. Das Task-Protokoll liegt in der Anwendungsdatenbank, sodass mehrere Container gleichzeitig starten können, ohne dieselbe Aufgabe mehrfach auszuführen.
+
+## Startreihenfolge
+
+Der Container-Startprozess arbeitet in dieser Reihenfolge:
+
+1. Datenbankverbindung abwarten.
+2. Schema-Migrationen ausführen, wenn automatische Migrationen aktiviert sind.
+3. Erforderliche Bootstrap-Tasks ergänzen, wenn initiale Admin-Zugangsdaten konfiguriert sind.
+4. Startup-Task-Runner ausführen, wenn `STARTUP_TASKS` nicht leer ist.
+5. Initialen Benutzer anlegen, wenn `INITIAL_ADMIN_EMAIL` und `INITIAL_ADMIN_PASSWORD` gesetzt sind.
+6. Mit dem Container-Kommando fortfahren.
+
+Migrationen dürfen bei jedem Deployment laufen. Seeder, Suchkonfiguration, Reindexing und Datenbank-Resets müssen über Startup-Tasks laufen.
+
+## Konfiguration
+
+| Variable | Standard | Zweck |
+|---|---:|---|
+| `STARTUP_TASKS` | leer | Kommagetrennte Tasks im Format `task-name:key`. |
+| `STARTUP_TASK_TIMEOUT_MINUTES` | `120` | Zeit, nach der ein laufender Task als veraltet gilt. |
+| `STARTUP_TASK_POLL_SECONDS` | `5` | Warteintervall, wenn ein anderer Container den Task besitzt. |
+| `ALLOW_DESTRUCTIVE_STARTUP_TASKS` | `false` | Muss für `fresh-db-seed` explizit aktiviert werden. |
+
+Beispiel:
+
+```txt
+STARTUP_TASKS=essential-seeders:reference-data-v1,search-ensure-settings:search-settings-v1
+```
+
+## Task-Schlüssel
+
+Ein Task-Schlüssel ist die dauerhafte Identität einer Operation. Abgeschlossene Schlüssel werden dauerhaft übersprungen. Um dieselbe Task-Art erneut auszuführen, wird ein neuer Schlüssel verwendet.
+
+Gute Schlüssel beschreiben den Zweck:
+
+```txt
+essential-seeders:reference-data-v1
+search-ensure-settings:search-schema-v2
+search-reindex:search-upgrade-YYYY-MM-DD
+fresh-db-seed:test-reset-YYYY-MM-DD
+```
+
+Keine zufälligen Schlüssel für normale Deployments verwenden. Ein geänderter Schlüssel bedeutet: Diese Aufgabe soll erneut laufen.
+
+## Unterstützte Tasks
+
+| Task | Wirkung | Produktion |
+|---|---|---|
+| `essential-seeders:<key>` | Führt Referenzdaten-Seeder aus, zum Beispiel Rollen, Kategorien, Status, Standorte und Report-Vorlagen. | Ja |
+| `search-ensure-settings:<key>` | Erstellt oder konfiguriert Suchindizes und wartet im Strict-Modus auf Settings-Tasks. | Ja |
+| `search-reindex:<key>` | Baut Suchdokumente aus primären Anwendungsdaten neu auf und wartet im Strict-Modus auf Such-Tasks. | Ja, bei großen Datenmengen mit Wartungsfenster |
+| `fresh-db-seed:<key>` | Setzt die Datenbank zurück und seedet sie neu. | Nein, nur Test- oder Wegwerf-Umgebungen |
+
+Frische Datenbank-Resets sind destruktiv. `fresh-db-seed:<key>` nur in Wegwerf-Umgebungen verwenden und nur, wenn `ALLOW_DESTRUCTIVE_STARTUP_TASKS=true` gesetzt ist.
+
+## Verhalten bei mehreren Containern
+
+Wenn mehrere Container gleichzeitig starten:
+
+- ein Container beansprucht einen offenen, fehlgeschlagenen oder veralteten Task;
+- andere Container warten auf Abschluss;
+- abgeschlossene Tasks werden übersprungen;
+- fehlgeschlagene Tasks werden bei späteren Starts erneut versucht;
+- veraltete laufende Tasks werden nach `STARTUP_TASK_TIMEOUT_MINUTES` übernommen.
+
+Damit sind Startup-Tasks für horizontal skalierte SaaS-Deployments geeignet.
+
+## Frische Installation
+
+Für eine neue Umgebung:
+
+```txt
+STARTUP_TASKS=essential-seeders:reference-data-v1,search-ensure-settings:search-settings-v1
+ALLOW_DESTRUCTIVE_STARTUP_TASKS=false
+```
+
+Wenn automatisch ein Admin-Benutzer erstellt werden soll, `INITIAL_ADMIN_EMAIL` und `INITIAL_ADMIN_PASSWORD` setzen. Die Benutzeranlage ist idempotent und erstellt vorhandene Benutzer nicht bei jedem Neustart neu.
+
+## Test-Reset
+
+Nur für lokale oder wegwerfbare Testumgebungen:
+
+```txt
+ALLOW_DESTRUCTIVE_STARTUP_TASKS=true
+STARTUP_TASKS=fresh-db-seed:test-reset-YYYY-MM-DD
+```
+
+Nach erfolgreichem Reset destruktive Startup-Tasks wieder deaktivieren oder die Umgebung zurück auf normale Tasks setzen.
+
+## Fehlerbehebung
+
+Zuerst das Startup-Task-Protokoll prüfen. Am wichtigsten sind Task-Schlüssel, Status, Anzahl der Versuche, Start- und Abschlusszeitpunkte sowie die letzte Fehlermeldung.
+
+Typische Bedeutungen:
+
+- `completed`: Der Schlüssel ist bereits gelaufen; nur mit neuem Schlüssel bewusst erneut ausführen.
+- `failed`: Ursache beheben, dann Container neu starten oder den Startup-Task-Runner erneut ausführen.
+- `running`: Ein anderer Container besitzt den Task möglicherweise noch. Logs prüfen, bevor auf den Timeout gewartet wird.
+- `last_error`: Enthält die letzte Fehlermeldung des Runners.
+
+Manuelle Läufe verwenden dasselbe Task-Schlüssel-Format wie `STARTUP_TASKS`:
+
+```txt
+search-ensure-settings:manual-check
+```

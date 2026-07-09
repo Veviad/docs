@@ -1,0 +1,62 @@
+---
+title: "Berichte"
+sidebarTitle: "Berichte"
+description: "Vorlagen, Zeitpläne und Ausführungshistorie für Workspace-Berichte."
+---
+
+# Berichte
+
+Unter Berichte (`/reports`) werden strukturierte Sichten auf den Workspace erstellt, gespeichert und zeitlich geplant.
+
+![Der Berichtsbereich mit KPI-Kacheln und Berichtsvorlagen](/images/screenshots/de/reports.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/reports`_
+## KPIs im Berichte-Dashboard
+
+Vier Kacheln am oberen Rand der Berichte-Startseite:
+
+- **Berichte gesamt** — Anzahl der gespeicherten Berichtsdefinitionen
+- **Ausführungen (7 Tage)** — Läufe in den letzten sieben Tagen
+- **Aktive Zeitpläne** — Anzahl der Berichte mit Zeitplan
+- **Fehlgeschlagene Läufe (7 Tage)** — Fehlschläge in den letzten sieben Tagen
+
+Darunter zeigt die Tabelle **Zuletzt ausgeführte Berichte** Name, Domäne, Startzeitpunkt, Status und Zeilen.
+
+## Berichtsvorlagen
+
+Sechs integrierte Vorlagen stehen unter „Berichtsvorlagen“ im zweiten Bereich zur Verfügung:
+
+1. **Asset-Berichte** — Inventar, Zuweisungen, Status, Lifecycle
+2. **Abschreibungsberichte** — Abschreibungswert im Zeitverlauf
+3. **Lizenzberichte** — Plätze, Ablaufdaten, Auslastung
+4. **Benutzerberichte** — aktiv / inaktiv, Rolle, Abteilung
+5. **Aktivitätsberichte** — Nutzungs- und Ereignisübersichten
+6. **Wartungsberichte** — anstehende und abgeschlossene Wartungen
+
+Wählen Sie eine Vorlage, um eine vorkonfigurierte Domäne und Ausgangsfelder zu erhalten, und passen Sie anschließend die Filter an, bevor Sie speichern.
+
+## Felder einer Berichtsdefinition
+
+Ein gespeicherter Bericht kann enthalten:
+
+- **Domäne / Datenbestand** — die Entität, über die berichtet wird
+- **Felder** — die Spalten, die in der Ausgabe erscheinen
+- **Filter** — Eingrenzungskriterien (Status, Abteilung, Datumsbereich, …)
+- **Sortierreihenfolge**
+- **Sichtbarkeit** — privat (nur für Sie) oder öffentlich (geteilt)
+- **Zeitplan** — automatische Ausführung (täglich, wöchentlich, monatlich)
+- **Empfänger** — E-Mail-Verteiler für geplante Läufe
+
+## Typischer Workflow
+
+1. **Erstellen** Sie einen Bericht aus einer Vorlage (`+ Bericht erstellen`, oben rechts).
+2. **Passen Sie** Felder, Filter und Sortierreihenfolge an die Frage an, die der Bericht beantworten soll.
+3. **Speichern** Sie ihn privat (für sich selbst) oder öffentlich (für das Team).
+4. **Planen** Sie den Bericht, wenn dieselbe Sicht regelmäßig benötigt wird.
+5. **Prüfen** Sie die Ausführungshistorie; starten Sie fehlgeschlagene Läufe aus der Tabelle „Zuletzt ausgeführte Berichte“ erneut oder öffnen Sie sie dort.
+
+## Ansichten im zweiten Bereich
+
+- **Alle Berichte** — alle gespeicherten Berichte, die für Sie sichtbar sind
+- **Meine Berichte** — von Ihnen erstellte Berichte
+- **Geplant** — die Teilmenge mit aktivem Zeitplan

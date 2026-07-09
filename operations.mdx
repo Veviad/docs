@@ -1,0 +1,54 @@
+---
+title: "Operations"
+sidebarTitle: "Operations"
+description: "What an operations team needs to install, upgrade, and run Veviad safely in managed environments."
+---
+
+# Operations
+
+Veviad keeps operational changes controlled, repeatable, and auditable. Supporting services such as the primary database, search service, queues, and object storage make the platform reliable, but operational tasks should always be started intentionally and tracked durably.
+
+## Operating model
+
+Run Veviad as immutable application images with environment-driven configuration. Containers may restart at any time, so startup behavior must be safe to repeat.
+
+- **Schema migrations** may run on each deploy. They are idempotent database changes.
+- **Startup tasks** run once per explicit key and are recorded in the application database.
+- **Seeders** are split into safe reference-data seeders and destructive fresh database resets.
+- **Search indexes** are rebuildable from primary application data. The search service is treated as a rebuildable cache.
+- **Initial user creation** is idempotent and can stay configured for bootstrap environments.
+
+## Required services
+
+| Service | Purpose | Operations note |
+|---|---|---|
+| Primary database | Source-of-truth application data | Back up before deploys and before destructive test resets. |
+| Cache and queue service | Queue/cache support | Required for queue workers and background jobs in production. |
+| Search service | Global search | Pin the service image tag; do not run production on `latest`. |
+| Object storage | Private PDFs and uploaded files | Use production-grade object storage for customer deployments. |
+| Queue worker | Automation, notifications, and background work | Run separately from the web container where possible. |
+
+## Deployment order
+
+1. Deploy the new application image.
+2. Wait for primary database connectivity.
+3. Run schema migrations.
+4. Run configured one-time startup tasks.
+5. Create the initial admin user if bootstrap credentials are configured.
+6. Start web, scheduler, and queue worker processes.
+7. Verify health, logs, and a small set of user workflows.
+
+## Routine checks
+
+Use these checks after installation, upgrade, or recovery:
+
+- migration state is current;
+- startup tasks have completed successfully;
+- queue workers are healthy and failed jobs are reviewed;
+- search settings are synchronized;
+- a small set of user workflows works as expected.
+
+## Related topics
+
+- [Startup tasks and seeding](/operations/startup-tasks)
+- [Search operations](/operations/search)

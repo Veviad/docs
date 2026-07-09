@@ -1,0 +1,62 @@
+---
+title: "Reports"
+sidebarTitle: "Reports"
+description: "Templates, scheduling, and execution history for workspace reports."
+---
+
+# Reports
+
+Reports (`/reports`) is where structured views of the workspace are built, saved, and scheduled.
+
+![The reports area with KPI tiles and report templates](/images/screenshots/reports.webp)
+
+_View shown: `demo.veviad.cloud/reports`_
+## Reports dashboard KPIs
+
+Four tiles at the top of the Reports landing:
+
+- **Total Reports** — count of saved report definitions
+- **Executions (7d)** — runs in the last seven days
+- **Active Schedules** — how many reports are scheduled
+- **Failed Runs (7d)** — failures in the last seven days
+
+Below them, a **Recent Reports** table shows Name, Domain, Started timestamp, Status, and Rows.
+
+## Report templates
+
+Six built-in templates are exposed under "Report Templates" in the second pane:
+
+1. **Asset Reports** — inventory, assignments, status, lifecycle
+2. **Depreciation Reports** — depreciated value over time
+3. **License Reports** — seats, expiry, utilization
+4. **User Reports** — active / inactive, role, department
+5. **Activity Reports** — usage and event summaries
+6. **Maintenance Reports** — upcoming and completed maintenance
+
+Pick a template to get a pre-configured domain and starting fields, then tune filters before saving.
+
+## Report definition fields
+
+A saved report can include:
+
+- **Domain / dataset** — which entity to report on
+- **Fields** — which columns appear in the output
+- **Filters** — slice criteria (status, department, date range, …)
+- **Sort order**
+- **Visibility** — private (yours only) or public (shared)
+- **Schedule** — run automatically (daily, weekly, monthly)
+- **Recipients** — email distribution list for scheduled runs
+
+## Typical workflow
+
+1. **Create** from a template (`+ Create Report`, top-right).
+2. **Tune** fields, filters, and sort order for the question you want answered.
+3. **Save** as private (for yourself) or public (for the team).
+4. **Schedule** if the same view is needed on a cadence.
+5. **Review** execution history; re-run or open failed runs from the Recent Reports table.
+
+## Views in the second pane
+
+- **All Reports** — every saved report visible to you
+- **My Reports** — reports you created
+- **Scheduled** — the subset with an active schedule

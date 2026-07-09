@@ -1,0 +1,58 @@
+---
+title: "Audit Logs"
+sidebarTitle: "Audit Logs"
+description: "Time-ordered record of user, security, and system events across the workspace."
+---
+
+# Audit Logs
+
+Audit Logs (`/audit-logs`) are the source of truth for operational history. Every meaningful action against an entity is recorded with actor, target, and timestamp.
+
+![The audit log table with timestamp, actor, entity, and event](/images/screenshots/audit-logs.webp)
+
+_View shown: `demo.veviad.cloud/audit-logs`_
+## The audit log table
+
+Columns:
+
+- **Timestamp** — `DD.MM.YYYY HH:MM` format
+- **Actor** — the user (or `System`) that triggered the event
+- **Entity** — the record type (User, Asset, OrganizationSettings, …)
+- **Target** — hyperlinked reference to the specific record
+- **Event** — colored badge (Login, Logout, Update, Failed, …)
+
+Per-column filter funnels let you narrow on any field.
+
+## Default views
+
+- **All Logs** — every audit event
+- **User Actions** — actions performed by users (logins, record edits, exports)
+- **Security Events** — authentication and authorization events (including failed logins)
+- **System Events** — actions performed by the platform itself
+
+**Custom views** — save your own filter combinations for recurring audits.
+
+## Event vocabulary
+
+Common badges include:
+
+- **Login** — successful sign-in
+- **Logout** — sign-out
+- **Update** — record modified
+- **Failed** — failed operation (typically a failed login)
+- domain-specific events for Asset, License, User, and Organization Settings entities
+
+## Practical uses
+
+- validate lifecycle transitions after a process runs
+- review configuration changes when settings drift
+- support internal or external audit requests with a filtered export
+- trace the history behind an unexpected record state
+
+## Exporting
+
+Use the export icon (top-right of the table) to download the current filtered view. For scheduled audit reporting, build a saved view under `Analytics → Reports` with Activity or User templates.
+
+## Best practice
+
+Treat audit logs as the single source of truth for operational history. If a workflow matters enough to discuss later, it matters enough to be captured here — don't rely on chat history or email threads.

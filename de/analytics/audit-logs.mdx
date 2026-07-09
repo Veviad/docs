@@ -1,0 +1,58 @@
+---
+title: "Audit-Logs"
+sidebarTitle: "Audit-Logs"
+description: "Zeitlich geordnete Aufzeichnung von Benutzer-, Sicherheits- und Systemereignissen im gesamten Workspace."
+---
+
+# Audit-Logs
+
+Die Audit-Logs (`/audit-logs`) sind die maßgebliche Quelle für die operative Historie. Jede relevante Aktion an einem Datensatz wird mit Akteur, Ziel und Zeitstempel aufgezeichnet.
+
+![Die Audit-Log-Tabelle mit Zeitstempel, Akteur, Entität und Ereignis](/images/screenshots/de/audit-logs.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/audit-logs`_
+## Die Audit-Log-Tabelle
+
+Spalten:
+
+- **Zeitstempel** — Format `DD.MM.YYYY HH:MM`
+- **Akteur** — der Benutzer (oder `System`), der das Ereignis ausgelöst hat
+- **Entität** — der Datensatztyp (User, Asset, OrganizationSettings, …)
+- **Ziel** — verlinkter Verweis auf den konkreten Datensatz
+- **Ereignis** — farbiges Badge (Login, Logout, Update, Failed, …)
+
+Über Filtersymbole pro Spalte können Sie die Anzeige nach jedem Feld eingrenzen.
+
+## Standardansichten
+
+- **Alle Logs** — jedes Audit-Ereignis
+- **Benutzeraktionen** — von Benutzern ausgeführte Aktionen (Anmeldungen, Datensatzänderungen, Exporte)
+- **Sicherheitsereignisse** — Authentifizierungs- und Autorisierungsereignisse (einschließlich fehlgeschlagener Anmeldungen)
+- **Systemereignisse** — von der Plattform selbst ausgeführte Aktionen
+
+**Eigene Ansichten** — speichern Sie Ihre eigenen Filterkombinationen für wiederkehrende Prüfungen.
+
+## Ereignis-Vokabular
+
+Häufige Badges sind unter anderem:
+
+- **Login** — erfolgreiche Anmeldung
+- **Logout** — Abmeldung
+- **Update** — Datensatz geändert
+- **Failed** — fehlgeschlagener Vorgang (in der Regel eine fehlgeschlagene Anmeldung)
+- fachspezifische Ereignisse für die Entitäten Asset, License, User und Organization Settings
+
+## Praktische Anwendungsfälle
+
+- Lifecycle-Übergänge nach einem Prozesslauf überprüfen
+- Konfigurationsänderungen nachvollziehen, wenn Einstellungen vom Sollzustand abweichen
+- interne oder externe Audit-Anfragen mit einem gefilterten Export unterstützen
+- die Historie hinter einem unerwarteten Datensatzzustand zurückverfolgen
+
+## Exportieren
+
+Verwenden Sie das Export-Symbol (oben rechts in der Tabelle), um die aktuell gefilterte Ansicht herunterzuladen. Für regelmäßige Audit-Berichte erstellen Sie unter `Analysen → Berichte` eine gespeicherte Ansicht mit den Vorlagen für Aktivität oder Benutzer.
+
+## Bewährte Praxis
+
+Behandeln Sie Audit-Logs als die einzige maßgebliche Quelle für die operative Historie. Wenn ein Workflow wichtig genug ist, um später besprochen zu werden, ist er auch wichtig genug, um hier erfasst zu werden — verlassen Sie sich nicht auf Chat-Verläufe oder E-Mail-Threads.

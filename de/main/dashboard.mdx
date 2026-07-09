@@ -1,0 +1,51 @@
+---
+title: "Dashboard"
+sidebarTitle: "Dashboard"
+description: "Die Workspace-Übersicht — Asset-Bestand, Auslastung, Abschreibung und Compliance auf einen Blick."
+---
+
+# Dashboard
+
+Das Dashboard (`/dashboard`) ist die operative Startseite. Öffnen Sie es zu Beginn des Tages für einen Überblick über den gesamten Workspace und wechseln Sie anschließend in das Modul, das Aufmerksamkeit benötigt.
+
+![Das Veviad-Dashboard mit KPI-Kacheln, Jahresübersicht und Compliance-Kacheln](/images/screenshots/de/dashboard.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/dashboard`_
+## Obere KPI-Kacheln
+
+Vier KPIs auf Asset-Ebene befinden sich im oberen Bereich des Dashboards:
+
+| Kachel | Was sie zeigt |
+|---|---|
+| **Assets gesamt** | Anzahl der Assets im Workspace, mit einem Badge „X verfügbar“ für nicht zugewiesenen Bestand |
+| **Auslastungsquote** | Prozentsatz der Assets im Einsatz (zugewiesen oder ausgegeben) |
+| **Abschreibung** | Abgeschriebener Wert (Währung) mit einem Prozentanteil der Anschaffungskosten |
+| **Gesamtwert der Assets** | Aktueller Asset-Wert mit einem Prozentvergleich zur Anschaffung |
+
+„Berichte anzeigen“ (oben rechts) führt zu `Analysen → Berichte`.
+
+## Jahresübersicht
+
+Unterhalb der KPIs zeigt ein Balkendiagramm mit dem Titel „Jahresübersicht — Hinzugefügte Assets“ die neu hinzugekommenen Assets pro Monat für das laufende Jahr.
+
+## Kacheln der zweiten Reihe (Compliance + Nutzung)
+
+Acht kleinere Kacheln bündeln Signale zu Compliance, Lizenzen und Organisation:
+
+- **Unvollständige Checklisten** — erfordert Aufmerksamkeit
+- **Abgeschlossene Checklisten** — Compliance-Nachweise
+- **Lizenzauslastung (%)** — zugewiesene Plätze / Gesamtzahl
+- **Wartungsquote (%)** — Assets, die sich aktuell in Wartung befinden
+- **Aktive Benutzer** — aktive Benutzer im Verhältnis zur Gesamtzahl der Plätze
+- **Lizenzauslastung (absolut)** — zugewiesene / gesamte Plätze (absolute Anzahl)
+- **Kategorien** — Anzahl der aktiven Asset-Kategorien
+- **Standorte** — Anzahl der konfigurierten physischen Standorte
+
+## Typischer Dashboard-Ablauf
+
+1. Prüfen Sie die oberen KPIs auf Abweichungen (Auslastung gesunken? Abschreibung sprunghaft gestiegen?)
+2. Kontrollieren Sie die Checklisten- und Wartungskacheln auf unerledigte Arbeit
+3. Klicken Sie auf **Berichte anzeigen** für eine strukturierte Detailanalyse
+4. Wechseln Sie je nach Signal in `Assets`, `Personen` oder `Audit-Logs`
+
+Nutzen Sie das Dashboard zur Orientierung. Wenn Sie den gesuchten Datensatz bereits genau kennen, ist die globale Suche (`Cmd+K` auf macOS, `Strg+K` auf Windows/Linux) oder die direkte Modulnavigation schneller.

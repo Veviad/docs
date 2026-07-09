@@ -1,0 +1,73 @@
+---
+title: "Assets"
+sidebarTitle: "Assets"
+description: "Hardware und Equipment mit vollständigem Lifecycle, Garantie, Abschreibung und Zuweisungshistorie verwalten."
+---
+
+# Assets
+
+Assets sind der zentrale Datensatztyp. Jedes Asset enthält seine Identität (Tag, Seriennummer, Modell), seinen Zuweisungsstatus, Kauf- und Garantiekontext, die Abschreibung sowie eine vollständige Historie.
+
+![Die Asset-Liste mit Standardansichten, Asset-Tags, Namen und Zuweisungen](/images/screenshots/de/assets.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/assets`_
+## Die Asset-Liste (`/assets`)
+
+Ein zweiter Navigationsbereich auf der linken Seite organisiert gefilterte Ansichten:
+
+**Standardansichten**
+
+- **Alle** — jedes Asset im Workspace
+- **Aktiv** — ausgegebene Assets, die aktuell im Einsatz sind
+- **Nicht zugewiesen** — Assets, die noch nicht ausgegeben wurden
+- **Im Lager** — Lager- und Ersatzbestand
+- **Veraltet** — als End-of-Life markiert, aber weiterhin erfasst
+- **Entsorgt** — ausgebucht
+- **Archiviert** — außer Betrieb, für die Historie aufbewahrt
+
+**Benutzerdefinierte Ansichten** — speichern Sie eigene Filterkombinationen zur Wiederverwendung.
+
+## Aktionen in der Symbolleiste
+
+Über die Tabellenkopfzeile (oben rechts):
+
+| Symbol | Aktion |
+|---|---|
+| `+` | Neues Asset hinzufügen |
+| ✨ | KI-gestützte Aktionen (z. B. PDF-Asset-Extraktion) |
+| Lesezeichen | Aktuellen Filter als benutzerdefinierte Ansicht speichern |
+| Papierkorb | Ausgewählte Zeilen gesammelt löschen |
+| Download | Aktuelle Ansicht exportieren |
+| Upload | Assets aus Datei importieren |
+
+Filter-Trichter pro Spalte ermöglichen das Eingrenzen nach ID, Tag, Name, zugewiesener Person, Abteilung oder Kategorie.
+
+## Asset-Detailbereich
+
+Ein Klick auf eine Zeile öffnet einen Bereich mit sieben Registerkarten:
+
+- **Details** — Allgemeine Informationen (Asset-Name, Tag, Seriennummer, Modell, Hersteller, Kategorie, Status), Zuweisung (Zugewiesen an, Standort, Abteilung, Letzte Ausgabe, Erwartete Rückgabe), Kaufinformationen (Datum, Kosten, Bestellnummer, Rechnungsnummer, Lieferant), Garantieinformationen (Ablaufdatum, Zeitraum, Status-Badge) und Zeitstempel (Erstellt, Erstellt von, Zuletzt aktualisiert, Zuletzt aktualisiert von).
+- **Checklisten** — Compliance-Vorlagen je Asset und deren Status.
+- **Historie** — zeitlich geordnetes Protokoll aller Aktionen an diesem Asset.
+- **Übergabe** — Empfangs- und Rückgabebestätigungen, PDF-Übergabeprotokolle und ausstehende Nachverfolgung für zugewiesenes oder zurückgegebenes Equipment.
+- **Wartung** — offene und abgeschlossene Wartungseinträge, geplante Termine, optionale Notizen, Details zu Kosten und Garantieverlängerung sowie PDF-Berichts- und Rechnungsanhänge.
+- **Visual Analyzer** — KI-gestützte visuelle Prüfung des Assets.
+- **Asset-Tag-Label** — druckbares QR-Code-Label für das physische Asset.
+
+## Häufige Aufgaben
+
+- **Asset hinzufügen** — Symbolleisten-Aktion `+` oder `✨` für die PDF-basierte Massenerfassung
+- **Zuweisen / Zuweisung aufheben** — über die Asset-Details oder das Zeilenmenü
+- **Übergabe bestätigen** — nutzen Sie die Registerkarte Übergabe, um Empfangs- und Rückgabeprotokolle der Mitarbeitenden zu prüfen, einschließlich PDF-Vorschau und Download
+- **Wartung dokumentieren** — öffnen Sie die Registerkarte Wartung des Assets, um durchgeführte Arbeiten zu erfassen, anstehende Arbeiten zu planen oder Einträge als abgeschlossen zu markieren
+- **Berichte / Rechnungen anhängen** — laden Sie Serviceberichte und Rechnungen direkt an gespeicherten Wartungseinträgen hoch
+- **Archivieren / Entsorgen** — nutzen Sie Status-Labels (konfiguriert unter Einstellungen → Status-Labels) und lassen Sie die Standardansichten diese automatisch aufgreifen
+- **Garantie nachverfolgen** — füllen Sie Garantieablauf und Zeitraum aus; das Garantiestatus-Badge kennzeichnet Geräte mit abgelaufener Garantie
+
+## Praktische Hinweise
+
+- Das Feld **Kategorie** speist den Dashboard-KPI „Kategorien“ — halten Sie Kategorien aussagekräftig und überschaubar
+- **Asset-Tags** werden gemäß Ihrer Tag-Konfiguration erzeugt (`Einstellungen → Asset-Tag-Konfiguration`)
+- Druckbare QR-Labels verwenden die Formatierung aus `Einstellungen → Asset-Tag-Label`
+- Die Auswahlmöglichkeiten für Wartungstypen werden global unter `Einstellungen → Wartungstypen` konfiguriert
+- Alles, was mit einem Asset geschieht, wird in `Analysen → Audit-Logs` mit Entity = „Asset“ aufgezeichnet

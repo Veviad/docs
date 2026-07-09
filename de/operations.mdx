@@ -1,0 +1,54 @@
+---
+title: "Betrieb"
+sidebarTitle: "Betrieb"
+description: "Was ein Betriebsteam braucht, um Veviad in verwalteten Umgebungen sicher zu installieren, zu aktualisieren und zu betreiben."
+---
+
+# Betrieb
+
+Veviad hält operative Änderungen kontrolliert, wiederholbar und nachvollziehbar. Unterstützende Dienste wie die primäre Datenbank, Suche, Queues und Objektspeicher machen die Plattform zuverlässig, aber operative Aufgaben sollten immer bewusst gestartet und dauerhaft nachverfolgt werden.
+
+## Betriebsmodell
+
+Die Anwendung sollte als unveränderliches Anwendungs-Image mit Konfiguration über Umgebungsvariablen betrieben werden. Container können jederzeit neu starten, deshalb muss der Startvorgang wiederholbar und sicher sein.
+
+- **Schema-Migrationen** dürfen bei jedem Deployment laufen. Sie sind idempotente Datenbankänderungen.
+- **Startup-Tasks** laufen einmal pro explizitem Schlüssel und werden in der Datenbank gespeichert.
+- **Seeder** sind getrennt in sichere Referenzdaten und destruktive Test-Resets.
+- **Suchindizes** werden aus primären Anwendungsdaten neu aufgebaut. Die Suche wird als wiederherstellbarer Cache behandelt.
+- **Initiale Benutzeranlage** ist idempotent und kann für Bootstrap-Umgebungen konfiguriert bleiben.
+
+## Benötigte Dienste
+
+| Dienst | Zweck | Betriebshinweis |
+|---|---|---|
+| Primäre Datenbank | Verbindliche Anwendungsdaten | Vor Deployments und destruktiven Test-Resets sichern. |
+| Cache- und Queue-Dienst | Queue- und Cache-Unterstützung | In Produktion für Queue-Worker und Hintergrundjobs erforderlich. |
+| Suchdienst | Globale Suche | Service-Image fest pinnen; in Produktion kein `latest` verwenden. |
+| Objektspeicher | Private PDFs und Uploads | In Kundenumgebungen produktionsgeeigneten Objektspeicher verwenden. |
+| Queue-Worker | Automationen, Benachrichtigungen und Hintergrundarbeit | Möglichst getrennt vom Web-Container betreiben. |
+
+## Deployment-Reihenfolge
+
+1. Neues Anwendungs-Image bereitstellen.
+2. Verbindung zur primären Datenbank abwarten.
+3. Schema-Migrationen ausführen.
+4. Konfigurierte einmalige Startup-Tasks ausführen.
+5. Initialen Admin-Benutzer anlegen, wenn Bootstrap-Zugangsdaten gesetzt sind.
+6. Web-, Scheduler- und Queue-Prozesse starten.
+7. Health, Logs und zentrale Benutzerabläufe prüfen.
+
+## Regelmäßige Prüfungen
+
+Nach Installation, Upgrade oder Wiederherstellung:
+
+- Migrationsstatus ist aktuell;
+- Startup-Tasks sind erfolgreich abgeschlossen;
+- Queue-Worker sind gesund und fehlgeschlagene Jobs wurden geprüft;
+- Sucheinstellungen sind synchronisiert;
+- zentrale Benutzerabläufe funktionieren wie erwartet.
+
+## Weitere Themen
+
+- [Startup-Tasks und Seeding](/de/operations/startup-tasks)
+- [Suchbetrieb](/de/operations/search)

@@ -1,0 +1,53 @@
+---
+title: "Personen"
+sidebarTitle: "Personen"
+description: "HR-seitiges Verzeichnis von Benutzern, Managern sowie den Abteilungs- und Standortverknüpfungen hinter der Asset-Zuweisung."
+---
+
+# Personen
+
+Personen (`/people`) ist die HR- und Asset-Zuweisungssicht auf Ihre Benutzer. Sie steht neben `Admin → Benutzer`, unterscheidet sich davon aber: Dort verwalten Sie Authentifizierung und Berechtigungen.
+
+![Die Personenliste mit Mitarbeitenden und ihren zugewiesenen Assets](/images/screenshots/de/people.webp)
+
+_Gezeigte Ansicht: `demo.veviad.cloud/people`_
+## Die Personenliste
+
+**Standardansichten**
+
+- **Alle Personen** — alle erfassten Personen
+- **Aktiv** — derzeit aktiv
+- **Inaktiv** — deaktiviert
+- **Manager** — Personen mit Führungsverantwortung
+
+**Benutzerdefinierte Ansichten** — speichern Sie eigene Filterkombinationen.
+
+**Schnellaktionen** (zweiter Bereich, unten):
+
+- **Benutzer verwalten** — wechselt zum Admin-Benutzerverzeichnis
+- **Abteilungen verwalten** — Abteilungen unter Einstellungen konfigurieren
+- **Standorte verwalten** — physische Standorte unter Einstellungen konfigurieren
+
+## Datensatzfelder
+
+- **ID / Avatar** — interne Kennung und Profil-Initialen oder -Bild
+- **Vorname / Nachname**
+- **E-Mail**
+- **Titel**
+- **Abteilung**
+
+## Wann Sie Personen statt Benutzer verwenden
+
+| Sie möchten… | Verwenden Sie |
+|---|---|
+| Anmelde-E-Mail ändern, Passwort zurücksetzen, eine Rolle zuweisen | `Organisation → Admin → Benutzer` |
+| Abteilung, Titel oder Manager aktualisieren | `Haupt → Personen` |
+| Ein Asset einer Person zuweisen | `Haupt → Personen` (oder das Asset selbst) |
+| Eine neue Person einladen | `Organisation → Admin → Einladungen` |
+| Anmeldezugriff deaktivieren | `Organisation → Admin → Benutzer` |
+
+## Praktische Hinweise
+
+- Die hier referenzierten Abteilungen und Standorte werden unter `Einstellungen → Abteilungen` und `Einstellungen → Standorte` verwaltet
+- Manager werden über Rollenzuweisung oder Berichtslinie gekennzeichnet — nutzen Sie die Ansicht Manager, um diese Teilmenge zu sehen
+- Die Kachel **Aktive Benutzer** im Dashboard zählt die aktiven Personen dieser Liste
