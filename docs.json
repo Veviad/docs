@@ -13,43 +13,29 @@
       {
         "language": "en",
         "default": true,
-        "tabs": [
+        "groups": [
           {
-            "tab": "Getting Started",
+            "group": "Getting Started",
             "icon": "compass",
-            "groups": [
-              {
-                "group": "Start Here",
-                "icon": "compass",
-                "expanded": true,
-                "public": true,
-                "pages": [
-                  "getting-started",
-                  "getting-started/access-and-navigation",
-                  "getting-started/your-first-workspace"
-                ]
-              }
-            ]
+            "expanded": true,
+            "pages": [
+              "getting-started",
+              "getting-started/access-and-navigation",
+              "getting-started/your-first-workspace"
+            ],
+            "public": true
           },
           {
-            "tab": "User Manual",
+            "group": "User Manual",
             "icon": "book-open",
-            "groups": [
-              {
-                "group": "Core Workflows",
-                "icon": "panels-top-left",
-                "expanded": true,
-                "public": true,
-                "pages": [
-                  "main",
-                  "main/dashboard"
-                ]
-              },
+            "expanded": true,
+            "pages": [
+              "main",
+              "main/dashboard",
               {
                 "group": "Asset Management",
                 "icon": "package",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "main/assets",
                   "main/asset-handover",
@@ -60,7 +46,6 @@
                 "group": "Inventory & Licenses",
                 "icon": "boxes",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "main/licenses",
                   "main/accessories"
@@ -70,7 +55,6 @@
                 "group": "People & Workflows",
                 "icon": "workflow",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "main/people",
                   "main/workflows"
@@ -80,7 +64,6 @@
                 "group": "Settings & Administration",
                 "icon": "settings",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "organization",
                   "organization/settings",
@@ -92,7 +75,6 @@
                 "group": "Analytics & Reporting",
                 "icon": "chart-column",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "analytics",
                   "analytics/reports",
@@ -103,7 +85,6 @@
                 "group": "Veviad AI",
                 "icon": "sparkles",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "veviad-ai",
                   "veviad-ai/assistant",
@@ -114,18 +95,19 @@
                 "group": "Help & FAQ",
                 "icon": "circle-help",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "faq",
                   "faq/common-questions"
                 ]
               }
-            ]
+            ],
+            "public": true
           },
           {
-            "tab": "Internal",
+            "group": "Internal",
             "icon": "lock",
-            "groups": [
+            "expanded": true,
+            "pages": [
               {
                 "group": "Release Management",
                 "icon": "rocket",
@@ -163,43 +145,29 @@
       },
       {
         "language": "de",
-        "tabs": [
+        "groups": [
           {
-            "tab": "Erste Schritte",
+            "group": "Erste Schritte",
             "icon": "compass",
-            "groups": [
-              {
-                "group": "Start",
-                "icon": "compass",
-                "expanded": true,
-                "public": true,
-                "pages": [
-                  "de/getting-started",
-                  "de/getting-started/access-and-navigation",
-                  "de/getting-started/your-first-workspace"
-                ]
-              }
-            ]
+            "expanded": true,
+            "pages": [
+              "de/getting-started",
+              "de/getting-started/access-and-navigation",
+              "de/getting-started/your-first-workspace"
+            ],
+            "public": true
           },
           {
-            "tab": "Benutzerhandbuch",
+            "group": "Benutzerhandbuch",
             "icon": "book-open",
-            "groups": [
-              {
-                "group": "Zentrale Workflows",
-                "icon": "panels-top-left",
-                "expanded": true,
-                "public": true,
-                "pages": [
-                  "de/main",
-                  "de/main/dashboard"
-                ]
-              },
+            "expanded": true,
+            "pages": [
+              "de/main",
+              "de/main/dashboard",
               {
                 "group": "Asset-Management",
                 "icon": "package",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "de/main/assets",
                   "de/main/asset-handover",
@@ -210,7 +178,6 @@
                 "group": "Inventar & Lizenzen",
                 "icon": "boxes",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "de/main/licenses",
                   "de/main/accessories"
@@ -220,7 +187,6 @@
                 "group": "Personen & Workflows",
                 "icon": "workflow",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "de/main/people",
                   "de/main/workflows"
@@ -230,7 +196,6 @@
                 "group": "Einstellungen & Administration",
                 "icon": "settings",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "de/organization",
                   "de/organization/settings",
@@ -242,7 +207,6 @@
                 "group": "Analysen & Berichte",
                 "icon": "chart-column",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "de/analytics",
                   "de/analytics/reports",
@@ -253,7 +217,6 @@
                 "group": "Veviad AI",
                 "icon": "sparkles",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "de/veviad-ai",
                   "de/veviad-ai/assistant",
@@ -264,18 +227,19 @@
                 "group": "Hilfe & FAQ",
                 "icon": "circle-help",
                 "expanded": false,
-                "public": true,
                 "pages": [
                   "de/faq",
                   "de/faq/common-questions"
                 ]
               }
-            ]
+            ],
+            "public": true
           },
           {
-            "tab": "Intern",
+            "group": "Intern",
             "icon": "lock",
-            "groups": [
+            "expanded": true,
+            "pages": [
               {
                 "group": "Betrieb",
                 "icon": "server",
