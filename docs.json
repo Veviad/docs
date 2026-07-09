@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Veviad Internal Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#575BDE",
+    "light": "#3F63FF",
+    "dark": "#211B4E"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -71,5 +71,11 @@
       "cursor",
       "vscode"
     ]
+  },
+  "background": {
+    "color": {
+      "light": "#F7F8FD",
+      "dark": "#0D0B38"
+    }
   }
 }
