@@ -13,254 +13,41 @@
       {
         "language": "en",
         "default": true,
-        "groups": [
+        "tabs": [
           {
-            "group": "Getting Started",
-            "icon": "rocket",
-            "expanded": true,
-            "pages": [
-              "getting-started",
-              "getting-started/access-and-navigation",
-              "getting-started/your-first-workspace"
-            ],
-            "public": true
+            "tab": "Getting Started",
+            "icon": "compass",
+            "href": "/getting-started"
           },
           {
-            "group": "User Manual",
+            "tab": "User Manual",
             "icon": "book-open",
-            "expanded": true,
-            "pages": [
-              "main",
-              "main/dashboard",
-              {
-                "group": "Asset Management",
-                "icon": "package",
-                "expanded": false,
-                "pages": [
-                  "main/assets",
-                  "main/asset-handover",
-                  "main/maintenance"
-                ]
-              },
-              {
-                "group": "Inventory & Licenses",
-                "icon": "boxes",
-                "expanded": false,
-                "pages": [
-                  "main/licenses",
-                  "main/accessories"
-                ]
-              },
-              {
-                "group": "People & Workflows",
-                "icon": "workflow",
-                "expanded": false,
-                "pages": [
-                  "main/people",
-                  "main/workflows"
-                ]
-              },
-              {
-                "group": "Settings & Administration",
-                "icon": "settings",
-                "expanded": false,
-                "pages": [
-                  "organization",
-                  "organization/settings",
-                  "organization/admin",
-                  "organization/sso-scim"
-                ]
-              },
-              {
-                "group": "Analytics & Reporting",
-                "icon": "chart-column",
-                "expanded": false,
-                "pages": [
-                  "analytics",
-                  "analytics/reports",
-                  "analytics/audit-logs"
-                ]
-              },
-              {
-                "group": "Veviad AI",
-                "icon": "sparkles",
-                "expanded": false,
-                "pages": [
-                  "veviad-ai",
-                  "veviad-ai/assistant",
-                  "veviad-ai/pdf-asset-extraction"
-                ]
-              },
-              {
-                "group": "Help & FAQ",
-                "icon": "circle-help",
-                "expanded": false,
-                "pages": [
-                  "faq",
-                  "faq/common-questions"
-                ]
-              }
-            ],
-            "public": true
+            "href": "/main"
           },
           {
-            "group": "Internal",
+            "tab": "Internal",
             "icon": "lock",
-            "expanded": true,
-            "pages": [
-              {
-                "group": "Release Management",
-                "icon": "rocket",
-                "expanded": true,
-                "pages": [
-                  "release-management/release-handbook",
-                  "release-management/versioning",
-                  "release-management/hotfix-flow",
-                  "release-management/upgrade-guide",
-                  "release-management/database-migration-rollback"
-                ]
-              },
-              {
-                "group": "Operations",
-                "icon": "server",
-                "expanded": false,
-                "pages": [
-                  "operations",
-                  "operations/startup-tasks",
-                  "operations/search"
-                ]
-              },
-              {
-                "group": "Release Notes",
-                "icon": "scroll-text",
-                "expanded": false,
-                "pages": [
-                  "release-notes",
-                  "release-notes/current"
-                ]
-              }
-            ]
+            "href": "/release-management/release-handbook"
           }
         ]
       },
       {
         "language": "de",
-        "pages": [
+        "tabs": [
           {
-            "group": "Erste Schritte",
-            "icon": "rocket",
-            "expanded": true,
-            "public": true,
-            "pages": [
-              "de/getting-started",
-              "de/getting-started/access-and-navigation",
-              "de/getting-started/your-first-workspace"
-            ]
+            "tab": "Erste Schritte",
+            "icon": "compass",
+            "href": "/de/getting-started"
           },
           {
-            "group": "Benutzerhandbuch",
+            "tab": "Benutzerhandbuch",
             "icon": "book-open",
-            "expanded": true,
-            "public": true,
-            "pages": [
-              "de/main",
-              "de/main/dashboard",
-              {
-                "group": "Asset-Management",
-                "icon": "package",
-                "expanded": false,
-                "pages": [
-                  "de/main/assets",
-                  "de/main/asset-handover",
-                  "de/main/maintenance"
-                ]
-              },
-              {
-                "group": "Inventar & Lizenzen",
-                "icon": "boxes",
-                "expanded": false,
-                "pages": [
-                  "de/main/licenses",
-                  "de/main/accessories"
-                ]
-              },
-              {
-                "group": "Personen & Workflows",
-                "icon": "workflow",
-                "expanded": false,
-                "pages": [
-                  "de/main/people",
-                  "de/main/workflows"
-                ]
-              },
-              {
-                "group": "Einstellungen & Administration",
-                "icon": "settings",
-                "expanded": false,
-                "pages": [
-                  "de/organization",
-                  "de/organization/settings",
-                  "de/organization/admin",
-                  "de/organization/sso-scim"
-                ]
-              },
-              {
-                "group": "Analysen & Berichte",
-                "icon": "chart-column",
-                "expanded": false,
-                "pages": [
-                  "de/analytics",
-                  "de/analytics/reports",
-                  "de/analytics/audit-logs"
-                ]
-              },
-              {
-                "group": "Veviad AI",
-                "icon": "sparkles",
-                "expanded": false,
-                "pages": [
-                  "de/veviad-ai",
-                  "de/veviad-ai/assistant",
-                  "de/veviad-ai/pdf-asset-extraction"
-                ]
-              },
-              {
-                "group": "Hilfe & FAQ",
-                "icon": "circle-help",
-                "expanded": false,
-                "pages": [
-                  "de/faq",
-                  "de/faq/common-questions"
-                ]
-              },
-              "de/index"
-            ]
+            "href": "/de/main"
           },
           {
-            "group": "Intern",
+            "tab": "Intern",
             "icon": "lock",
-            "expanded": true,
-            "pages": [
-              {
-                "group": "Betrieb",
-                "icon": "server",
-                "expanded": false,
-                "pages": [
-                  "de/operations",
-                  "de/operations/startup-tasks",
-                  "de/operations/search"
-                ]
-              },
-              {
-                "group": "Versionshinweise",
-                "icon": "scroll-text",
-                "expanded": false,
-                "pages": [
-                  "de/release-notes",
-                  "de/release-notes/current"
-                ]
-              }
-            ]
+            "href": "/de/operations"
           }
         ]
       }
