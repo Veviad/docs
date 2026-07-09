@@ -24,6 +24,7 @@
                 "icon": "compass",
                 "expanded": true,
                 "pages": [
+                  "index",
                   "getting-started",
                   "getting-started/access-and-navigation",
                   "getting-started/your-first-workspace"
@@ -163,6 +164,7 @@
                 "icon": "compass",
                 "expanded": true,
                 "pages": [
+                  "de/index",
                   "de/getting-started",
                   "de/getting-started/access-and-navigation",
                   "de/getting-started/your-first-workspace"
@@ -310,11 +312,6 @@
   },
   "description": "Public user manual and private internal operations documentation for Veviad.",
   "redirects": [
-    {
-      "source": "/",
-      "destination": "/getting-started",
-      "permanent": false
-    },
     {
       "source": "/quickstart",
       "destination": "/getting-started",
