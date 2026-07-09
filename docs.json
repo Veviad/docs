@@ -31,7 +31,27 @@
           "icon": "newspaper"
         }
       ]
-    }
+    },
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "index",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Release Management",
+        "icon": "rocket",
+        "pages": [
+          "release-management/release-handbook",
+          "release-management/hotfix-flow",
+          "release-management/versioning",
+          "release-management/upgrade-guide",
+          "release-management/database-migration-rollback"
+        ]
+      }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",

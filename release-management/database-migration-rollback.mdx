@@ -1,0 +1,225 @@
+---
+title: "Database Migration Rollback"
+sidebarTitle: "DB Rollback"
+description: "Production rollback rules for Laravel migrations, backups, restore decisions, and release evidence."
+icon: "database-backup"
+---
+
+# Database Migration Rollback
+
+Database rollback is the highest-risk part of a production release. Treat it as an operational recovery process, not just a Laravel command.
+
+The default production rule is:
+
+- Roll back the image when the database is still compatible.
+- Restore the database backup when the migration changed or destroyed data in a way the old code cannot safely read.
+- Prefer a roll-forward hotfix when it is safer than reversing schema or data changes.
+
+## Why this matters
+
+A Docker image can be redeployed quickly. A database cannot always be rolled backward safely.
+
+Laravel `migrate:rollback` is useful in development and staging, but it is not a general production recovery strategy. It depends on every migration being reversible, every `down()` method being correct, and no production data being lost or transformed in a way that cannot be reconstructed.
+
+For production, backups and tested restores are the safety net.
+
+## Migration classifications
+
+Classify every migration before a release.
+
+| Classification | Example | Rollback expectation |
+| --- | --- | --- |
+| No migration | Code-only patch | Image rollback is normally enough |
+| Expand-only | Add nullable column, add table, add index | Old code usually continues to work |
+| Backward-compatible data change | Populate a new nullable field | Often safe to leave in place |
+| Contract migration | Drop old column after old code no longer uses it | Requires staged release plan |
+| Destructive schema change | Drop column, rename table, change incompatible type | Backup restore is usually required |
+| Irreversible data migration | Rewrite, delete, merge, or anonymize data | Backup restore is usually required |
+
+If a migration cannot be clearly classified, treat it as high risk until reviewed.
+
+## Release design rule
+
+For minor and major releases, prefer expand-contract migrations:
+
+1. Expand: add new schema that works with old and new code.
+2. Deploy new code that writes both old and new format if needed.
+3. Backfill data safely.
+4. Verify the new path.
+5. Contract in a later release only after the old path is no longer needed.
+
+This keeps rollback simple: if the new image fails, redeploy the old image while leaving the expanded schema in place.
+
+For urgent patch releases, avoid migrations unless the production issue cannot be fixed safely without one.
+
+## Pre-release checklist
+
+Before releasing any version with migrations:
+
+- List pending migrations.
+- Read every `up()` and `down()` method.
+- Classify each migration.
+- Run migrations in staging against realistic data.
+- Test application behavior after migration.
+- Test rollback or restore path in staging.
+- Confirm database and storage backups exist.
+- Record whether image-only rollback is safe.
+- Add migration impact and rollback notes to release notes.
+
+Useful Laravel commands:
+
+```bash
+php artisan migrate:status
+php artisan migrate --pretend --force
+```
+
+Use `--pretend` to review SQL in a safe environment. Do not assume the generated SQL is a complete rollback plan.
+
+## Backup requirements
+
+Before production migrations, create backups for:
+
+- primary database;
+- persistent application storage if files and DB rows reference each other;
+- deployment environment variables;
+- current image tag and digest;
+- current release notes and migration list.
+
+The backup must be restorable. A backup that has never been tested is only a hope with a filename.
+
+Record:
+
+```text
+previous_tag=v1.0.0
+previous_digest=sha256:<previous-digest>
+target_tag=v1.0.1
+target_digest=sha256:<target-digest>
+database_backup=<backup-id-or-location>
+storage_backup=<backup-id-or-location>
+```
+
+## Rollback decision table
+
+| Failure point | Data state | Action |
+| --- | --- | --- |
+| New image fails before migrations | Database unchanged | Redeploy previous image digest |
+| Migration fails before any committed change | Database likely unchanged | Inspect DB, then redeploy previous image if clean |
+| Expand-only migration succeeds, app fails | Old code can read schema | Redeploy previous image; leave migration in place unless reviewed |
+| Backward-compatible data migration succeeds, app fails | Old code can tolerate data | Redeploy previous image or roll forward |
+| Destructive migration succeeds, app fails | Old code may not read schema or data | Restore DB backup and previous image together |
+| Data corruption discovered after release | Data is untrusted | Stop writes if needed, restore backup or run reviewed repair |
+| Security release breaks production | Depends on exposure | Coordinate with security owner before rolling back to vulnerable code |
+
+When unsure, stop writes and escalate before making the database state worse.
+
+## Image rollback only
+
+Use image rollback when:
+
+- migrations did not run;
+- migrations are expand-only;
+- old code is confirmed compatible with the migrated schema;
+- no irreversible data transformation occurred.
+
+Example intent:
+
+```text
+Deploy previous image digest:
+ghcr.io/veviad/veviad_app@sha256:<previous-digest>
+```
+
+After image rollback:
+
+```bash
+php artisan optimize:clear
+php artisan queue:restart
+```
+
+Then verify health, login, critical pages, queue workers, and logs.
+
+## Database restore rollback
+
+Use database restore when:
+
+- schema was changed in a way old code cannot read;
+- data was deleted, merged, anonymized, or rewritten incorrectly;
+- a failed migration left the database in an unknown state;
+- the release notes classified rollback as backup-restore only.
+
+Restore sequence:
+
+1. Stop writes or put the service in maintenance mode.
+2. Stop queue workers and scheduled jobs.
+3. Restore the database backup.
+4. Restore storage backup if file references changed.
+5. Deploy the previous image digest.
+6. Clear caches and restart workers.
+7. Verify application health and data integrity.
+8. Record the restored backup ID and final digest.
+
+Do not run new migrations after restore until the release owner confirms the next action.
+
+## Laravel rollback commands
+
+Use Laravel rollback commands in staging and local development to test reversibility:
+
+```bash
+php artisan migrate:rollback --step=1 --pretend
+php artisan migrate:rollback --step=1
+```
+
+In production, run `migrate:rollback` only when all of these are true:
+
+- the migration is explicitly classified as reversible;
+- the `down()` method was tested against realistic data;
+- the old application version is compatible with the rolled-back schema;
+- a fresh backup exists;
+- the release owner approves the command.
+
+If any condition is false, use backup restore or roll forward.
+
+## Roll-forward hotfix
+
+A roll-forward hotfix is often safer than rollback when:
+
+- the database migrated successfully;
+- data is intact;
+- only application behavior is broken;
+- a narrow fix can be shipped quickly;
+- reverting would reintroduce a security vulnerability.
+
+Use the [Hotfix Flow](/release-management/hotfix-flow) for roll-forward patches on stable release lines.
+
+## Release notes requirements
+
+For every release with migrations, release notes must state:
+
+- migration names or a concise summary;
+- whether migrations are backward compatible;
+- expected downtime;
+- backup requirements;
+- whether image-only rollback is safe;
+- whether database restore is required for rollback;
+- any manual repair or verification command.
+
+Do not publish a stable release with migrations and no rollback guidance.
+
+## Post-rollback verification
+
+After any rollback or restore:
+
+- confirm the running image digest is the intended previous or fixed digest;
+- confirm database schema matches the intended application version;
+- confirm login works;
+- verify asset, license, accessory, user, and settings workflows;
+- verify queue workers and scheduler behavior;
+- inspect logs for repeated exceptions;
+- record the final state in the incident or change log;
+- open a follow-up issue for the failed release.
+
+## Related guides
+
+- [Release Handbook](/release-management/release-handbook) - release gates and evidence.
+- [Versioning](/release-management/versioning) - version and tag policy.
+- [Upgrade Guide](/release-management/upgrade-guide) - operator upgrade checklist.
+- [Hotfix Flow](/release-management/hotfix-flow) - roll-forward patch process.
