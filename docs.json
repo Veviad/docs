@@ -48,6 +48,17 @@
                 ]
               },
               {
+                "group": "Organization & Administration",
+                "icon": "shield-check",
+                "expanded": false,
+                "pages": [
+                  "organization",
+                  "organization/settings",
+                  "organization/admin",
+                  "organization/sso-scim"
+                ]
+              },
+              {
                 "group": "Analytics",
                 "icon": "chart-column",
                 "expanded": false,
@@ -106,17 +117,6 @@
                 ]
               },
               {
-                "group": "Organization & Administration",
-                "icon": "shield-check",
-                "expanded": false,
-                "pages": [
-                  "organization",
-                  "organization/settings",
-                  "organization/admin",
-                  "organization/sso-scim"
-                ]
-              },
-              {
                 "group": "Release Notes",
                 "icon": "scroll-text",
                 "expanded": false,
@@ -166,6 +166,17 @@
                 ]
               },
               {
+                "group": "Organisation & Administration",
+                "icon": "shield-check",
+                "expanded": false,
+                "pages": [
+                  "de/organization",
+                  "de/organization/settings",
+                  "de/organization/admin",
+                  "de/organization/sso-scim"
+                ]
+              },
+              {
                 "group": "Analysen",
                 "icon": "chart-column",
                 "expanded": false,
@@ -209,17 +220,6 @@
                   "de/operations",
                   "de/operations/startup-tasks",
                   "de/operations/search"
-                ]
-              },
-              {
-                "group": "Organisation & Administration",
-                "icon": "shield-check",
-                "expanded": false,
-                "pages": [
-                  "de/organization",
-                  "de/organization/settings",
-                  "de/organization/admin",
-                  "de/organization/sso-scim"
                 ]
               },
               {
