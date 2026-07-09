@@ -102,12 +102,13 @@
               }
             ],
             "public": true
-          },
+          }
+        ],
+        "tabs": [
           {
-            "group": "Internal",
+            "tab": "Internal",
             "icon": "lock",
-            "expanded": true,
-            "pages": [
+            "groups": [
               {
                 "group": "Release Management",
                 "icon": "rocket",
@@ -234,12 +235,13 @@
               }
             ],
             "public": true
-          },
+          }
+        ],
+        "tabs": [
           {
-            "group": "Intern",
+            "tab": "Intern",
             "icon": "lock",
-            "expanded": true,
-            "pages": [
+            "groups": [
               {
                 "group": "Betrieb",
                 "icon": "server",

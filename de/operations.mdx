@@ -1,0 +1,33 @@
+---
+title: "Betrieb"
+sidebarTitle: "Überblick"
+description: "Was ein Betriebsteam braucht, um Veviad in verwalteten Umgebungen sicher zu installieren, zu aktualisieren und zu betreiben."
+icon: "server"
+---
+
+# Veviad kontrolliert und nachvollziehbar betreiben.
+
+Dieser interne Bereich richtet sich an das Veviad-Team und Betreiber. Er beschreibt operative Abläufe, die nicht Teil des öffentlichen Benutzerhandbuchs sind: Startaufgaben, Seeding, Suche, Deployments und wiederkehrende Prüfungen.
+
+## Betriebsmodell
+
+Veviad sollte als unveränderbares Application Image mit konfigurationsgetriebenen Umgebungswerten betrieben werden. Container können neu starten; deshalb müssen Startverhalten und einmalige Aufgaben sicher wiederholbar oder eindeutig protokolliert sein.
+
+- **Migrationen** laufen kontrolliert und idempotent.
+- **Startup-Tasks** werden über explizite Schlüssel gesteuert.
+- **Seeder** werden zwischen Referenzdaten und destruktiven Test-Resets getrennt.
+- **Suchindizes** sind aus Primärdaten wiederherstellbar.
+- **Queue Worker** laufen getrennt und werden nach Deployments neu gestartet.
+
+## Routineprüfungen
+
+- Migrationsstatus ist aktuell.
+- Startup-Tasks wurden erfolgreich abgeschlossen.
+- Queue Worker laufen und fehlgeschlagene Jobs wurden geprüft.
+- Sucheinstellungen und Suchindex sind konsistent.
+- Zentrale Benutzer-Workflows funktionieren nach Installation, Upgrade oder Recovery.
+
+## In diesem Abschnitt
+
+- [Startup-Tasks und Seeding](/de/operations/startup-tasks)
+- [Suchbetrieb](/de/operations/search)
