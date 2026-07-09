@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 600 599.999999" preserveAspectRatio="xMidYMid meet" version="1.2">
+  <defs>
+    <clipPath id="cpA"><path d="M 59.523438 86 L 539 86 L 539 570 L 59.523438 570 Z M 59.523438 86"/></clipPath>
+    <clipPath id="cpB"><path d="M 299.832031 431.203125 C 379.664062 385.238281 457.90625 340.136719 538.882812 293.5 L 538.882812 431.984375 C 460.867188 477.140625 381.0625 523.300781 300.421875 569.992188 L 59.582031 431.59375 L 59.582031 154.683594 C 97.726562 132.691406 136.144531 110.5625 178.085938 86.363281 L 178.085938 360.789062 C 219.472656 384.707031 259.039062 407.589844 299.863281 431.175781"/></clipPath>
+    <clipPath id="cpC"><path d="M 301 30 L 540.476562 30 L 540.476562 306 L 301 306 Z M 301 30"/></clipPath>
+    <clipPath id="cpD"><path d="M 301.679688 30.03125 C 381.621094 75.96875 459.164062 120.539062 540.417969 167.257812 C 459.636719 213.949219 382.179688 258.714844 301.679688 305.265625 Z M 301.679688 30.03125"/></clipPath>
+
+    <linearGradient id="core" x1="54" y1="22" x2="552" y2="586" gradientUnits="userSpaceOnUse">
+      <stop offset="0.00%" stop-color="#ffffff"/>
+      <stop offset="12.50%" stop-color="#e8ff9a"/>
+      <stop offset="25.00%" stop-color="#bfff66"/>
+      <stop offset="37.50%" stop-color="#66ff9b"/>
+      <stop offset="50.00%" stop-color="#47e9dd"/>
+      <stop offset="62.50%" stop-color="#4da9ff"/>
+      <stop offset="75.00%" stop-color="#7e72ff"/>
+      <stop offset="87.50%" stop-color="#ff8fd4"/>
+      <stop offset="100.00%" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="84" y1="66" x2="512" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="35%" stop-color="#ffffff" stop-opacity="0.56"/>
+      <stop offset="72%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="108" y1="552" x2="540" y2="186" gradientUnits="userSpaceOnUse">
+      <stop offset="0.00%" stop-color="#4f6b12"/>
+      <stop offset="33.33%" stop-color="#3aa85f"/>
+      <stop offset="66.67%" stop-color="#2eaec7"/>
+      <stop offset="100.00%" stop-color="#9a65ff"/>
+    </linearGradient>
+  </defs>
+
+  <g id="veviad-favicon-chrome-24">
+    <g clip-rule="nonzero" clip-path="url(#cpA)">
+      <g clip-rule="nonzero" clip-path="url(#cpB)">
+        <rect x="45.613281" y="16.058594" width="508.773438" height="568.398437" fill="url(#core)"/>
+        <rect x="45.613281" y="16.058594" width="508.773438" height="568.398437" fill="url(#sheen)" opacity="0.92"/>
+        <rect x="45.613281" y="16.058594" width="508.773438" height="568.398437" fill="url(#edge)" opacity="0.76"/>
+      </g>
+    </g>
+    <g clip-rule="nonzero" clip-path="url(#cpC)">
+      <g clip-rule="nonzero" clip-path="url(#cpD)">
+        <rect x="45.613281" y="16.058594" width="508.773438" height="568.398437" fill="url(#core)"/>
+        <rect x="45.613281" y="16.058594" width="508.773438" height="568.398437" fill="url(#sheen)" opacity="0.92"/>
+        <rect x="45.613281" y="16.058594" width="508.773438" height="568.398437" fill="url(#edge)" opacity="0.76"/>
+      </g>
+    </g>
+  </g>
+</svg>

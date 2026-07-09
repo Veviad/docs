@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "willow",
+  "name": "Veviad Internal Documentation",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -34,8 +34,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/veviad-logo-light.svg",
+    "dark": "/images/veviad-logo-dark.svg"
   },
   "navbar": {
     "links": [
