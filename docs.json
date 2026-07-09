@@ -18,27 +18,14 @@
         ]
       }
     ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    },
     "groups": [
       {
         "group": "Getting Started",
         "pages": [
           "index",
           "quickstart"
-        ]
+        ],
+        "public": true
       },
       {
         "group": "Release Management",
@@ -49,7 +36,8 @@
           "release-management/versioning",
           "release-management/upgrade-guide",
           "release-management/database-migration-rollback"
-        ]
+        ],
+        "expanded": true
       }
     ]
   },
