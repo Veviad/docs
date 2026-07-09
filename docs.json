@@ -15,13 +15,64 @@
         "default": true,
         "groups": [
           {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "expanded": true,
+            "pages": [
+              "getting-started",
+              "getting-started/access-and-navigation",
+              "getting-started/your-first-workspace"
+            ],
+            "public": true
+          },
+          {
             "group": "User Manual",
             "icon": "book-open",
             "expanded": true,
-            "public": true,
             "pages": [
+              "main",
+              "main/dashboard",
               {
-                "group": "Analytics",
+                "group": "Asset Management",
+                "icon": "package",
+                "expanded": false,
+                "pages": [
+                  "main/assets",
+                  "main/asset-handover",
+                  "main/maintenance"
+                ]
+              },
+              {
+                "group": "Inventory & Licenses",
+                "icon": "boxes",
+                "expanded": false,
+                "pages": [
+                  "main/licenses",
+                  "main/accessories"
+                ]
+              },
+              {
+                "group": "People & Workflows",
+                "icon": "workflow",
+                "expanded": false,
+                "pages": [
+                  "main/people",
+                  "main/workflows"
+                ]
+              },
+              {
+                "group": "Settings & Administration",
+                "icon": "settings",
+                "expanded": false,
+                "pages": [
+                  "organization",
+                  "organization/settings",
+                  "organization/admin",
+                  "organization/sso-scim"
+                ]
+              },
+              {
+                "group": "Analytics & Reporting",
                 "icon": "chart-column",
                 "expanded": false,
                 "pages": [
@@ -41,7 +92,7 @@
                 ]
               },
               {
-                "group": "FAQ",
+                "group": "Help & FAQ",
                 "icon": "circle-help",
                 "expanded": false,
                 "pages": [
@@ -49,33 +100,8 @@
                   "faq/common-questions"
                 ]
               }
-            ]
-          },
-          {
-            "group": "Getting Started",
-            "icon": "rocket",
-            "expanded": true,
-            "pages": [
-              "getting-started",
-              "getting-started/access-and-navigation",
-              "getting-started/your-first-workspace"
-            ]
-          },
-          {
-            "group": "Core Workflows",
-            "icon": "layout-dashboard",
-            "expanded": true,
-            "pages": [
-              "main",
-              "main/dashboard",
-              "main/assets",
-              "main/asset-handover",
-              "main/maintenance",
-              "main/licenses",
-              "main/accessories",
-              "main/people",
-              "main/workflows"
-            ]
+            ],
+            "public": true
           },
           {
             "group": "Internal",
@@ -105,17 +131,6 @@
                 ]
               },
               {
-                "group": "Organization & Administration",
-                "icon": "shield-check",
-                "expanded": false,
-                "pages": [
-                  "organization",
-                  "organization/settings",
-                  "organization/admin",
-                  "organization/sso-scim"
-                ]
-              },
-              {
                 "group": "Release Notes",
                 "icon": "scroll-text",
                 "expanded": false,
@@ -130,42 +145,67 @@
       },
       {
         "language": "de",
-        "groups": [
+        "pages": [
+          {
+            "group": "Erste Schritte",
+            "icon": "rocket",
+            "expanded": true,
+            "public": true,
+            "pages": [
+              "de/getting-started",
+              "de/getting-started/access-and-navigation",
+              "de/getting-started/your-first-workspace"
+            ]
+          },
           {
             "group": "Benutzerhandbuch",
             "icon": "book-open",
             "expanded": true,
             "public": true,
             "pages": [
-              "de/index",
+              "de/main",
+              "de/main/dashboard",
               {
-                "group": "Erste Schritte",
-                "icon": "rocket",
-                "expanded": true,
+                "group": "Asset-Management",
+                "icon": "package",
+                "expanded": false,
                 "pages": [
-                  "de/getting-started",
-                  "de/getting-started/access-and-navigation",
-                  "de/getting-started/your-first-workspace"
+                  "de/main/assets",
+                  "de/main/asset-handover",
+                  "de/main/maintenance"
                 ]
               },
               {
-                "group": "Zentrale Workflows",
-                "icon": "layout-dashboard",
-                "expanded": true,
+                "group": "Inventar & Lizenzen",
+                "icon": "boxes",
+                "expanded": false,
                 "pages": [
-                  "de/main",
-                  "de/main/dashboard",
-                  "de/main/assets",
-                  "de/main/asset-handover",
-                  "de/main/maintenance",
                   "de/main/licenses",
-                  "de/main/accessories",
+                  "de/main/accessories"
+                ]
+              },
+              {
+                "group": "Personen & Workflows",
+                "icon": "workflow",
+                "expanded": false,
+                "pages": [
                   "de/main/people",
                   "de/main/workflows"
                 ]
               },
               {
-                "group": "Analysen",
+                "group": "Einstellungen & Administration",
+                "icon": "settings",
+                "expanded": false,
+                "pages": [
+                  "de/organization",
+                  "de/organization/settings",
+                  "de/organization/admin",
+                  "de/organization/sso-scim"
+                ]
+              },
+              {
+                "group": "Analysen & Berichte",
                 "icon": "chart-column",
                 "expanded": false,
                 "pages": [
@@ -185,14 +225,15 @@
                 ]
               },
               {
-                "group": "FAQ",
+                "group": "Hilfe & FAQ",
                 "icon": "circle-help",
                 "expanded": false,
                 "pages": [
                   "de/faq",
                   "de/faq/common-questions"
                 ]
-              }
+              },
+              "de/index"
             ]
           },
           {
@@ -208,17 +249,6 @@
                   "de/operations",
                   "de/operations/startup-tasks",
                   "de/operations/search"
-                ]
-              },
-              {
-                "group": "Organisation & Administration",
-                "icon": "shield-check",
-                "expanded": false,
-                "pages": [
-                  "de/organization",
-                  "de/organization/settings",
-                  "de/organization/admin",
-                  "de/organization/sso-scim"
                 ]
               },
               {
