@@ -77,5 +77,8 @@
       "light": "#F7F8FD",
       "dark": "#0D0B38"
     }
+  },
+  "appearance": {
+    "default": "light"
   }
 }
