@@ -28,16 +28,23 @@
         "public": true
       },
       {
-        "group": "Release Management",
-        "icon": "rocket",
+        "group": "Internal",
+        "icon": "lock",
+        "expanded": true,
         "pages": [
-          "release-management/release-handbook",
-          "release-management/hotfix-flow",
-          "release-management/versioning",
-          "release-management/upgrade-guide",
-          "release-management/database-migration-rollback"
-        ],
-        "expanded": true
+          {
+            "group": "Release Management",
+            "icon": "rocket",
+            "expanded": true,
+            "pages": [
+              "release-management/release-handbook",
+              "release-management/hotfix-flow",
+              "release-management/versioning",
+              "release-management/upgrade-guide",
+              "release-management/database-migration-rollback"
+            ]
+          }
+        ]
       }
     ]
   },
