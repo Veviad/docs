@@ -20,33 +20,6 @@
             "expanded": true,
             "public": true,
             "pages": [
-              "index",
-              {
-                "group": "Getting Started",
-                "icon": "rocket",
-                "expanded": true,
-                "pages": [
-                  "getting-started",
-                  "getting-started/access-and-navigation",
-                  "getting-started/your-first-workspace"
-                ]
-              },
-              {
-                "group": "Core Workflows",
-                "icon": "layout-dashboard",
-                "expanded": true,
-                "pages": [
-                  "main",
-                  "main/dashboard",
-                  "main/assets",
-                  "main/asset-handover",
-                  "main/maintenance",
-                  "main/licenses",
-                  "main/accessories",
-                  "main/people",
-                  "main/workflows"
-                ]
-              },
               {
                 "group": "Analytics",
                 "icon": "chart-column",
@@ -76,6 +49,32 @@
                   "faq/common-questions"
                 ]
               }
+            ]
+          },
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "expanded": true,
+            "pages": [
+              "getting-started",
+              "getting-started/access-and-navigation",
+              "getting-started/your-first-workspace"
+            ]
+          },
+          {
+            "group": "Core Workflows",
+            "icon": "layout-dashboard",
+            "expanded": true,
+            "pages": [
+              "main",
+              "main/dashboard",
+              "main/assets",
+              "main/asset-handover",
+              "main/maintenance",
+              "main/licenses",
+              "main/accessories",
+              "main/people",
+              "main/workflows"
             ]
           },
           {
