@@ -15,6 +15,11 @@
         "default": true,
         "tabs": [
           {
+            "tab": "Getting Started",
+            "icon": "compass",
+            "href": "/getting-started"
+          },
+          {
             "tab": "Documentation",
             "icon": "book-open",
             "groups": [
@@ -132,12 +137,22 @@
                 "pages": ["release-notes", "release-notes/current"]
               }
             ]
+          },
+          {
+            "tab": "User Manual",
+            "icon": "book-open",
+            "href": "/main"
           }
         ]
       },
       {
         "language": "de",
         "tabs": [
+          {
+            "tab": "Erste Schritte",
+            "icon": "compass",
+            "href": "/de/getting-started"
+          },
           {
             "tab": "Dokumentation",
             "icon": "book-open",
@@ -224,26 +239,15 @@
             ]
           },
           {
+            "tab": "Benutzerhandbuch",
+            "icon": "book-open",
+            "href": "/de/main"
+          },
+          {
             "tab": "Intern",
             "icon": "lock",
-            "groups": [
-              {
-                "group": "Betrieb",
-                "icon": "server",
-                "expanded": false,
-                "pages": [
-                  "de/operations",
-                  "de/operations/startup-tasks",
-                  "de/operations/search"
-                ]
-              },
-              {
-                "group": "Versionshinweise",
-                "icon": "scroll-text",
-                "expanded": false,
-                "pages": ["de/release-notes", "de/release-notes/current"]
-              }
-            ]
+            "hidden": false,
+            "href": "/de/operations"
           }
         ]
       }
