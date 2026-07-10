@@ -5,8 +5,6 @@ description: "How Veviad runs operational work once per deploy key without repea
 icon: "play-circle"
 ---
 
-# Startup tasks and seeding
-
 Container startup must be repeatable. Veviad handles this by separating normal migrations from one-time operational tasks. The task ledger lives in the application database, so multiple containers can start together without running the same task more than once.
 
 ## Startup sequence
