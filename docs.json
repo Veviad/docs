@@ -27,8 +27,7 @@
                   "getting-started",
                   "getting-started/access-and-navigation",
                   "getting-started/your-first-workspace"
-                ],
-                "public": true
+                ]
               },
               {
                 "group": "User Manual",
@@ -96,8 +95,7 @@
                     "expanded": false,
                     "pages": ["faq", "faq/common-questions"]
                   }
-                ],
-                "public": true
+                ]
               }
             ]
           },
@@ -153,8 +151,7 @@
                   "de/getting-started",
                   "de/getting-started/access-and-navigation",
                   "de/getting-started/your-first-workspace"
-                ],
-                "public": true
+                ]
               },
               {
                 "group": "Benutzerhandbuch",
@@ -222,8 +219,7 @@
                     "expanded": false,
                     "pages": ["de/faq", "de/faq/common-questions"]
                   }
-                ],
-                "public": true
+                ]
               }
             ]
           },
