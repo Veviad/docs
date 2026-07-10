@@ -13,102 +13,98 @@
       {
         "language": "en",
         "default": true,
-        "groups": [
+        "tabs": [
           {
-            "group": "Getting Started",
-            "icon": "compass",
-            "expanded": true,
-            "pages": [
-              "index",
-              "getting-started",
-              "getting-started/access-and-navigation",
-              "getting-started/your-first-workspace"
-            ],
-            "public": true
-          },
-          {
-            "group": "User Manual",
+            "tab": "Documentation",
             "icon": "book-open",
-            "expanded": true,
-            "pages": [
-              "main",
-              "main/dashboard",
+            "groups": [
               {
-                "group": "Asset Management",
-                "icon": "package",
-                "expanded": false,
+                "group": "Getting Started",
+                "icon": "compass",
+                "expanded": true,
                 "pages": [
-                  "main/assets",
-                  "main/asset-handover",
-                  "main/maintenance"
-                ]
+                  "index",
+                  "getting-started",
+                  "getting-started/access-and-navigation",
+                  "getting-started/your-first-workspace"
+                ],
+                "public": true
               },
               {
-                "group": "Inventory & Licenses",
-                "icon": "boxes",
-                "expanded": false,
+                "group": "User Manual",
+                "icon": "book-open",
+                "expanded": true,
                 "pages": [
-                  "main/licenses",
-                  "main/accessories"
-                ]
-              },
-              {
-                "group": "People & Workflows",
-                "icon": "workflow",
-                "expanded": false,
-                "pages": [
-                  "main/people",
-                  "main/workflows"
-                ]
-              },
-              {
-                "group": "Settings & Administration",
-                "icon": "settings",
-                "expanded": false,
-                "pages": [
-                  "organization",
-                  "organization/settings",
-                  "organization/admin",
-                  "organization/sso-scim"
-                ]
-              },
-              {
-                "group": "Analytics & Reporting",
-                "icon": "chart-column",
-                "expanded": false,
-                "pages": [
-                  "analytics",
-                  "analytics/reports",
-                  "analytics/audit-logs"
-                ]
-              },
-              {
-                "group": "Veviad AI",
-                "icon": "sparkles",
-                "expanded": false,
-                "pages": [
-                  "veviad-ai",
-                  "veviad-ai/assistant",
-                  "veviad-ai/pdf-asset-extraction"
-                ]
-              },
-              {
-                "group": "Help & FAQ",
-                "icon": "circle-help",
-                "expanded": false,
-                "pages": [
-                  "faq",
-                  "faq/common-questions"
-                ]
+                  "main",
+                  "main/dashboard",
+                  {
+                    "group": "Asset Management",
+                    "icon": "package",
+                    "expanded": false,
+                    "pages": [
+                      "main/assets",
+                      "main/asset-handover",
+                      "main/maintenance"
+                    ]
+                  },
+                  {
+                    "group": "Inventory & Licenses",
+                    "icon": "boxes",
+                    "expanded": false,
+                    "pages": ["main/licenses", "main/accessories"]
+                  },
+                  {
+                    "group": "People & Workflows",
+                    "icon": "workflow",
+                    "expanded": false,
+                    "pages": ["main/people", "main/workflows"]
+                  },
+                  {
+                    "group": "Settings & Administration",
+                    "icon": "settings",
+                    "expanded": false,
+                    "pages": [
+                      "organization",
+                      "organization/settings",
+                      "organization/admin",
+                      "organization/sso-scim"
+                    ]
+                  },
+                  {
+                    "group": "Analytics & Reporting",
+                    "icon": "chart-column",
+                    "expanded": false,
+                    "pages": [
+                      "analytics",
+                      "analytics/reports",
+                      "analytics/audit-logs"
+                    ]
+                  },
+                  {
+                    "group": "Veviad AI",
+                    "icon": "sparkles",
+                    "expanded": false,
+                    "pages": [
+                      "veviad-ai",
+                      "veviad-ai/assistant",
+                      "veviad-ai/pdf-asset-extraction"
+                    ]
+                  },
+                  {
+                    "group": "Help & FAQ",
+                    "icon": "circle-help",
+                    "expanded": false,
+                    "pages": ["faq", "faq/common-questions"]
+                  }
+                ],
+                "public": true
               }
-            ],
-            "public": true
+            ]
           },
           {
-            "group": "Internal",
+            "tab": "Internal",
             "icon": "lock",
-            "expanded": true,
-            "pages": [
+            "groups": [
               {
                 "group": "Release Management",
                 "icon": "rocket",
@@ -135,10 +131,7 @@
                 "group": "Release Notes",
                 "icon": "scroll-text",
                 "expanded": false,
-                "pages": [
-                  "release-notes",
-                  "release-notes/current"
-                ]
+                "pages": ["release-notes", "release-notes/current"]
               }
             ]
           }
@@ -146,102 +139,98 @@
       },
       {
         "language": "de",
-        "groups": [
+        "tabs": [
           {
-            "group": "Erste Schritte",
-            "icon": "compass",
-            "expanded": true,
-            "pages": [
-              "de/index",
-              "de/getting-started",
-              "de/getting-started/access-and-navigation",
-              "de/getting-started/your-first-workspace"
-            ],
-            "public": true
-          },
-          {
-            "group": "Benutzerhandbuch",
+            "tab": "Dokumentation",
             "icon": "book-open",
-            "expanded": true,
-            "pages": [
-              "de/main",
-              "de/main/dashboard",
+            "groups": [
               {
-                "group": "Asset-Management",
-                "icon": "package",
-                "expanded": false,
+                "group": "Erste Schritte",
+                "icon": "compass",
+                "expanded": true,
                 "pages": [
-                  "de/main/assets",
-                  "de/main/asset-handover",
-                  "de/main/maintenance"
-                ]
+                  "de/index",
+                  "de/getting-started",
+                  "de/getting-started/access-and-navigation",
+                  "de/getting-started/your-first-workspace"
+                ],
+                "public": true
               },
               {
-                "group": "Inventar & Lizenzen",
-                "icon": "boxes",
-                "expanded": false,
+                "group": "Benutzerhandbuch",
+                "icon": "book-open",
+                "expanded": true,
                 "pages": [
-                  "de/main/licenses",
-                  "de/main/accessories"
-                ]
-              },
-              {
-                "group": "Personen & Workflows",
-                "icon": "workflow",
-                "expanded": false,
-                "pages": [
-                  "de/main/people",
-                  "de/main/workflows"
-                ]
-              },
-              {
-                "group": "Einstellungen & Administration",
-                "icon": "settings",
-                "expanded": false,
-                "pages": [
-                  "de/organization",
-                  "de/organization/settings",
-                  "de/organization/admin",
-                  "de/organization/sso-scim"
-                ]
-              },
-              {
-                "group": "Analysen & Berichte",
-                "icon": "chart-column",
-                "expanded": false,
-                "pages": [
-                  "de/analytics",
-                  "de/analytics/reports",
-                  "de/analytics/audit-logs"
-                ]
-              },
-              {
-                "group": "Veviad AI",
-                "icon": "sparkles",
-                "expanded": false,
-                "pages": [
-                  "de/veviad-ai",
-                  "de/veviad-ai/assistant",
-                  "de/veviad-ai/pdf-asset-extraction"
-                ]
-              },
-              {
-                "group": "Hilfe & FAQ",
-                "icon": "circle-help",
-                "expanded": false,
-                "pages": [
-                  "de/faq",
-                  "de/faq/common-questions"
-                ]
+                  "de/main",
+                  "de/main/dashboard",
+                  {
+                    "group": "Asset-Management",
+                    "icon": "package",
+                    "expanded": false,
+                    "pages": [
+                      "de/main/assets",
+                      "de/main/asset-handover",
+                      "de/main/maintenance"
+                    ]
+                  },
+                  {
+                    "group": "Inventar & Lizenzen",
+                    "icon": "boxes",
+                    "expanded": false,
+                    "pages": ["de/main/licenses", "de/main/accessories"]
+                  },
+                  {
+                    "group": "Personen & Workflows",
+                    "icon": "workflow",
+                    "expanded": false,
+                    "pages": ["de/main/people", "de/main/workflows"]
+                  },
+                  {
+                    "group": "Einstellungen & Administration",
+                    "icon": "settings",
+                    "expanded": false,
+                    "pages": [
+                      "de/organization",
+                      "de/organization/settings",
+                      "de/organization/admin",
+                      "de/organization/sso-scim"
+                    ]
+                  },
+                  {
+                    "group": "Analysen & Berichte",
+                    "icon": "chart-column",
+                    "expanded": false,
+                    "pages": [
+                      "de/analytics",
+                      "de/analytics/reports",
+                      "de/analytics/audit-logs"
+                    ]
+                  },
+                  {
+                    "group": "Veviad AI",
+                    "icon": "sparkles",
+                    "expanded": false,
+                    "pages": [
+                      "de/veviad-ai",
+                      "de/veviad-ai/assistant",
+                      "de/veviad-ai/pdf-asset-extraction"
+                    ]
+                  },
+                  {
+                    "group": "Hilfe & FAQ",
+                    "icon": "circle-help",
+                    "expanded": false,
+                    "pages": ["de/faq", "de/faq/common-questions"]
+                  }
+                ],
+                "public": true
               }
-            ],
-            "public": true
+            ]
           },
           {
-            "group": "Intern",
+            "tab": "Intern",
             "icon": "lock",
-            "expanded": true,
-            "pages": [
+            "groups": [
               {
                 "group": "Betrieb",
                 "icon": "server",
@@ -256,10 +245,7 @@
                 "group": "Versionshinweise",
                 "icon": "scroll-text",
                 "expanded": false,
-                "pages": [
-                  "de/release-notes",
-                  "de/release-notes/current"
-                ]
+                "pages": ["de/release-notes", "de/release-notes/current"]
               }
             ]
           }
