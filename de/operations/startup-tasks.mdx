@@ -23,7 +23,7 @@ Migrationen dürfen bei jedem Deployment laufen. Seeder, Suchkonfiguration, Rein
 ## Konfiguration
 
 | Variable | Standard | Zweck |
-|---|---:|---|
+| --- | --: | --- |
 | `STARTUP_TASKS` | leer | Kommagetrennte Tasks im Format `task-name:key`. |
 | `STARTUP_TASK_TIMEOUT_MINUTES` | `120` | Zeit, nach der ein laufender Task als veraltet gilt. |
 | `STARTUP_TASK_POLL_SECONDS` | `5` | Warteintervall, wenn ein anderer Container den Task besitzt. |
@@ -53,13 +53,56 @@ Keine zufälligen Schlüssel für normale Deployments verwenden. Ein geänderter
 ## Unterstützte Tasks
 
 | Task | Wirkung | Produktion |
-|---|---|---|
+| --- | --- | --- |
 | `essential-seeders:<key>` | Führt Referenzdaten-Seeder aus, zum Beispiel Rollen, Kategorien, Status, Standorte und Report-Vorlagen. | Ja |
 | `search-ensure-settings:<key>` | Erstellt oder konfiguriert Suchindizes und wartet im Strict-Modus auf Settings-Tasks. | Ja |
 | `search-reindex:<key>` | Baut Suchdokumente aus primären Anwendungsdaten neu auf und wartet im Strict-Modus auf Such-Tasks. | Ja, bei großen Datenmengen mit Wartungsfenster |
 | `fresh-db-seed:<key>` | Setzt die Datenbank zurück und seedet sie neu. | Nein, nur Test- oder Wegwerf-Umgebungen |
 
 Frische Datenbank-Resets sind destruktiv. `fresh-db-seed:<key>` nur in Wegwerf-Umgebungen verwenden und nur, wenn `ALLOW_DESTRUCTIVE_STARTUP_TASKS=true` gesetzt ist.
+
+## Demo-Datensatzprofile
+
+Den profilgesteuerten Demo-Seeder nur für lokale, Demo-, Performance- oder andere wegwerfbare Umgebungen verwenden. Das Profil wird mit `DEMO_DATASET_PROFILE` ausgewählt.
+
+| Profil | Assets | Benutzer | Abteilungen | Operative Standorte | Einsatzzweck |
+| --- | --: | --: | --: | --: | --- |
+| `small` | 250 | 25 | 4 | 6 | Schnelle lokale Entwicklung und Smoke-Tests |
+| `demo` | 5.000 | 250 | 10 | 18 | Realistische Demo-Instanzen; Standard in `.env.demo.example` und im frischen Docker-Stack |
+| `performance` | 10.000 | 500 | 12 | 24 | Explizite Performance-Tests für große Datenmengen und Lazy Loading |
+
+Der Generator erzeugt zusammenhängende Organisations- und Asset-Daten statt isolierter Asset-Zeilen:
+
+- Abteilungen mit Managern, Kostenstellen, Benutzern, Rollen und operativen Standorten;
+- je nach Profil 10, 14 oder 18 Asset-Kategorien mit Hersteller- und Modellkatalogen;
+- Lieferanten und Hersteller sowie alle sieben Listenstatus einschließlich `Deprecated`;
+- typisierte benutzerdefinierte Attribute für Text, Zahlen, Datumswerte, Boolean, Select und Multi-Select;
+- begrenzte Mengen an Checklisten-, Wartungs-, Übergabe- und gespeicherten Ansichtsdatensätzen;
+- absichtlich fehlende Kategorien, Standorte und Seriennummern sowie nicht zugewiesene Assets und unterschiedliche Status, Datumswerte, Kosten und Checklistenstände.
+
+Assets und zugehörige Werte werden in Batches zu 500 Datensätzen geschrieben. Dadurch werden beim Erzeugen von 5.000 bis 10.000 Assets keine Eloquent-Events und Automatisierungsjobs pro Zeile ausgelöst. `DEMO_FAKER_SEED` steuert die deterministische Ausgabe und hat den Standardwert `404`. Dasselbe Profil mit demselben Seed ist somit reproduzierbar.
+
+Ein Profil direkt ausführen:
+
+```bash
+DEMO_DATASET_PROFILE=demo DEMO_FAKER_SEED=404 php artisan migrate:fresh --seed
+```
+
+Für den Performance-Datensatz mit 10.000 Zeilen:
+
+```bash
+DEMO_DATASET_PROFILE=performance DEMO_FAKER_SEED=404 php artisan migrate:fresh --seed
+```
+
+Im isolierten frischen Docker-Stack ist `demo` der Standard. Für die Prüfung großer Datenmengen `performance` explizit auswählen:
+
+```bash
+DEMO_DATASET_PROFILE=performance docker compose -f docker-compose.yml -f docker-compose.fresh.yml up --build
+```
+
+<Warning>
+  Demo-Profile setzen Anwendungsdaten zurück oder befüllen sie und sind keine produktiven Referenzdaten-Seeder. Niemals gegen eine Kundendatenbank ausführen. In der Produktionsumgebung wird die Demo-Generierung übersprungen, solange `DEMO_DATASET_PROFILE` nicht explizit konfiguriert ist.
+</Warning>
 
 ## Verhalten bei mehreren Containern
 
