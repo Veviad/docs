@@ -83,6 +83,12 @@ Der Generator erzeugt zusammenhängende Fünfjahresverläufe statt unabhängiger
 
 Die Ausgabe ist deterministisch. `DEMO_DATASET_PROFILE`, `DEMO_FAKER_SEED` und `DEMO_DATASET_ANCHOR_DATE` gemeinsam setzen. Das Standard-Stichtagsdatum ist `2026-06-30`.
 
+### Implementierungshinweis: Raw Inserts
+
+`DemoAssetDatasetBuilder` schreibt Assets und die zugehörige Historie mit Laravels Query Builder statt über Eloquent. Diese Entscheidung ist bewusst getroffen, damit 10.000 Assets mit vorhersehbarer Laufzeit erzeugt werden können.
+
+Raw Inserts führen keine `Asset`-Observer, Eloquent-Modell-Events, Casts, Mutatoren oder andere modellseitige Nebeneffekte aus. Wenn für `Asset` oder ein verbundenes Modell neues Lifecycle-Verhalten eingeführt wird, muss der Builder im selben Change geprüft werden. Die erforderliche Invariante muss entweder explizit nachgebildet und mit deterministischen Seeder-Tests abgesichert werden, oder der betreffende Schritt wird bewusst auf Eloquent beziehungsweise eine gebündelte Domain Action umgestellt. Für Demo-Datensätze darf nicht angenommen werden, dass normale Create- oder Update-Observer ausgeführt wurden.
+
 Das Maschinenbauprofil lokal ausführen:
 
 ```bash
