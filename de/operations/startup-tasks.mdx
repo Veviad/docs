@@ -5,37 +5,177 @@ description: "Wie Veviad operative Aufgaben einmal pro Deployment-Schlüssel aus
 icon: "play-circle"
 ---
 
-## Vertrag
+Container-Starts müssen wiederholbar sein. Veviad trennt deshalb normale Migrationen von einmaligen operativen Aufgaben. Das Task-Protokoll liegt in der Anwendungsdatenbank, sodass mehrere Container gleichzeitig starten können, ohne dieselbe Aufgabe mehrfach auszuführen.
 
-<code>STARTUP_TASKS</code> enthält kommaseparierte Einträge im Format <code>task-name:version-key</code>. Ein Datenbank-Ledger stellt die einmalige Ausführung über konkurrierende Container sicher.
+## Startreihenfolge
 
-Unterstützt werden:
+Der Container-Startprozess arbeitet in dieser Reihenfolge:
 
-- <code>essential-seeders</code>
-- <code>search-ensure-settings</code>
-- <code>search-reindex</code>
-- <code>fresh-db-seed</code>
+1. Datenbankverbindung abwarten.
+2. Schema-Migrationen ausführen, wenn automatische Migrationen aktiviert sind.
+3. Erforderliche Bootstrap-Tasks ergänzen, wenn initiale Admin-Zugangsdaten konfiguriert sind.
+4. Startup-Task-Runner ausführen, wenn `STARTUP_TASKS` nicht leer ist.
+5. Initialen Benutzer anlegen, wenn `INITIAL_ADMIN_EMAIL` und `INITIAL_ADMIN_PASSWORD` gesetzt sind.
+6. Mit dem Container-Kommando fortfahren.
 
-## Blockierendes Verhalten
+Migrationen dürfen bei jedem Deployment laufen. Seeder, Suchkonfiguration, Reindexing und Datenbank-Resets müssen über Startup-Tasks laufen.
 
-Referenz-Seeder, Such-Einstellungen und Fresh-Seed blockieren bei Fehlern. <code>search-reindex</code> ist nicht blockierend: Ein anderer Container kann die Aufgabe besitzen und ein Fehler verhindert den App-Start nicht.
+## Konfiguration
 
-## Produktionsbeispiel
+| Variable | Standard | Zweck |
+| --- | --: | --- |
+| `STARTUP_TASKS` | leer | Kommagetrennte Tasks im Format `task-name:key`. |
+| `STARTUP_TASK_TIMEOUT_MINUTES` | `120` | Zeit, nach der ein laufender Task als veraltet gilt. |
+| `STARTUP_TASK_POLL_SECONDS` | `5` | Warteintervall, wenn ein anderer Container den Task besitzt. |
+| `ALLOW_DESTRUCTIVE_STARTUP_TASKS` | `false` | Muss für `fresh-db-seed` explizit aktiviert werden. |
 
-```dotenv
-STARTUP_TASKS=essential-seeders:release-2026-07,search-ensure-settings:meili-v1-43-0,search-reindex:release-2026-07
+Beispiel:
+
+```txt
+STARTUP_TASKS=essential-seeders:reference-data-v1,search-ensure-settings:search-settings-v1
+```
+
+## Task-Schlüssel
+
+Ein Task-Schlüssel ist die dauerhafte Identität einer Operation. Abgeschlossene Schlüssel werden dauerhaft übersprungen. Um dieselbe Task-Art erneut auszuführen, wird ein neuer Schlüssel verwendet.
+
+Gute Schlüssel beschreiben den Zweck:
+
+```txt
+essential-seeders:reference-data-v1
+search-ensure-settings:search-schema-v2
+search-reindex:search-upgrade-YYYY-MM-DD
+fresh-db-seed:test-reset-YYYY-MM-DD
+```
+
+Keine zufälligen Schlüssel für normale Deployments verwenden. Ein geänderter Schlüssel bedeutet: Diese Aufgabe soll erneut laufen.
+
+## Unterstützte Tasks
+
+| Task | Wirkung | Produktion |
+| --- | --- | --- |
+| `essential-seeders:<key>` | Führt Referenzdaten-Seeder aus, zum Beispiel Rollen, Kategorien, Status, Standorte und Report-Vorlagen. | Ja |
+| `search-ensure-settings:<key>` | Erstellt oder konfiguriert Suchindizes und wartet im Strict-Modus auf Settings-Tasks. | Ja |
+| `search-reindex:<key>` | Baut Suchdokumente aus primären Anwendungsdaten neu auf und wartet im Strict-Modus auf Such-Tasks. | Ja, bei großen Datenmengen mit Wartungsfenster |
+| `fresh-db-seed:<key>` | Setzt die Datenbank zurück und seedet sie neu. | Nein, nur Test- oder Wegwerf-Umgebungen |
+
+Frische Datenbank-Resets sind destruktiv. `fresh-db-seed:<key>` nur in Wegwerf-Umgebungen verwenden und nur, wenn `ALLOW_DESTRUCTIVE_STARTUP_TASKS=true` gesetzt ist.
+
+## Blockierendes Verhalten und Fehler
+
+Referenz-Seeder, Sucheinstellungen und frische Datenbank-Seeds blockieren den Container-Start, wenn sie fehlschlagen. Besitzt ein anderer Container einen dieser Tasks, wartet der aktuelle Container auf dessen Abschluss.
+
+`search-reindex` ist auf Ebene des Container-Starts bewusst nicht blockierend. Der Reindex-Befehl selbst verwendet weiterhin den Strict-Modus und wartet auf Meilisearch-Tasks. Ein Fehler wird jedoch im Startup-Task-Protokoll gespeichert, ohne den Anwendungsstart fehlschlagen zu lassen. Besitzt ein anderer Container bereits denselben Reindex-Schlüssel, setzt der aktuelle Container den Start fort, ohne darauf zu warten.
+
+## Demo-Datensatzprofile
+
+Branchendatensätze nur für lokale, Demo-, Test- oder andere wegwerfbare Umgebungen verwenden. Jedes Profil erzeugt genau 10.000 Assets, fünf Standorte und 20 branchenspezifische Abteilungen. Personen ohne Anwendungszugriff erhalten weder Passwort noch Rolle oder Login-Berechtigung.
+
+| Profil | Organisationsmodell | Belegschaft | Anwendungsbenutzer | Seed |
+| --- | --- | --: | --: | --: |
+| `public_schools` | Kommunaler Schulverbund | 850 | 35 | `1401` |
+| `public_hospital` | Kommunaler Klinikverbund | 8.000 | 90 | `2401` |
+| `industrial_machinery` | Maschinen- und Anlagenbau | 2.400 | 60 | `3401` |
+| `construction_trades` | Bauwirtschaft und Handwerk | 1.600 | 50 | `4401` |
+
+Der Generator erzeugt zusammenhängende Fünfjahresverläufe statt unabhängiger Zufallszeilen:
+
+- fünf Standorte sowie einen kanonischen Manager für jeden Standort und jede Abteilung;
+- eine auf alle Standorte und Abteilungen verteilte Belegschaft;
+- reale Hersteller und bekannte Produktfamilien mit synthetischen Personen, Lieferanten, Adressen, Seriennummern und Kontaktdaten;
+- branchenspezifische Kategorien, explizite Abschreibungszuordnungen sowie Zuweisungs-, Verwahrungs-, Wartungs-, Audit-, Ausmusterungs- und Entsorgungshistorien;
+- Beschaffungsdaten innerhalb des Modell-Einführungsdatums und von `DEMO_DATASET_ANCHOR_DATE`;
+- höchstens ein Prozent kontrolliert fehlende Werte für Datenqualitäts-Demonstrationen.
+
+Die Ausgabe ist deterministisch. `DEMO_DATASET_PROFILE`, `DEMO_FAKER_SEED` und `DEMO_DATASET_ANCHOR_DATE` gemeinsam setzen. Das Standard-Stichtagsdatum ist `2026-06-30`.
+
+### Implementierungshinweis: Raw Inserts
+
+`DemoAssetDatasetBuilder` schreibt Assets und die zugehörige Historie mit Laravels Query Builder statt über Eloquent. Diese Entscheidung ist bewusst getroffen, damit 10.000 Assets mit vorhersehbarer Laufzeit erzeugt werden können.
+
+Raw Inserts führen keine `Asset`-Observer, Eloquent-Modell-Events, Casts, Mutatoren oder andere modellseitige Nebeneffekte aus. Wenn für `Asset` oder ein verbundenes Modell neues Lifecycle-Verhalten eingeführt wird, muss der Builder im selben Change geprüft werden. Die erforderliche Invariante muss entweder explizit nachgebildet und mit deterministischen Seeder-Tests abgesichert werden, oder der betreffende Schritt wird bewusst auf Eloquent beziehungsweise eine gebündelte Domain Action umgestellt. Für Demo-Datensätze darf nicht angenommen werden, dass normale Create- oder Update-Observer ausgeführt wurden.
+
+Das Maschinenbauprofil lokal ausführen:
+
+```bash
+DEMO_DATASET_PROFILE=industrial_machinery \
+DEMO_FAKER_SEED=3401 \
+DEMO_DATASET_ANCHOR_DATE=2026-06-30 \
+php artisan migrate:fresh --seed
+```
+
+Nach einem frischen Reset die Suche explizit konfigurieren und neu aufbauen:
+
+```txt
+STARTUP_TASKS=fresh-db-seed:industrial_machinery-10000-v1-2026-07-18,search-ensure-settings:demo-meili-v1-43-0,search-reindex:industrial_machinery-10000-meili-v1-43-0-2026-07-18
+ALLOW_DESTRUCTIVE_STARTUP_TASKS=true
+```
+
+### Demo-Deployment-Vorlagen
+
+Vier nicht als Standard markierte Vorlagen wählen diese Profile. Jede Vorlage muss frisches Datenbank-Seeding, Suchkonfiguration und ein explizites Meilisearch-Reindexing ausführen. Einen versionierten Startup-Task-Schlüssel nur ändern, wenn die Operation erneut laufen soll.
+
+Zuerst die Veviad-App-Version veröffentlichen, welche alle vier Profil-Schlüssel unterstützt. Erst danach dürfen Vorlagen mit diesen Schlüsseln publiziert werden. Die Produktionsvorlage unverändert und als Standard belassen. Beim Ablösen älterer Demo-Vorlagen:
+
+1. eine referenzierte ältere Demo archivieren und ihre Instanzbeziehungen beibehalten;
+2. nur nicht referenzierte, nicht produktive Demo-, Entwicklungs- oder Testvorlagen löschen;
+3. im Rahmen der Demo-Bereinigung niemals eine Produktionsvorlage löschen oder verändern;
+4. verknüpfte Instanzen bewusst migrieren, bevor eine archivierte Vorlage gelöscht wird.
+
+<Warning>
+  Branchenprofile setzen Anwendungsdaten zurück und sind keine produktiven Referenzdaten-Seeder. Niemals gegen eine Kundendatenbank ausführen. Demo-Abschreibungsregeln dienen nur zur Veranschaulichung und sind keine Steuerberatung.
+</Warning>
+
+## Verhalten bei mehreren Containern
+
+Wenn mehrere Container gleichzeitig starten:
+
+- ein Container beansprucht einen offenen, fehlgeschlagenen oder veralteten Task;
+- andere Container warten auf blockierende Tasks, setzen den Start aber sofort fort, wenn derselbe `search-reindex`-Task bereits läuft;
+- abgeschlossene Tasks werden übersprungen;
+- fehlgeschlagene Tasks werden bei späteren Starts erneut versucht;
+- veraltete laufende Tasks werden nach `STARTUP_TASK_TIMEOUT_MINUTES` übernommen.
+
+Damit sind Startup-Tasks für horizontal skalierte SaaS-Deployments geeignet.
+
+## Frische Installation
+
+Für eine neue Umgebung:
+
+```txt
+STARTUP_TASKS=essential-seeders:reference-data-v1,search-ensure-settings:search-settings-v1
 ALLOW_DESTRUCTIVE_STARTUP_TASKS=false
 ```
 
-Ändern Sie einen Schlüssel nur, wenn die Aufgabe erneut laufen soll.
+Wenn automatisch ein Admin-Benutzer erstellt werden soll, `INITIAL_ADMIN_EMAIL` und `INITIAL_ADMIN_PASSWORD` setzen. Die Benutzeranlage ist idempotent und erstellt vorhandene Benutzer nicht bei jedem Neustart neu.
 
-## Performance-Datensatz
+## Test-Reset
 
-Das Profil <code>performance</code> erzeugt 10.000 Assets und 500 Personen. <code>fresh-db-seed</code> erfordert <code>ALLOW_DESTRUCTIVE_STARTUP_TASKS=true</code> und ist nur für wegwerfbare lokale oder Testdatenbanken vorgesehen.
+Nur für lokale oder wegwerfbare Testumgebungen:
 
-## Prüfung
+```txt
+ALLOW_DESTRUCTIVE_STARTUP_TASKS=true
+STARTUP_TASKS=fresh-db-seed:test-reset-YYYY-MM-DD
+```
 
-Prüfen Sie Ledger und Logs. Ein abgeschlossener Schlüssel wird beim Neustart übersprungen. Ein Reindex darf nach erreichter Liveness weiterlaufen.
+Nach erfolgreichem Reset destruktive Startup-Tasks wieder deaktivieren oder die Umgebung zurück auf normale Tasks setzen.
+
+## Fehlerbehebung
+
+Zuerst das Startup-Task-Protokoll prüfen. Am wichtigsten sind Task-Schlüssel, Status, Anzahl der Versuche, Start- und Abschlusszeitpunkte sowie die letzte Fehlermeldung.
+
+Typische Bedeutungen:
+
+- `completed`: Der Schlüssel ist bereits gelaufen; nur mit neuem Schlüssel bewusst erneut ausführen.
+- `failed`: Ursache beheben, dann Container neu starten oder den Startup-Task-Runner erneut ausführen.
+- `running`: Ein anderer Container besitzt den Task möglicherweise noch. Logs prüfen, bevor auf den Timeout gewartet wird.
+- `last_error`: Enthält die letzte Fehlermeldung des Runners.
+
+Manuelle Läufe verwenden dasselbe Task-Schlüssel-Format wie `STARTUP_TASKS`:
+
+```txt
+search-ensure-settings:manual-check
+```
 
 ## Verwandte Runbooks
 
