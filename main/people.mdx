@@ -1,52 +1,84 @@
 ---
 title: "People"
 sidebarTitle: "People"
-description: "HR-side directory of users, managers, and the department / location links behind asset assignment."
+description: "Maintain the workforce directory used for assignments, custody, and organizational records."
 icon: "users"
 ---
 
-People (`/people`) is the HR / asset-assignment view of your users. It sits alongside (but is distinct from) `Admin → Users`, which is the authentication-and-permission view.
+People (/people) is the workforce directory. A person can receive assets, licenses, accessories, and organizational assignments without having an application account.
 
-![The people list with employees and their assigned assets](/images/screenshots/people.webp)
+Application access is a separate entitlement. Creating or importing a person does not assign a role, create credentials, send an invitation, or allow sign-in.
 
-_View shown: `demo.veviad.cloud/people`_
-## The people list
+## People and application users
 
-**Default views**
+| Record | Purpose | Can sign in? |
+|---|---|---|
+| Person | Workforce identity used for assignments and history | Only when application access is active |
+| Application user | A person with pending, active, or suspended application access | Depends on person status and access status |
 
-- **All People** — every person on record
-- **Active** — currently active
-- **Inactive** — deactivated
-- **Managers** — people with management scope
+Use **People** for workforce records. Use **Admin → Users** for login access, authentication methods, roles, and invitations.
 
-**Custom views** — save your own filter combinations.
+![The People directory with workforce records and assignment-ready organization data](/images/screenshots/people.webp)
 
-**Quick actions** (second pane, bottom):
+## Directory views
 
-- **Manage Users** — jumps to the Admin user directory
-- **Manage Departments** — configure departments under Settings
-- **Manage Locations** — configure physical locations under Settings
+The People submenu provides these standard views:
 
-## Record fields
+- **All People** — every person visible to you
+- **Active** — people available for new assignments
+- **Inactive** — retained workforce records that are no longer assignable
+- **Managers** — people configured as workforce managers
 
-- **ID / Avatar** — internal identifier and profile initials/image
-- **First Name / Last Name**
-- **Email**
-- **Title**
-- **Department**
+The name in the **Person** column opens the read-only profile. Depending on your permissions, row actions also let you view the profile or open the administrative editor.
 
-## When to use People vs. Users
+## Add and import people
 
-| You need to… | Use |
+Choose **Add Person** to create one workforce record, or **Import People** for a CSV-based directory import.
+
+A new person starts with:
+
+- person status **Active**;
+- application access **None**;
+- no role;
+- no password or SSO entitlement;
+- no invitation email.
+
+This makes it practical to import a complete workforce directory even when only a small subset uses Veviad.
+
+## View and edit a person
+
+The profile at /people/{id} is a read-only directory view.
+
+Administrators and delegated roles with the user.edit permission can open **Admin → People** at /admin/people/{id}. The administrative editor contains profile and organization fields plus linked assets, licenses, history, and relationship analysis.
+
+When the person has no application access, the editor shows **No application access** and a **Grant Access** action. The Roles tab is unavailable because roles only control authenticated application capabilities.
+
+![The administrative person editor for a workforce record without application access](/images/screenshots/admin-person-no-access.webp)
+
+## Person lifecycle
+
+Authorized administrators can change the person's Active switch in the administrative editor.
+
+Deactivating a person:
+
+- preserves existing assignments, custody records, and audit history;
+- removes the person from new assignment pickers;
+- keeps the independent application-access entitlement unchanged;
+- immediately blocks effective sign-in and revokes active sessions and API tokens when access exists.
+
+Reactivating restores workforce status only. It does not grant access or change a role.
+
+For directory-SCIM-managed people, profile and lifecycle fields are read-only in Veviad. Make those changes in the identity provider.
+
+## When to use each area
+
+| Task | Area |
 |---|---|
-| Change login email, reset password, assign a role | `Organization → Admin → Users` |
-| Update department, title, or manager | `Main → People` |
-| Assign an asset to a person | `Main → People` (or the asset itself) |
-| Invite someone new | `Organization → Admin → Invitations` |
-| Deactivate login access | `Organization → Admin → Users` |
-
-## Practical notes
-
-- departments and locations referenced here are managed under `Settings → Departments` and `Settings → Locations`
-- managers are denoted by role assignment or reporting line — use the Managers view to see the subset
-- the Dashboard's **Active Users** tile counts the active set from this list
+| Add or import workforce records | People |
+| View assignments and workforce history | People |
+| Edit profile or organization data | Admin → People |
+| Activate or deactivate a workforce record | Admin → People |
+| Grant, suspend, or restore application access | Admin → Users or the administrative person editor |
+| Send or manage a local invitation | Admin → Users / Invitations |
+| Assign an application role | Admin → People, after access exists |
+| Manage an identity-provider-owned record | Identity provider |

@@ -1,89 +1,92 @@
 ---
 title: "Admin"
 sidebarTitle: "Admin"
-description: "Rollen, Benutzer, Einladungen, Integrationen und Systemzustand."
+description: "Verwalten Sie Personen, Anwendungsbenutzer, Rollen, Einladungen, Integrationen und Anmeldekonfiguration."
 icon: "shield-user"
 ---
 
-Im Admin-Bereich (`Organisation → Admin`) werden Authentifizierung, Zugriff und Integrationen auf Organisationsebene konfiguriert. Er umfasst fünf Unterseiten: **Allgemein**, **Rollen**, **Benutzer**, **Einladungen** und **Integrationen**.
+Der Admin-Bereich trennt die Verwaltung der Belegschaft vom Anwendungszugriff. Das Untermenü enthält **Allgemein**, **Personen**, **Benutzer**, **Einladungen**, **Rollen**, **Integrationen** und **Login-Links**.
 
-![Das Admin-Dashboard mit Benutzern, Assets, Lizenzplätzen und Systemzustand](/images/screenshots/de/admin.webp)
+## Personen
 
-_Gezeigte Ansicht: `demo.veviad.cloud/admin`_
-## Allgemein (Admin-Dashboard)
+**Admin → Personen** öffnet das Personenverzeichnis. Es enthält alle Personen, die Zuweisungen erhalten können, einschließlich Personen ohne Anmeldemöglichkeit.
 
-Die Startseite des Admin-Bereichs. Auf einen Blick:
+Die Aktion Bearbeiten öffnet den zentralen administrativen Editor unter /admin/people/{id}. Er steht für Personen mit und ohne Anwendungszugriff zur Verfügung.
 
-- **KPI-Kacheln:** Benutzer, Assets, Lizenzplätze, Abteilungen — jeweils mit Gesamtzahlen und einem Prozentbalken.
-- **Rollenverteilung** — Anzahl der Plätze und Anteil je Systemrolle (Admin, Asset Manager, Abteilungsmanager, Benutzer).
-- **Letzte Aktivitäten** — die neuesten admin-relevanten Aktionen.
-- **Systemzustand** — Anzahl der Berechtigungen, Anzahl der Rollen, Datenbankgröße, Speichernutzung.
-- **Integrationsstatus** — Single-Sign-On und Veviad AI mit Aktiv-/Inaktiv-Badges.
+Berechtigte Administratoren verwalten dort:
 
-## Rollen
+- Profil- und Organisationsdaten;
+- Personenstatus;
+- verknüpfte Assets und Lizenzen;
+- Lebenszyklus-Historie und Beziehungsanalyse.
 
-![Die Rollenübersicht mit Berechtigungen je Rolle](/images/screenshots/de/admin-roles.webp)
+Funktionen des Anwendungskontos erscheinen erst, wenn Zugriff vorhanden ist.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/admin/roles`_
-
-Hier verwalten Sie die Berechtigungspakete, die Benutzern zugewiesen werden können. Der Standard-Rollensatz umfasst:
-
-- **Admin** — vollständiger Plattformzugriff
-- **Asset Manager** — Lifecycle-Verantwortung für Assets
-- **Abteilungsmanager** — eingeschränkter Zugriff innerhalb einer Abteilung
-- **Benutzer** — grundlegender Lese- und Nutzungszugriff
-
-Erstellen Sie eigene Rollen, wenn die Standardrollen nicht passen. Der Workspace zeigt die Gesamtzahl der Berechtigungen (≈79 in der Standardauslieferung) und die Anzahl der aktiven Rollen unter Systemzustand an.
+![Der administrative Personen-Editor zeigt einen reinen Belegschaftsdatensatz ohne Anwendungszugriff](/images/screenshots/de/admin-person-no-access.webp)
 
 ## Benutzer
 
-![Die Benutzerliste mit Rollen und Kontostatus](/images/screenshots/de/admin-users.webp)
+**Admin → Benutzer** zeigt nur Personen mit **Ausstehendem**, **Aktivem** oder **Gesperrtem** Anwendungszugriff. Personen mit Zugriff **Keiner** bleiben im Personenverzeichnis und können über **Zugriff gewähren** zu Anwendungsbenutzern werden.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/admin/users`_
+Das Benutzerverzeichnis zeigt Zugriffsstatus, Anmeldeverfahren, Rolle und Verwaltungszuständigkeit. Der Name öffnet das schreibgeschützte Profil; Bearbeiten öffnet denselben administrativen Personen-Editor wie im Personenverzeichnis.
 
-Die Admin-Sicht auf das Benutzerverzeichnis — Anmeldekonten und ihre zugewiesenen Rollen. Sie unterscheidet sich von `Personen` (der HR- und Asset-Zuweisungssicht): Benutzer ist die Perspektive für Authentifizierung und Berechtigungen, Personen die operative Perspektive.
+![Das Verzeichnis der Anwendungsbenutzer mit Zugriffsstatus, Anmeldeverfahren, Rollen und Aktionen](/images/screenshots/de/admin-users.webp)
+
+## Anwendungszugriff gewähren
+
+Wählen Sie **Zugriff gewähren** und anschließend eine aktive Person ohne Zugriff.
+
+1. Wählen Sie die Person.
+2. Wählen Sie das Anmeldeverfahren.
+3. Bestätigen oder ergänzen Sie die E-Mail-Adresse.
+4. Wählen Sie die Anwendungsrolle.
+5. Gewähren Sie den Zugriff.
+
+Bei einem lokalen Konto sendet Veviad eine Einladung und setzt den Zugriff auf **Ausstehend**, bis Anmeldedaten eingerichtet wurden. Bei SSO kann der Zugriff ohne lokales Passwort aktiv werden.
+
+Rollen werden erst in diesem Schritt vergeben, weil sie festlegen, was eine angemeldete Person tun darf. Eine reine Person der Belegschaft hat keine Rolle.
+
+Wenn Access SCIM die Zugriffsberechtigung verwaltet, sind Zugriff und Rolle in Veviad schreibgeschützt. Verwalten Sie beide im Identitätsanbieter.
+
+## Unabhängige Statuswerte
+
+| Status | Werte | Bedeutung |
+|---|---|---|
+| Personenstatus | Aktiv, Inaktiv | Ob die Person neue Zuweisungen erhalten kann |
+| Zugriffsstatus | Keiner, Ausstehend, Aktiv, Gesperrt | Ob ein Anwendungskonto besteht und in welchem Zustand |
+| Effektive Anmeldung | Berechtigt oder blockiert | Ergebnis aus beiden Statuswerten und der Anmeldekonfiguration |
+
+Für die Anmeldung müssen Personenstatus und Zugriffsstatus **Aktiv** sein.
+
+Das Deaktivieren einer Person löscht weder Zugriffshistorie noch Rollen. Das Sperren des Zugriffs deaktiviert nicht den Datensatz der Belegschaft.
 
 ## Einladungen
 
-![Die Einladungsansicht mit ausstehenden Einladungen](/images/screenshots/de/admin-invitations.webp)
+Lokale Einladungen verwenden nach Möglichkeit eine bestehende Person und erzeugen keinen doppelten Datensatz.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/admin/invitations`_
+- **Ausstehend** — Einladung ist gültig, Anmeldedaten fehlen noch
+- **Angenommen** — Zugriff ist aktiv
+- **Abgelaufen** — Ersatz senden, wenn der Zugriff weiterhin vorgesehen ist
+- **Widerrufen** — Einladung kann nicht mehr verwendet werden
 
-Kontrolliertes Onboarding für neue Benutzer.
+Für dieselbe Person oder normalisierte E-Mail-Adresse kann nicht zweimal gleichzeitig eine aktive ausstehende Einladung erstellt werden.
 
-**Ablauf für Administratoren:**
+## Rollen
 
-1. Öffnen Sie `Admin → Benutzer` und wählen Sie `Benutzer einladen`
-2. Geben Sie die E-Mail-Adresse der empfangenden Person ein
-3. Weisen Sie eine oder mehrere Rollen zu
-4. Senden Sie die Einladung
+Rollen gelten nur für Anwendungsbenutzer. Der Tab Rollen ist bei Zugriff **Keiner** deaktiviert.
 
-**Lebenszyklus einer Einladung:**
+System- und benutzerdefinierte Rollen definieren Berechtigungen angemeldeter Benutzer. Rollenänderungen benötigen user.assign.role. Access-SCIM-Gruppenzuordnungen können Rollen über den Identitätsanbieter verwalten; Gruppen aus People Directory SCIM vergeben niemals Rollen.
 
-- ausstehend, bis die Einladung angenommen wird
-- Ablauffrist (üblicherweise 72 Stunden, konfigurierbar)
-- erneutes Senden, wenn die E-Mail verloren geht oder abläuft
-- Widerruf, wenn der Zugriff vor der Annahme entzogen werden soll
+## Berechtigungen und Zuständigkeit
 
-**Ablauf für eingeladene Personen:** Die Person erhält eine E-Mail mit einem sicheren Annahmelink und legt ihr Passwort über die Annahmeseite fest.
+Administrative Aktionen verwenden Berechtigungen statt einer fest codierten Rolle:
 
-**Wenn eine Einladung nicht ankommt:** Prüfen Sie den Spam-Ordner, kontrollieren Sie die E-Mail-Adresse, senden Sie die Einladung erneut und klären Sie die Mail-Zustellung mit Ihrer Administration, falls das Problem bestehen bleibt.
+- user.view steuert die Sichtbarkeit im Verzeichnis;
+- user.edit steuert den administrativen Editor;
+- user.create steuert das Hinzufügen von Personen und das Gewähren von Zugriff;
+- user.delete steuert Personen-Lebenszyklus und Zugriffssperre;
+- user.assign.role steuert Rollenänderungen.
 
-## Integrationen
+Die Standardrolle Admin erhält diese Berechtigungen. Delegierte HR- oder IT-Rollen können ohne Änderung des Ablaufs erstellt werden.
 
-![Die Integrationsliste mit Single-Sign-On und Veviad AI](/images/screenshots/de/admin-integrations.webp)
-
-_Gezeigte Ansicht: `demo.veviad.cloud/admin/integrations`_
-
-Zwei Integrationen sind standardmäßig enthalten und werden hier aktiviert oder deaktiviert:
-
-- **Single-Sign-On** — standardmäßig inaktiv; Konfiguration über das Zahnrad-Symbol in der jeweiligen Zeile.
-- **Veviad AI (Chat-Assistent)** — standardmäßig aktiv; konfigurieren Sie über das Zahnrad-Symbol in der jeweiligen Zeile den KI-Anbieter (derzeit wird Anthropic Claude unterstützt — siehe `Veviad AI → Assistent`).
-
-Aktivieren Sie SSO, bevor Sie bei größeren Rollouts Benutzer einladen — eine nachträgliche Umstellung der Authentifizierung nach angenommenen Einladungen verursacht zusätzlichen operativen Aufwand.
-
-Informationen zur Einrichtung von Microsoft Entra ID, zur SCIM-Bereitstellung und zur Synchronisation von Gruppen zu Rollen finden Sie unter [SSO und SCIM](/de/organization/sso-scim).
-
-## Systemtransparenz
-
-Das Admin-Dashboard ist die richtige Anlaufstelle, wenn Sie auf einen Blick wissen möchten, ob der Tenant gesund ist: Benutzer gesamt und aktiv, Assets gesamt und genutzt, Lizenzplätze, letzte Aktivitäten und Integrationsstatus. Details auf Ereignisebene finden Sie unter `Analysen → Audit-Logs`.
+Weitere Informationen finden Sie unter [SSO und SCIM](/de/organization/sso-scim).

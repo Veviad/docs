@@ -121,6 +121,7 @@
                 "expanded": false,
                 "pages": [
                   "operations",
+                  "operations/people-access-provisioning",
                   "operations/startup-tasks",
                   "operations/search"
                 ]
@@ -233,6 +234,7 @@
                 "expanded": false,
                 "pages": [
                   "de/operations",
+                  "de/operations/people-access-provisioning",
                   "de/operations/startup-tasks",
                   "de/operations/search"
                 ]

@@ -1,52 +1,84 @@
 ---
 title: "Personen"
 sidebarTitle: "Personen"
-description: "HR-seitiges Verzeichnis von Benutzern, Managern sowie den Abteilungs- und Standortverknüpfungen hinter der Asset-Zuweisung."
+description: "Pflegen Sie das Personenverzeichnis für Zuweisungen, Verwahrung und Organisationsdaten."
 icon: "users"
 ---
 
-Personen (`/people`) ist die HR- und Asset-Zuweisungssicht auf Ihre Benutzer. Sie steht neben `Admin → Benutzer`, unterscheidet sich davon aber: Dort verwalten Sie Authentifizierung und Berechtigungen.
+Personen (/people) ist das Verzeichnis der Belegschaft. Eine Person kann Assets, Lizenzen, Zubehör und Organisationszuordnungen erhalten, ohne ein Anwendungskonto zu besitzen.
 
-![Die Personenliste mit Mitarbeitenden und ihren zugewiesenen Assets](/images/screenshots/de/people.webp)
+Der Anwendungszugriff ist eine separate Berechtigung. Das Erstellen oder Importieren einer Person weist keine Rolle zu, erzeugt keine Anmeldedaten, versendet keine Einladung und erlaubt keine Anmeldung.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/people`_
-## Die Personenliste
+## Personen und Anwendungsbenutzer
 
-**Standardansichten**
+| Datensatz | Zweck | Anmeldung möglich? |
+|---|---|---|
+| Person | Identität der Belegschaft für Zuweisungen und Historie | Nur bei aktivem Anwendungszugriff |
+| Anwendungsbenutzer | Person mit ausstehendem, aktivem oder gesperrtem Anwendungszugriff | Abhängig von Personen- und Zugriffsstatus |
 
-- **Alle Personen** — alle erfassten Personen
-- **Aktiv** — derzeit aktiv
-- **Inaktiv** — deaktiviert
-- **Manager** — Personen mit Führungsverantwortung
+Verwenden Sie **Personen** für Datensätze der Belegschaft. Verwenden Sie **Admin → Benutzer** für Anwendungszugriff, Anmeldeverfahren, Rollen und Einladungen.
 
-**Benutzerdefinierte Ansichten** — speichern Sie eigene Filterkombinationen.
+![Das Personenverzeichnis mit Datensätzen der Belegschaft und Organisationsdaten für Zuweisungen](/images/screenshots/de/people.webp)
 
-**Schnellaktionen** (zweiter Bereich, unten):
+## Verzeichnisansichten
 
-- **Benutzer verwalten** — wechselt zum Admin-Benutzerverzeichnis
-- **Abteilungen verwalten** — Abteilungen unter Einstellungen konfigurieren
-- **Standorte verwalten** — physische Standorte unter Einstellungen konfigurieren
+Das Untermenü Personen bietet folgende Standardansichten:
 
-## Datensatzfelder
+- **Alle Personen** — alle für Sie sichtbaren Personen
+- **Aktiv** — Personen, die für neue Zuweisungen verfügbar sind
+- **Inaktiv** — aufbewahrte Datensätze, die nicht mehr neu zugewiesen werden können
+- **Manager** — als Führungskräfte konfigurierte Personen
 
-- **ID / Avatar** — interne Kennung und Profil-Initialen oder -Bild
-- **Vorname / Nachname**
-- **E-Mail**
-- **Titel**
-- **Abteilung**
+Der Name in der Spalte **Person** öffnet das schreibgeschützte Profil. Abhängig von Ihren Berechtigungen können Sie über die Zeilenaktionen das Profil anzeigen oder den administrativen Editor öffnen.
 
-## Wann Sie Personen statt Benutzer verwenden
+## Personen hinzufügen und importieren
 
-| Sie möchten… | Verwenden Sie |
+Wählen Sie **Person hinzufügen** für einen einzelnen Datensatz oder **Personen importieren** für einen CSV-Import.
+
+Eine neue Person beginnt mit:
+
+- Personenstatus **Aktiv**;
+- Anwendungszugriff **Keiner**;
+- keiner Rolle;
+- keinem Passwort und keiner SSO-Berechtigung;
+- keiner Einladungs-E-Mail.
+
+So kann das vollständige Personenverzeichnis importiert werden, auch wenn nur ein kleiner Teil Veviad verwendet.
+
+## Personen anzeigen und bearbeiten
+
+Das Profil unter /people/{id} ist eine schreibgeschützte Verzeichnisansicht.
+
+Administratoren und delegierte Rollen mit der Berechtigung user.edit können unter /admin/people/{id} den administrativen Editor öffnen. Er enthält Profil- und Organisationsfelder sowie verknüpfte Assets, Lizenzen, Historie und Beziehungsanalyse.
+
+Wenn kein Anwendungszugriff besteht, zeigt der Editor **Kein Anwendungszugriff** und die Aktion **Zugriff gewähren**. Der Tab Rollen ist nicht verfügbar, weil Rollen ausschließlich die Berechtigungen angemeldeter Benutzer steuern.
+
+![Der administrative Personen-Editor für einen Datensatz ohne Anwendungszugriff](/images/screenshots/de/admin-person-no-access.webp)
+
+## Personen-Lebenszyklus
+
+Berechtigte Administratoren ändern den Aktiv-Schalter im administrativen Editor.
+
+Das Deaktivieren einer Person:
+
+- erhält bestehende Zuweisungen, Verwahrungsdaten und Audit-Historie;
+- entfernt die Person aus neuen Zuweisungslisten;
+- lässt die unabhängige Zugriffsberechtigung unverändert;
+- blockiert die Anmeldung sofort und widerruft aktive Sitzungen und API-Token, wenn Zugriff vorhanden ist.
+
+Die Reaktivierung stellt nur den Personenstatus wieder her. Sie gewährt keinen Zugriff und ändert keine Rolle.
+
+Bei über Verzeichnis-SCIM verwalteten Personen sind Profil- und Lebenszyklusfelder in Veviad schreibgeschützt. Nehmen Sie Änderungen im Identitätsanbieter vor.
+
+## Welcher Bereich ist der richtige?
+
+| Aufgabe | Bereich |
 |---|---|
-| Anmelde-E-Mail ändern, Passwort zurücksetzen, eine Rolle zuweisen | `Organisation → Admin → Benutzer` |
-| Abteilung, Titel oder Manager aktualisieren | `Haupt → Personen` |
-| Ein Asset einer Person zuweisen | `Haupt → Personen` (oder das Asset selbst) |
-| Eine neue Person einladen | `Organisation → Admin → Einladungen` |
-| Anmeldezugriff deaktivieren | `Organisation → Admin → Benutzer` |
-
-## Praktische Hinweise
-
-- Die hier referenzierten Abteilungen und Standorte werden unter `Einstellungen → Abteilungen` und `Einstellungen → Standorte` verwaltet
-- Manager werden über Rollenzuweisung oder Berichtslinie gekennzeichnet — nutzen Sie die Ansicht Manager, um diese Teilmenge zu sehen
-- Die Kachel **Aktive Benutzer** im Dashboard zählt die aktiven Personen dieser Liste
+| Personen der Belegschaft hinzufügen oder importieren | Personen |
+| Zuweisungen und Historie anzeigen | Personen |
+| Profil- oder Organisationsdaten bearbeiten | Admin → Personen |
+| Person aktivieren oder deaktivieren | Admin → Personen |
+| Anwendungszugriff gewähren, sperren oder wiederherstellen | Admin → Benutzer oder administrativer Personen-Editor |
+| Lokale Einladung versenden oder verwalten | Admin → Benutzer / Einladungen |
+| Anwendungsrolle zuweisen | Admin → Personen, nachdem Zugriff besteht |
+| Vom Identitätsanbieter verwalteten Datensatz ändern | Identitätsanbieter |
