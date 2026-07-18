@@ -50,13 +50,19 @@
                     "group": "Inventory & Licenses",
                     "icon": "boxes",
                     "expanded": false,
-                    "pages": ["main/licenses", "main/accessories"]
+                    "pages": [
+                      "main/licenses",
+                      "main/accessories"
+                    ]
                   },
                   {
                     "group": "People & Workflows",
                     "icon": "workflow",
                     "expanded": false,
-                    "pages": ["main/people", "main/workflows"]
+                    "pages": [
+                      "main/people",
+                      "main/workflows"
+                    ]
                   },
                   {
                     "group": "Settings & Administration",
@@ -93,7 +99,10 @@
                     "group": "Help & FAQ",
                     "icon": "circle-help",
                     "expanded": false,
-                    "pages": ["faq", "faq/common-questions"]
+                    "pages": [
+                      "faq",
+                      "faq/common-questions"
+                    ]
                   }
                 ]
               }
@@ -121,6 +130,7 @@
                 "expanded": false,
                 "pages": [
                   "operations",
+                  "operations/people-access-provisioning",
                   "operations/startup-tasks",
                   "operations/search"
                 ]
@@ -129,7 +139,10 @@
                 "group": "Release Notes",
                 "icon": "scroll-text",
                 "expanded": false,
-                "pages": ["release-notes", "release-notes/current"]
+                "pages": [
+                  "release-notes",
+                  "release-notes/current"
+                ]
               }
             ]
           }
@@ -174,13 +187,19 @@
                     "group": "Inventar & Lizenzen",
                     "icon": "boxes",
                     "expanded": false,
-                    "pages": ["de/main/licenses", "de/main/accessories"]
+                    "pages": [
+                      "de/main/licenses",
+                      "de/main/accessories"
+                    ]
                   },
                   {
                     "group": "Personen & Workflows",
                     "icon": "workflow",
                     "expanded": false,
-                    "pages": ["de/main/people", "de/main/workflows"]
+                    "pages": [
+                      "de/main/people",
+                      "de/main/workflows"
+                    ]
                   },
                   {
                     "group": "Einstellungen & Administration",
@@ -217,7 +236,10 @@
                     "group": "Hilfe & FAQ",
                     "icon": "circle-help",
                     "expanded": false,
-                    "pages": ["de/faq", "de/faq/common-questions"]
+                    "pages": [
+                      "de/faq",
+                      "de/faq/common-questions"
+                    ]
                   }
                 ]
               }
@@ -233,6 +255,7 @@
                 "expanded": false,
                 "pages": [
                   "de/operations",
+                  "de/operations/people-access-provisioning",
                   "de/operations/startup-tasks",
                   "de/operations/search"
                 ]
@@ -241,7 +264,10 @@
                 "group": "Versionshinweise",
                 "icon": "scroll-text",
                 "expanded": false,
-                "pages": ["de/release-notes", "de/release-notes/current"]
+                "pages": [
+                  "de/release-notes",
+                  "de/release-notes/current"
+                ]
               }
             ]
           }
