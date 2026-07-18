@@ -1,237 +1,160 @@
 ---
 title: "SSO und SCIM"
 sidebarTitle: "SSO und SCIM"
-description: "Single Sign-On mit Microsoft Entra ID, SCIM-Bereitstellung und die Synchronisierung von Gruppen zu Rollen konfigurieren."
+description: "Konfigurieren Sie SSO und getrennte SCIM-Feeds für Anwendungszugriff und Personenverzeichnis."
 icon: "key-round"
 ---
 
-Veviad lässt sich für zwei zusammenhängende Identitäts-Workflows mit Microsoft Entra ID integrieren:
+Veviad trennt den Datensatz einer Person von ihrer Berechtigung, die Anwendung zu verwenden.
 
-- **Single Sign-On (SSO):** Benutzer authentifizieren sich über Microsoft Entra ID.
-- **SCIM-Bereitstellung:** Microsoft Entra ID erstellt, aktualisiert und deaktiviert Veviad-Benutzer automatisch.
+- **Single Sign-On (SSO)** authentifiziert eine Person, die bereits Anwendungszugriff besitzt.
+- **SCIM-Bereitstellung** verwaltet Anwendungszugriff und Rollenzuordnungen.
+- **SCIM-Personenverzeichnis** synchronisiert die breitere Belegschaft, ohne Anmeldezugriff zu gewähren.
 
-Die Rollenzuordnung verbindet diese Workflows mit den Berechtigungen in Veviad. Wenn Entra Gruppenmitgliedschaften sendet, die zu einer konfigurierten Rollenzuordnung passen, kann Veviad die entsprechende lokale Rolle zuweisen, zum Beispiel `admin`, `asset-manager`, `department-manager` oder `user`.
+## Empfohlener Aufbau in Microsoft Entra
 
-## Bevor Sie beginnen
+Verwenden Sie zwei Bereitstellungszuweisungen:
 
-Sie benötigen:
-
-- Administratorzugriff in Veviad mit der Berechtigung, Einstellungen zu bearbeiten;
-- Administratorzugriff in Microsoft Entra ID für die App-Registrierung und die Konfiguration der Unternehmensanwendung;
-- die öffentliche URL der Veviad-Anwendung, zum Beispiel `https://app.example.com`;
-- die Tenant ID von Microsoft Entra;
-- die Client ID und das Client Secret der Microsoft-Entra-Anwendung;
-- die Object IDs der Entra-Gruppen, die Veviad-Rollen zugeordnet werden sollen.
-
-Verwenden Sie für Rollenzuordnungen nach Möglichkeit die **Object IDs** der Entra-Gruppen. Anzeigenamen können sich ändern; Object IDs sind stabil und der Standardwert, den Microsoft Entra in Gruppenansprüchen sendet.
-
-## Wie Veviad Gruppen verwendet
-
-Veviad speichert pro lokaler Rolle einen Gruppenwert des Identitätsanbieters. Der Wert kann eine Object ID einer Entra-Gruppe oder ein Gruppenname sein, muss aber exakt dem Wert entsprechen, den Entra an Veviad sendet.
-
-| Veviad-Bereich | Auslöser | Gruppenquelle | Was passiert |
-|---|---|---|---|
-| SSO-Anmeldung | Benutzer meldet sich über Microsoft Entra ID an | `groups`-Claim im OIDC-Token | Veviad kann Rollen während der Anmeldung synchronisieren, wenn **Rollen bei Anmeldung synchronisieren** aktiviert ist. |
-| SCIM-Bereitstellung | Microsoft Entra erstellt oder aktualisiert einen Benutzer | SCIM-Attribut `groups` | Veviad berücksichtigt die SCIM-Gruppenmitgliedschaften und wendet passende Rollenzuordnungen an. |
-
-SSO und SCIM sind unabhängige Auslöser. Ein Benutzer kann per SCIM bereitgestellt werden, bevor er sich jemals anmeldet, und die Rollen eines Benutzers können bei einer späteren SSO-Anmeldung ebenfalls aktualisiert werden.
-
-## SSO in Veviad konfigurieren
-
-![Das SSO-Konfigurationsfenster mit geöffnetem Tab SSO / OIDC](/images/screenshots/de/sso-oidc.webp)
-
-_Gezeigte Ansicht: `demo.veviad.cloud/admin/integrations`_
-
-Öffnen Sie `Organisation → Admin → Integrationen` und bearbeiten Sie **Single-Sign-On**.
-
-Auf der Registerkarte **SSO / OIDC**:
-
-1. Aktivieren Sie **SSO aktivieren**.
-2. Setzen Sie **Provider** auf `Azure Entra ID`.
-3. Wählen Sie die passende **Cloud-Instanz**.
-4. Geben Sie eine **Beschriftung der Anmeldeschaltfläche** ein, die Benutzer wiedererkennen, zum Beispiel `Microsoft Azure`.
-5. Entscheiden Sie, ob Sie **SSO erzwingen** aktivieren.
-6. Kopieren Sie die von Veviad angezeigte **Redirect URI / Reply URL**.
-7. Geben Sie die Microsoft Entra **Tenant ID** ein.
-8. Geben Sie die **Client ID** der Microsoft-Entra-Anwendung ein.
-9. Geben Sie das **Client Secret** der Microsoft-Entra-Anwendung ein.
-10. Verwenden Sie **Verbindung testen**.
-11. Speichern Sie die Konfiguration.
-
-Wenn **SSO erzwingen** aktiviert ist, wird das Standardformular mit E-Mail und Passwort für normale Benutzer ausgeblendet. Halten Sie ein dokumentiertes Break-Glass-Administratorkonto bereit und stellen Sie sicher, dass der Administrator-Bypass funktioniert, bevor Sie SSO für den gesamten Tenant erzwingen.
-
-## Microsoft Entra ID für SSO konfigurieren
-
-In Microsoft Entra ID:
-
-1. Erstellen oder öffnen Sie die App-Registrierung, die für Veviad verwendet wird.
-2. Fügen Sie die Veviad **Redirect URI / Reply URL** als Web-Redirect-URI hinzu.
-3. Erstellen Sie ein Client Secret und kopieren Sie es in Veviad.
-4. Weisen Sie der Unternehmensanwendung die Benutzer oder Gruppen zu, die auf Veviad zugreifen sollen.
-5. Konfigurieren Sie Gruppenansprüche, damit Entra Informationen zur Gruppenmitgliedschaft an Veviad sendet.
-
-Empfohlene Konfiguration der Gruppenansprüche:
-
-- Geben Sie Gruppen in dem OIDC-Token aus, das die Anwendung verwendet.
-- Bevorzugen Sie nach Möglichkeit `ApplicationGroup`, damit nur Gruppen ausgegeben werden, die der Anwendung zugewiesen sind.
-- Verwenden Sie den Standardwert mit der Object ID der Gruppe und tragen Sie dieselbe Object ID in den Rollenzuordnungen in Veviad ein.
-
-Microsoft Entra begrenzt, wie viele Gruppen in Token ausgegeben werden können. Ist ein Benutzer Mitglied in zu vielen Gruppen, lässt Entra den Gruppenanspruch unter Umständen weg und sendet stattdessen einen Überlauf-Hinweis. Ein eng gefasster Anwendungsbereich und der Einsatz von anwendungszugeordneten Gruppen verringern dieses Risiko.
-
-## Rollenzuordnungen konfigurieren
-
-![Der Tab Rollenzuordnung mit einem Gruppenfeld je Veviad-Rolle](/images/screenshots/de/sso-role-mapping.webp)
-
-_Gezeigte Ansicht: `demo.veviad.cloud/admin/integrations`_
-
-Öffnen Sie die Registerkarte **Rollenzuordnung** im SSO-Konfigurationsdialog.
-
-Für jede Veviad-Rolle, die über Entra gesteuert werden soll:
-
-1. Tragen Sie die Object ID der Entra-Gruppe in das Eingabefeld der Rolle ein.
-2. Lassen Sie Rollen leer, die nicht über Entra verwaltet werden sollen.
-3. Wählen Sie **Rollenzuordnungen speichern**.
-4. Schließen und öffnen Sie den Dialog erneut, um zu prüfen, dass die gespeicherten Werte weiterhin vorhanden sind.
-
-Beispiel:
-
-| Veviad-Rolle | Entra-Gruppenwert |
-|---|---|
-| `admin` | Object ID der Entra-Gruppe für Administratoren |
-| `asset-manager` | Object ID der Entra-Gruppe für Asset Manager |
-| `department-manager` | Object ID der Entra-Gruppe für Abteilungsverantwortliche |
-| `user` | Object ID der Gruppe für den Basiszugriff |
-
-Nicht zugeordnete Entra-Gruppen blockieren weder die Anmeldung noch die Bereitstellung. Sie werden bei der Rollenzuweisung ignoriert.
-
-## Einstellungen zur Rollensynchronisierung
-
-Der Bereich **Einstellungen zur Rollensynchronisierung** steuert die Fallback-Rolle und die Synchronisierung bei der SSO-Anmeldung.
-
-| Einstellung | Wirkung |
-|---|---|
-| **Standardrolle** | Wird bei der SSO-Anmeldung zugewiesen, wenn keine Gruppenzuordnung passt, sowie bei der SCIM-Benutzererstellung, wenn keine Gruppenzuordnung passt. Verwenden Sie hier eine sichere Basisrolle wie `user`. |
-| **Rollen bei Anmeldung synchronisieren** | Wenn aktiviert, wertet Veviad die Entra-Gruppenmitgliedschaften bei jeder SSO-Anmeldung des Benutzers neu aus. |
-
-Wählen Sie nach einer Änderung einer der beiden Einstellungen **Synchronisierungseinstellungen speichern**.
-
-## Verhalten bei der SSO-Anmeldung
-
-Wenn sich ein Benutzer mit SSO anmeldet, findet oder erstellt Veviad den Benutzer anhand der Entra-Identität und der E-Mail-Adresse.
-
-Wenn **Rollen bei Anmeldung synchronisieren** deaktiviert ist:
-
-- Veviad ändert die Rollen des Benutzers während der Anmeldung nicht anhand der Entra-Gruppen.
-- Bestehende manuell zugewiesene Rollen bleiben unverändert.
-
-Wenn **Rollen bei Anmeldung synchronisieren** aktiviert ist:
-
-- Veviad liest die Gruppenwerte aus dem Entra-Token.
-- Jede passende Gruppenzuordnung wird in eine Veviad-Rolle aufgelöst.
-- Benutzer in mehreren zugeordneten Gruppen erhalten die Vereinigungsmenge aller passenden Rollen.
-- Rollen, die nicht über Entra-Zuordnungen verwaltet werden, bleiben erhalten.
-- Wenn keine Gruppenzuordnung passt, weist Veviad die konfigurierte **Standardrolle** zu, sofern eine festgelegt ist.
-- Wenn keine Gruppenzuordnung passt und keine Standardrolle festgelegt ist, bleiben die bestehenden Rollen unverändert.
-
-Die Rollensynchronisierung erfolgt zum Zeitpunkt der Anmeldung. Ändert sich die Entra-Gruppenmitgliedschaft eines Benutzers, muss sich der Benutzer erneut anmelden, damit die Synchronisierung bei der SSO-Anmeldung ausgeführt wird.
-
-## SCIM-Bereitstellung konfigurieren
-
-![Der Tab SCIM-Bereitstellung mit Endpoint-URL und Bearer Token](/images/screenshots/de/sso-scim.webp)
-
-_Gezeigte Ansicht: `demo.veviad.cloud/admin/integrations`_
-
-Die SCIM-Bereitstellung wird konfiguriert, nachdem SSO aktiviert wurde.
-
-Öffnen Sie in Veviad `Organisation → Admin → Integrationen`, bearbeiten Sie **Single-Sign-On** und öffnen Sie dann **SCIM-Bereitstellung**:
-
-1. Kopieren Sie die **SCIM Endpoint URL**. Sie endet auf `/scim/v2`.
-2. Erzeugen Sie ein **SCIM Bearer Token**.
-3. Kopieren Sie das Token sofort. Es wird nur einmal angezeigt.
-
-In Microsoft Entra ID:
-
-1. Öffnen Sie die Veviad-Unternehmensanwendung.
-2. Wechseln Sie zu **Bereitstellung**.
-3. Setzen Sie den Bereitstellungsmodus auf **Automatisch**.
-4. Tragen Sie die Veviad SCIM Endpoint URL als **Tenant URL** ein.
-5. Tragen Sie das Veviad SCIM Bearer Token als **Secret Token** ein.
-6. Führen Sie **Verbindung testen** aus.
-7. Prüfen Sie die Attributzuordnungen für Benutzer und Gruppen.
-8. Weisen Sie die Benutzer oder Gruppen zu, die bereitgestellt werden sollen.
-9. Starten Sie die Bereitstellung.
-
-Wenn der Bereitstellungsbereich so eingestellt ist, dass nur zugewiesene Benutzer und Gruppen synchronisiert werden, werden keine Benutzer bereitgestellt, bis Benutzer oder Gruppen der Unternehmensanwendung zugewiesen sind.
-
-## Rollenverhalten bei SCIM
-
-Wenn Microsoft Entra einen Benutzer über SCIM bereitstellt oder aktualisiert, sucht Veviad in den SCIM-Daten nach Gruppenmitgliedschaften.
-
-Bei der Benutzererstellung:
-
-- passende SCIM-Gruppen weisen die entsprechenden Veviad-Rollen zu;
-- Benutzer in mehreren zugeordneten Gruppen erhalten alle passenden Rollen;
-- wenn keine zugeordnete Gruppe passt und eine **Standardrolle** konfiguriert ist, weist Veviad die Standardrolle zu.
-
-Bei der Benutzeraktualisierung:
-
-- enthält die Aktualisierung Gruppenmitgliedschaften, die zu Rollenzuordnungen passen, synchronisiert Veviad die zugeordneten Rollen aus diesen Gruppen;
-- manuell zugewiesene Rollen, die nicht über Entra-Zuordnungen gesteuert werden, bleiben erhalten;
-- enthält die Aktualisierung keine passende Gruppenmitgliedschaft, bleiben die bestehenden Rollen unverändert.
-
-Für die SCIM-Bereitstellung ist **Rollen bei Anmeldung synchronisieren** nicht erforderlich. Dieser Schalter steuert nur die Rollensynchronisierung während der SSO-Anmeldung.
-
-## Empfehlungen für den Betrieb
-
-Verwenden Sie eines dieser Muster:
-
-| Muster | Empfohlen, wenn | Erforderliche Konfiguration |
+| Unternehmensanwendung | Zugewiesene Personen | Veviad-Zweck |
 |---|---|---|
-| Nur SSO | Benutzer bei der ersten Anmeldung erstellt werden und Rollen bei der Anmeldung aktualisiert werden sollen. | SSO aktiviert, Gruppenansprüche konfiguriert, Rollenzuordnungen gespeichert, **Rollen bei Anmeldung synchronisieren** aktiviert. |
-| SCIM plus SSO | Benutzer schon vor der ersten Anmeldung existieren sollen und der Lifecycle den Entra-Zuweisungen folgen soll. | SSO aktiviert, SCIM-Token konfiguriert, Bereitstellung läuft, Rollenzuordnungen gespeichert. Aktivieren Sie **Rollen bei Anmeldung synchronisieren**, wenn auch die Anmeldung Rollen aktualisieren soll. |
-| Nur SCIM für den Lifecycle, manuelle Rollen | Der Identitäts-Lifecycle automatisiert ist, die Veviad-Rollen aber manuell verwaltet werden. | SCIM konfiguriert, Rollenzuordnungen leer gelassen, **Rollen bei Anmeldung synchronisieren** deaktiviert. |
+| Veviad-Anwendungszugriff | Nur Benutzer und Gruppen, die Veviad verwenden dürfen | SSO plus Access SCIM |
+| Veviad-Personenverzeichnis | Die für Zuweisungen benötigte breitere Belegschaft | People Directory SCIM |
 
-Für die meisten produktiven Rollouts empfiehlt sich **SCIM plus SSO**. SCIM übernimmt den Benutzer-Lifecycle, während SSO die Authentifizierung bereitstellt. Die Aktivierung der Rollensynchronisierung bei der Anmeldung ist sinnvoll, wenn Gruppenänderungen sowohl bei der nächsten Anmeldung als auch in den Bereitstellungszyklen wirksam werden sollen.
+Die SSO-Anwendung und die Access-SCIM-Konfiguration können dieselbe Entra-Unternehmensanwendung verwenden. Das vollständige Personenverzeichnis sollte eine separate Bereitstellungszuweisung und ein separates Veviad-Token verwenden.
+
+Eine Person kann in beiden Feeds vorkommen. Veviad verknüpft beide unveränderlichen externen Identitäten mit einem Personendatensatz, unabhängig davon, welcher Feed zuerst verarbeitet wird.
+
+## Warum beide SCIM-Integrationen denselben Endpoint verwenden
+
+Beide Integrationen verwenden absichtlich dieselbe SCIM-Basis-URL:
+
+**https://ihre-veviad-domain/scim/v2**
+
+Das Bearer Token bestimmt den Bereitstellungszweck:
+
+- ein **app_access**-Token leitet die Anfrage an Access SCIM;
+- ein **people_directory**-Token leitet sie an People Directory SCIM.
+
+Erzeugen und rotieren Sie beide Token unabhängig. Verwenden Sie niemals dasselbe Token für beide Unternehmensanwendungen.
+
+## Access SCIM
+
+Öffnen Sie **Admin → Integrationen → SCIM-Bereitstellung**.
+
+Access SCIM steuert das Anwendungskonto:
+
+- SCIM active gewährt oder erhält die Zugriffsberechtigung;
+- Deprovisionierung setzt den Zugriff auf **Gesperrt**, erhält aber Person und Zuweisungen;
+- Access-SCIM-Gruppen können Veviad-Rollen zugeordnet werden;
+- ein nicht zugeordneter Zugriffsbenutzer erhält die konfigurierte sichere Standardrolle, normalerweise **Employee**;
+- Zugriffsstatus und verwaltete Rollen sind in Veviad schreibgeschützt, solange dieser Feed zuständig ist.
+
+Wenn SSO aktiviert ist, kann sich eine berechtigte Person über SSO anmelden. Wird Access SCIM ohne SSO verwendet, sendet Veviad eine Aktivierungseinladung und hält die effektive Anmeldung ausstehend, bis Anmeldedaten eingerichtet wurden.
+
+## People Directory SCIM
+
+Öffnen Sie **Admin → Integrationen → SCIM-Personenverzeichnis**.
+
+People Directory SCIM steuert den Personenstatus:
+
+- SCIM active hält den Personenstatus **Aktiv**;
+- Deprovisionierung setzt den Personenstatus auf **Inaktiv**;
+- es erzeugt weder Passwort noch Einladung, Anwendungsrolle oder Anmeldeberechtigung;
+- Verzeichnisgruppen gewähren niemals Rollen oder Anwendungszugriff;
+- über das Verzeichnis verwaltete Profil- und Lebenszyklusfelder sind in Veviad schreibgeschützt.
+
+Inaktive Personen bleiben in Historie und bestehenden Zuweisungen erhalten, werden aber aus neuen Zuweisungslisten entfernt und können sich nicht anmelden.
+
+## Profil- und Zugriffszuständigkeit
+
+Wenn dieselbe Person in beiden Feeds vorkommt:
+
+- Profildaten aus People Directory haben Vorrang vor Profildaten aus Access SCIM;
+- Access SCIM verwaltet Zugriff und zugeordnete Rollen;
+- lokale Notizen und nicht vom Identitätsanbieter verwaltete Felder bleiben bearbeitbar;
+- mehrdeutige oder doppelte normalisierte E-Mail-Adressen erzeugen einen Konflikt statt einer automatischen Zusammenführung.
+
+Nach dem ersten eindeutigen E-Mail-Abgleich verwendet Veviad die zweckgebundene unveränderliche externe Identität.
+
+## Rollenzuordnungen
+
+Rollenzuordnungen gehören zu Access SCIM und SSO, niemals zu People Directory SCIM.
+
+1. Öffnen Sie **SCIM-Bereitstellung** oder **Single-Sign-On**.
+2. Öffnen Sie **Rollenzuordnung**.
+3. Ordnen Sie jeder Veviad-Rolle eine Gruppen-ID oder einen Attributwert des Identitätsanbieters zu.
+4. Konfigurieren Sie eine sichere Standardrolle.
+5. Speichern und prüfen Sie die Zuordnung.
+
+Rollen legen fest, was eine angemeldete Person tun darf. Eine Rolle allein aktiviert keine Anmeldung.
+
+## SSO und kontrolliertes JIT
+
+Auch eine SSO-Anmeldung durchläuft die zentrale Veviad-Zugriffsprüfung. Personenstatus und Anwendungszugriff müssen **Aktiv** sein.
+
+Die kontrollierte Just-in-Time-Erstellung ist standardmäßig deaktiviert. Wenn sie aktiviert wird, verwendet sie die konfigurierte Standardrolle. JIT kann keinen Zugriff erzeugen oder aktivieren, solange Access SCIM aktiv ist, weil der SCIM-Feed für diese Berechtigung zuständig ist.
+
+Empfohlene Muster:
+
+| Muster | Verhalten |
+|---|---|
+| Access SCIM plus SSO | Empfohlen für verwaltete Anwendungskonten und Anmeldung ohne lokales Passwort |
+| People Directory SCIM plus Access SCIM plus SSO | Empfohlen, wenn Veviad zusätzlich die breitere Belegschaft für Zuweisungen benötigt |
+| People Directory SCIM plus lokale Einladungen | Verzeichnis wird synchronisiert; Administratoren gewähren ausgewählten Personen Zugriff |
+| SSO mit kontrolliertem JIT | Nur geeignet, wenn kein Access-SCIM-Feed den Zugriff verwaltet |
+| Nur lokal | Personen hinzufügen oder importieren und nur tatsächliche Veviad-Benutzer einladen |
+
+## Bereitstellung konfigurieren
+
+Für jede Entra-Unternehmensanwendung:
+
+1. Öffnen Sie die passende Integration in Veviad.
+2. Kopieren Sie den SCIM-Endpoint mit /scim/v2.
+3. Erzeugen Sie das Bearer Token dieser Integration.
+4. Setzen Sie in Entra den Bereitstellungsmodus auf **Automatisch**.
+5. Verwenden Sie den Endpoint als **Tenant URL** und das Token als **Secret Token**.
+6. Führen Sie **Verbindung testen** aus.
+7. Prüfen Sie Benutzer- und Gruppenattributzuordnungen.
+8. Weisen Sie die vorgesehenen Benutzer oder Gruppen zu.
+9. Starten Sie die Bereitstellung und prüfen Sie die Entra-Protokolle.
+
+Weisen Sie Access SCIM nur Personen zu, die Veviad verwenden dürfen. Weisen Sie People Directory SCIM die Belegschaft zu, die für Inventar- und Organisationsdaten benötigt wird.
+
+## Ergebnisse des Lebenszyklus
+
+| Ereignis | Personenstatus | Zugriffsstatus |
+|---|---|---|
+| People Directory erstellt eine Person | Aktiv | Unverändert, normalerweise Keiner |
+| People Directory deprovisioniert eine Person | Inaktiv | Unverändert |
+| Access SCIM gewährt Zugriff | Unverändert | Mit SSO Aktiv, sonst Ausstehend bis zur Aktivierung |
+| Access SCIM deprovisioniert Zugriff | Unverändert | Gesperrt |
+| Administrator deaktiviert eine lokale Person | Inaktiv | Unverändert |
+| Administrator reaktiviert eine lokale Person | Aktiv | Unverändert |
+
+Eine Deaktivierung der Person oder Sperre des Zugriffs blockiert die Anmeldung sofort und widerruft aktive Sitzungen und API-Token.
 
 ## Fehlerbehebung
 
-### Der Benutzer kann sich anmelden, hat aber nicht die erwartete Rolle erhalten
+### Beide Integrationen zeigen denselben Endpoint
 
-Prüfen Sie:
+Das ist beabsichtigt. Prüfen Sie, dass jede Entra-Anwendung das Token der passenden Veviad-Integration verwendet.
 
-- ob die Rollenzuordnung in Veviad gespeichert ist und nach erneutem Öffnen des Dialogs weiterhin angezeigt wird;
-- ob **Rollen bei Anmeldung synchronisieren** aktiviert ist, wenn die SSO-Anmeldung Rollen aktualisieren soll;
-- ob das Entra-Token einen `groups`-Claim enthält;
-- ob der Wert im Token exakt dem in Veviad eingetragenen Wert entspricht;
-- ob der Benutzer der Unternehmensanwendung zugewiesen ist;
-- ob der Benutzer Mitglied der zugeordneten Entra-Gruppe ist.
+### Eine Verzeichnis-Person hat keine Rolle erhalten
 
-### SCIM hat den Benutzer erstellt, aber keine Rolle zugewiesen
+Das ist beabsichtigt. People Directory SCIM weist keine Rollen zu. Gewähren Sie den Anwendungszugriff manuell oder nehmen Sie die Person in Access SCIM auf.
 
-Prüfen Sie:
+### Zugriff oder Rollen können in Veviad nicht bearbeitet werden
 
-- ob die SCIM-Bereitstellungsdaten `groups` enthalten;
-- ob die Gruppenbereitstellung oder die Synchronisierung von Gruppenmitgliedschaften in den Entra-Bereitstellungszuordnungen aktiviert ist;
-- ob der SCIM-Gruppenwert mit der Veviad-Rollenzuordnung übereinstimmt;
-- ob eine **Standardrolle** konfiguriert ist, wenn Benutzer ohne zugeordnete Gruppen Basiszugriff erhalten sollen;
-- ob die Entra-Bereitstellungsprotokolle die Aktualisierung von Benutzer und Gruppenmitgliedschaft als erfolgreich anzeigen.
+Prüfen Sie die angezeigte **Verwaltungszuständigkeit**. Von Access SCIM verwaltete Berechtigungen und Rollen müssen im Identitätsanbieter geändert werden.
 
-### Eine Gruppenmitgliedschaft wurde in Entra geändert, aber Veviad zeigt noch die alte Rolle
+### Die Identitätsanbieter-Anmeldung funktioniert, Veviad blockiert aber den Zugriff
 
-Die Aktualisierung hängt vom Workflow ab:
+Prüfen Sie, ob Personenstatus und Zugriffsstatus **Aktiv** sind. Eine Rolle allein reicht nicht aus.
 
-- Die SSO-Rollensynchronisierung läuft bei der nächsten Anmeldung des Benutzers.
-- Die SCIM-Rollensynchronisierung läuft, wenn Entra eine Bereitstellungsaktualisierung sendet. Mit der bedarfsgesteuerten Bereitstellung in Entra können Sie das sofort testen.
+### Derselbe Mitarbeitende wurde doppelt erstellt
 
-Wenn der Benutzer keiner zugeordneten Gruppe mehr angehört, behält Veviad die bestehenden Rollen bei, sofern nicht ein Standardrollen-Fallback oder eine andere Bereitstellungsaktion sie ändert. Prüfen Sie den Benutzer manuell, wenn Sie die letzte zugeordnete Gruppe von einem Konto entfernen.
+Stoppen Sie die Bereitstellung und prüfen Sie normalisierte E-Mail-Adresse und externe Kennungen. Veviad meldet mehrdeutige Abgleiche als Konflikt; lösen Sie die Quelldaten, bevor Sie fortfahren.
 
-### Das SCIM-Token ging verloren oder wurde offengelegt
+### Ein Token ging verloren oder wurde offengelegt
 
-Erzeugen Sie das Token in Veviad neu und aktualisieren Sie das **Secret Token** in Microsoft Entra ID. Durch das Neuerzeugen wird das vorherige Token ungültig.
-
-## Referenzen zu Microsoft Entra
-
-- [Configure group claims for applications by using Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims)
-- [Develop a SCIM endpoint for user provisioning from Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/use-scim-to-provision-users-and-groups)
-- [SCIM support in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/scim-support-in-entra-id)
-- [Scoping users or groups to be provisioned with scoping filters](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/define-conditional-rules-for-provisioning-user-accounts)
+Rotieren Sie nur das Token des betroffenen Bereitstellungszwecks und aktualisieren Sie das passende Entra Secret Token. Die andere SCIM-Integration bleibt unabhängig.
