@@ -133,10 +133,6 @@
             "groups": [
               {
                 "group": "Hier starten",
-                "icon": {
-                  "name": "compass",
-                  "library": "lucide"
-                },
                 "expanded": true,
                 "pages": [
                   "de/index",
@@ -148,10 +144,6 @@
               },
               {
                 "group": "Tägliche Arbeit",
-                "icon": {
-                  "name": "briefcase-business",
-                  "library": "lucide"
-                },
                 "expanded": true,
                 "pages": [
                   "de/main",
@@ -165,10 +157,6 @@
               },
               {
                 "group": "Automatisierung & Erkenntnisse",
-                "icon": {
-                  "name": "chart-column",
-                  "library": "lucide"
-                },
                 "expanded": false,
                 "pages": [
                   "de/analytics",
@@ -182,10 +170,6 @@
               },
               {
                 "group": "Administration",
-                "icon": {
-                  "name": "settings",
-                  "library": "lucide"
-                },
                 "expanded": false,
                 "pages": [
                   "de/organization",
@@ -201,10 +185,6 @@
               },
               {
                 "group": "Hilfe",
-                "icon": {
-                  "name": "circle-help",
-                  "library": "lucide"
-                },
                 "expanded": false,
                 "pages": [
                   "de/faq",
