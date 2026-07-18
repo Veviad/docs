@@ -91,11 +91,7 @@
               },
               {
                 "group": "Help",
-                "icon": {
-                  "name": "circle-help",
-                  "library": "lucide"
-                },
-                "expanded": false,
+                "icon": "question-circle",
                 "pages": [
                   "faq",
                   "faq/common-questions",
