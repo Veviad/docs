@@ -1,89 +1,88 @@
 ---
 title: "Admin"
 sidebarTitle: "Admin"
-description: "Roles, users, invitations, integrations, and system health."
+description: "Manage people, application users, roles, invitations, integrations, and login configuration."
 icon: "shield-user"
 ---
 
-The Admin area (`Organization → Admin`) is where authentication, access, and org-level integrations are configured. It has five subpages: **General**, **Roles**, **Users**, **Invitations**, and **Integrations**.
+The Admin area separates workforce management from application access. Its submenu contains **General**, **People**, **Users**, **Invitations**, **Roles**, **Integrations**, and **Login Links**.
 
-![The Admin Dashboard with users, assets, license seats, and system health](/images/screenshots/admin.webp)
+## People
 
-_View shown: `demo.veviad.cloud/admin`_
-## General (Admin Dashboard)
+**Admin → People** opens the workforce directory. It includes everyone who may receive assignments, including people who cannot sign in.
 
-Landing page for the admin area. At a glance:
+Selecting Edit opens the canonical administrative editor at /admin/people/{id}. This editor is available for people with or without application access.
 
-- **KPI tiles:** Users, Assets, License Seats, Departments — each with totals and a percentage bar.
-- **Role Distribution** — seat count and share per system role (Admin, Asset Manager, Department Manager, User).
-- **Recent Activities** — latest admin-relevant actions.
-- **System Health** — Permissions count, Roles count, Database Size, Storage Usage.
-- **Integrations status** — Single-Sign-On and Veviad AI with active / inactive badges.
+For every person, authorized administrators can manage:
 
-## Roles
+- profile and organization details;
+- person status;
+- linked assets and licenses;
+- lifecycle history and relationship analysis.
 
-![The Roles overview with permissions per role](/images/screenshots/admin-roles.webp)
-
-_View shown: `demo.veviad.cloud/admin/roles`_
-
-Manage the permission bundles that users can be assigned. The default role set ships with:
-
-- **Admin** — full platform access
-- **Asset Manager** — lifecycle ownership of assets
-- **Department Manager** — scoped access within a department
-- **User** — baseline read / use access
-
-Create custom roles when the built-ins don't fit. The workspace tracks the total permission count (≈79 in the default seed) and the number of active roles under System Health.
+Application-account controls appear only after access exists.
 
 ## Users
 
-![The Users list with roles and account status](/images/screenshots/admin-users.webp)
+**Admin → Users** lists only people whose application access is **Pending**, **Active**, or **Suspended**. Workforce-only records with access **None** remain in People and can be promoted with **Grant Access**.
 
-_View shown: `demo.veviad.cloud/admin/users`_
+The user directory shows application-access status, authentication method, role, and management authority. The name opens the read-only profile; Edit opens the same administrative person editor used from People.
 
-The admin view of the user directory — login accounts and their assigned roles. This is different from `People` (which is the HR / asset-assignment view): Users is the authentication-and-permission lens, People is the operational lens.
+## Grant application access
+
+Choose **Grant Access** and select an existing active person without access.
+
+1. Select the person.
+2. Select the sign-in method.
+3. Confirm or add the email address.
+4. Select the application role.
+5. Grant access.
+
+For a local account, Veviad sends an invitation and sets access to **Pending** until the recipient establishes credentials. For SSO, access can become active without a local password.
+
+Roles are assigned at this stage because they answer what an authenticated person may do. A workforce-only person has no role.
+
+If Access SCIM owns the person's entitlement, access and role changes are read-only in Veviad. Manage them in the identity provider.
+
+## Independent statuses
+
+| Status | Values | Meaning |
+|---|---|---|
+| Person status | Active, Inactive | Whether the workforce record can receive new assignments |
+| Access status | None, Pending, Active, Suspended | Whether an application account exists and its lifecycle |
+| Effective login | Eligible or blocked | Calculated from both statuses and the authentication configuration |
+
+Authentication requires both person status **Active** and access status **Active**.
+
+Deactivating a person does not erase access history or roles. Suspending access does not deactivate the workforce record.
 
 ## Invitations
 
-![The Invitations view with pending invitations](/images/screenshots/admin-invitations.webp)
+Local invitations reuse an existing person when possible and do not create a duplicate workforce record.
 
-_View shown: `demo.veviad.cloud/admin/invitations`_
+- **Pending** — invitation is valid but credentials are not established
+- **Accepted** — access is active
+- **Expired** — generate a replacement when access is still intended
+- **Revoked** — the invitation can no longer be used
 
-Controlled onboarding for new users.
+An active pending invitation for the same person or normalized email cannot be created twice.
 
-**Administrator flow:**
+## Roles
 
-1. open `Admin → Users` and choose `Invite User`
-2. enter the recipient email
-3. assign one or more roles
-4. send the invitation
+Roles only apply to application users. The Roles tab is disabled when access is **None**.
 
-**Invitation lifecycle:**
+System and custom roles define authenticated permissions. Role assignment requires user.assign.role. Access SCIM group mappings can manage roles from the identity provider; People Directory SCIM groups never assign roles.
 
-- pending state until accepted
-- expiry window (commonly 72 hours, configurable)
-- resend support if the email is lost or expires
-- revoke support when access should be cancelled before acceptance
+## Permissions and ownership
 
-**Invitee flow:** the user receives an email with a secure acceptance link and creates their password via the acceptance page.
+Administrative actions use permissions rather than a hard-coded role:
 
-**If an invitation doesn't arrive:** check spam, verify the email address, resend, and confirm mail delivery with your administrator if the problem continues.
+- user.view controls directory visibility;
+- user.edit controls the administrative editor;
+- user.create controls adding people and granting access;
+- user.delete controls person lifecycle and access suspension;
+- user.assign.role controls role changes.
 
-## Integrations
+The default Admin role receives these permissions. Custom delegated HR or IT roles can be created without changing the underlying workflow.
 
-![The Integrations list with Single-Sign-On and Veviad AI](/images/screenshots/admin-integrations.webp)
-
-_View shown: `demo.veviad.cloud/admin/integrations`_
-
-Two integrations ship by default and are toggled here:
-
-- **Single-Sign-On** — inactive by default; configure via the per-row gear icon.
-- **Veviad AI (Chat Assistant)** — active by default; use the per-row gear to configure the AI provider (currently supports Anthropic Claude — see `Veviad AI → Assistant`).
-
-Enable SSO before you invite users in larger rollouts — reassigning authentication after invitations are accepted adds operational friction.
-
-For Microsoft Entra ID setup, SCIM provisioning, and group-to-role synchronization, see [SSO and SCIM](/organization/sso-scim).
-
-## System visibility
-
-The Admin Dashboard is where you look when you need a one-screen answer to "is this tenant healthy?": users total vs. active, assets total vs. utilized, license seats, recent activity, and integration state. For event-level detail, go to `Analytics → Audit Logs`.
+For SSO and the two SCIM provisioning purposes, see [SSO and SCIM](/organization/sso-scim).
