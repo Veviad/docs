@@ -153,10 +153,10 @@
                   "de/main",
                   "de/main/dashboard",
                   "de/main/assets",
-                  "de/main/checklists",
                   "de/main/people",
                   "de/main/maintenance",
-                  "de/main/asset-handover"
+                  "de/main/asset-handover",
+                  "de/main/checklists"
                 ]
               },
               {
