@@ -16,11 +16,17 @@
         "tabs": [
           {
             "tab": "Documentation",
-            "icon": "book-open",
+            "icon": {
+              "name": "book-open",
+              "library": "lucide"
+            },
             "groups": [
               {
                 "group": "Start here",
-                "icon": "compass",
+                "icon": {
+                  "name": "compass",
+                  "library": "lucide"
+                },
                 "expanded": true,
                 "pages": [
                   "index",
@@ -32,7 +38,10 @@
               },
               {
                 "group": "Daily work",
-                "icon": "briefcase-business",
+                "icon": {
+                  "name": "briefcase-business",
+                  "library": "lucide"
+                },
                 "expanded": true,
                 "pages": [
                   "main",
@@ -46,7 +55,10 @@
               },
               {
                 "group": "Automation & insights",
-                "icon": "chart-column",
+                "icon": {
+                  "name": "chart-column",
+                  "library": "lucide"
+                },
                 "expanded": false,
                 "pages": [
                   "analytics",
@@ -60,7 +72,10 @@
               },
               {
                 "group": "Administration",
-                "icon": "settings",
+                "icon": {
+                  "name": "settings",
+                  "library": "lucide"
+                },
                 "expanded": false,
                 "pages": [
                   "organization",
@@ -76,7 +91,10 @@
               },
               {
                 "group": "Help",
-                "icon": "circle-help",
+                "icon": {
+                  "name": "circle-help",
+                  "library": "lucide"
+                },
                 "expanded": false,
                 "pages": [
                   "faq",
@@ -131,11 +149,17 @@
         "tabs": [
           {
             "tab": "Dokumentation",
-            "icon": "book-open",
+            "icon": {
+              "name": "book-open",
+              "library": "lucide"
+            },
             "groups": [
               {
                 "group": "Hier starten",
-                "icon": "compass",
+                "icon": {
+                  "name": "compass",
+                  "library": "lucide"
+                },
                 "expanded": true,
                 "pages": [
                   "de/index",
@@ -147,7 +171,10 @@
               },
               {
                 "group": "Tägliche Arbeit",
-                "icon": "briefcase-business",
+                "icon": {
+                  "name": "briefcase-business",
+                  "library": "lucide"
+                },
                 "expanded": true,
                 "pages": [
                   "de/main",
@@ -161,7 +188,10 @@
               },
               {
                 "group": "Automatisierung & Erkenntnisse",
-                "icon": "chart-column",
+                "icon": {
+                  "name": "chart-column",
+                  "library": "lucide"
+                },
                 "expanded": false,
                 "pages": [
                   "de/analytics",
@@ -175,7 +205,10 @@
               },
               {
                 "group": "Administration",
-                "icon": "settings",
+                "icon": {
+                  "name": "settings",
+                  "library": "lucide"
+                },
                 "expanded": false,
                 "pages": [
                   "de/organization",
@@ -191,7 +224,10 @@
               },
               {
                 "group": "Hilfe",
-                "icon": "circle-help",
+                "icon": {
+                  "name": "circle-help",
+                  "library": "lucide"
+                },
                 "expanded": false,
                 "pages": [
                   "de/faq",
