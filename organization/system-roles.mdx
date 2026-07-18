@@ -1,0 +1,42 @@
+---
+title: "System roles and permissions"
+sidebarTitle: "System roles"
+description: "Understand Veviad's five system roles, their intended users, and their main capability boundaries."
+icon: "user-shield"
+---
+
+Veviad includes five protected system roles. Use them as practical starting points for common responsibilities.
+
+<Note>
+  A role controls what an application user can do after application access is active. Assigning a role does not grant sign-in access by itself.
+</Note>
+
+![Roles and permission coverage in Admin](/images/screenshots/admin-roles.webp)
+
+## System roles at a glance
+
+| System role | Intended for | Main capabilities and boundary |
+| --- | --- | --- |
+| **Admin** (<code>admin</code>) | A small group of platform administrators | Full application access, including users, roles, settings, integrations, all operational data, reports, and audit logs. |
+| **Asset Manager** (<code>asset-manager</code>) | The central asset-management team | Manages assets across departments, maintenance, operational asset configuration, Actions, checklist templates, and reports. Can view People but cannot administer application access or integrations. |
+| **Department Manager** (<code>department-manager</code>) | Managers responsible for one department | Works with existing departmental assets, assignments, audits, maintenance requests, and departmental reports. Does not receive global administration or unrestricted asset creation and deletion. |
+| **Employee** (<code>employee</code>) | Regular application users | Views assigned assets and basic organization information and can create maintenance requests. Does not manage reports, configuration, or application access. |
+| **Finance** (<code>finance</code>) | Finance, compliance, and audit teams | Cross-department read, reporting, export, depreciation, and audit access. Does not manage operational records, users, or settings. |
+
+## Choose and review a role
+
+- Start with the least-privileged system role that fits the responsibility.
+- Open **Admin → Roles**, then select a role to see its exact permissions and assigned users.
+- System roles are managed by Veviad and cannot be edited or deleted.
+- Create a custom role when a system role is too broad or too narrow.
+- Review role mappings in SSO or SCIM when the identity provider is authoritative.
+
+## Troubleshooting
+
+If a module or action is missing, confirm that the person has active application access, the intended role, and the required permission. Department-scoped roles may also need the correct department assignment.
+
+## Related topics
+
+- [People and application access](/organization/user-access)
+- [Admin overview](/organization/admin)
+- [SSO and SCIM](/organization/sso-scim)

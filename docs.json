@@ -66,6 +66,7 @@
                   "organization/settings-assets",
                   "organization/settings-workflows",
                   "organization/user-access",
+                  "organization/system-roles",
                   "organization/integrations",
                   "organization/admin",
                   "organization/sso-scim"
@@ -178,6 +179,7 @@
                   "de/organization/settings-assets",
                   "de/organization/settings-workflows",
                   "de/organization/user-access",
+                  "de/organization/system-roles",
                   "de/organization/integrations",
                   "de/organization/admin",
                   "de/organization/sso-scim"
