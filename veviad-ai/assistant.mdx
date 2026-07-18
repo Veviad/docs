@@ -1,47 +1,46 @@
 ---
-title: "Assistant"
+title: "Veviad AI assistant"
 sidebarTitle: "Assistant"
-description: "The Veviad AI chat assistant — natural-language access to workspace data."
+description: "Ask natural-language questions about the Veviad data you are allowed to access."
 icon: "bot"
 ---
 
-The Veviad AI Assistant is the natural-language layer over your workspace. Open it from the floating purple sparkle button (bottom-right of any page) to ask questions in plain language and get structured answers back.
+## Purpose
 
-![The Veviad AI Assistant panel with a results table and Copy CSV action](/images/screenshots/assistant.webp)
+The assistant helps locate and interpret permitted workspace data without replacing the source record or report.
 
-_View shown: `demo.veviad.cloud`_
-## What the assistant can do
+![Veviad AI assistant for machinery questions](/images/screenshots/assistant.webp)
 
-When opened, the assistant auto-populates with a live workspace snapshot:
+## Before you begin
 
-- asset counts by **Category** (Laptops, Workstations, Network Equipment, Mobile Phones, …)
-- asset counts by **Status** (In stock, Deployed, …)
-- asset counts by **Department**
-- combined asset value
+You need assistant permission and an active AI integration. The assistant applies your current data permissions.
 
-Results render as embedded tables with **Copy CSV** on each — not just free-text prose. This makes the assistant useful for fast analysis as well as question-answering.
+## Ask a useful question
 
-## Chat interface
+1. Open the Veviad AI assistant.
+2. State the domain and decision, such as “Which production-critical machines are due for service?”
+3. Add relevant limits, dates, locations, or statuses.
+4. Review the answer and follow source links.
+5. Refine the question rather than assuming missing data means zero.
+6. Confirm important values on the source record or in a report.
 
-- **Provider selector** — switch the underlying AI model. Additional providers can be added through `Organization → Admin → Integrations → Veviad AI`.
-- **Export** — save the current conversation.
-- **Clear chat** — reset the session.
-- **Input** — `Press Enter to send, Shift+Enter for new line`.
+## Expected result
 
-## Where it helps most
-
-- find records fast ("show me deployed laptops in the Human Resources department")
-- summarize a record set before a review
-- surface cross-module context (an asset's assignment, warranty, and recent checklist history in one breath)
-- prepare to act — the assistant is a shortcut into the right filter, not a replacement for the record itself
+The conversation records your question and an answer based on available tools and permitted Veviad data.
 
 ## Best practices
 
-- ask focused questions when possible — the assistant handles multi-part asks, but narrow ones return cleaner tables
-- confirm important decisions against the underlying records in `Main → Assets` / `Main → People`
-- pair AI results with `Analytics → Reports` and `Analytics → Audit Logs` for governance-sensitive workflows
-- treat AI output as a starting point for action, not an authoritative record
+- Ask one operational question at a time.
+- Request source records or exact filters.
+- Avoid prompts containing secrets or unnecessary personal data.
+- Use Reports for repeatable, scheduled, or distributable analysis.
 
-## Configuring providers
+## Troubleshooting
 
-Go to `Organization → Admin → Integrations` and click the gear icon on the **Veviad AI** row. From there you can enable/disable providers and select which model the assistant uses by default.
+If the assistant is unavailable, check integration activation and permission. If an answer is incomplete, narrow the question and verify the underlying records.
+
+## Related topics
+
+- [Reports](/analytics/reports)
+- [PDF asset intake](/veviad-ai/pdf-asset-extraction)
+- [Integrations](/organization/integrations)

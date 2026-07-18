@@ -1,47 +1,46 @@
 ---
-title: "Assistent"
-sidebarTitle: "Assistent"
-description: "Der Veviad AI Chat-Assistent — Zugriff auf Workspace-Daten in natürlicher Sprache."
+title: "Veviad AI Assistent"
+sidebarTitle: "Veviad AI Assistent"
+description: "Fragen zu Beständen und Abläufen im erlaubten Datenkontext stellen."
 icon: "bot"
 ---
 
-Der Veviad AI Assistent ist die natürlichsprachliche Ebene über Ihrem Workspace. Öffnen Sie ihn über die schwebende violette Funken-Schaltfläche (unten rechts auf jeder Seite), stellen Sie Fragen in Alltagssprache und erhalten Sie strukturierte Antworten.
+## Zweck
 
-![Der Veviad AI Assistent mit Ergebnistabelle und CSV-Kopierfunktion](/images/screenshots/de/assistant.webp)
+Der Assistent hilft beim Finden und Interpretieren erlaubter Workspace-Daten, ersetzt aber weder Quelldatensatz noch Bericht.
 
-_Gezeigte Ansicht: `demo.veviad.cloud`_
-## Was der Assistent kann
+![Veviad AI Assistent für Maschinenfragen](/images/screenshots/de/assistant.webp)
 
-Beim Öffnen zeigt der Assistent automatisch eine aktuelle Momentaufnahme des Workspace:
+## Voraussetzungen
 
-- Asset-Anzahl je **Kategorie** (Laptops, Workstations, Netzwerkgeräte, Mobiltelefone, …)
-- Asset-Anzahl je **Status** (Auf Lager, Im Einsatz, …)
-- Asset-Anzahl je **Abteilung**
-- Gesamtwert der Assets
+Sie benötigen Assistent-Berechtigung und eine aktive AI-Integration.
 
-Ergebnisse erscheinen als eingebettete Tabellen mit **CSV kopieren** — nicht nur als Fließtext. Damit eignet sich der Assistent sowohl für schnelle Analysen als auch für Frage-Antwort-Szenarien.
+## Gute Frage stellen
 
-## Chat-Oberfläche
+1. Öffnen Sie den Assistenten.
+2. Benennen Sie Domäne und Entscheidung, etwa „Welche produktionskritischen Maschinen benötigen Service?“
+3. Ergänzen Sie Grenzen, Datum, Standort oder Status.
+4. Prüfen Sie Antwort und Quelllinks.
+5. Präzisieren Sie die Frage, statt fehlende Daten als null zu interpretieren.
+6. Bestätigen Sie wichtige Werte am Quelldatensatz oder im Bericht.
 
-- **Anbieter-Auswahl** — wechselt das zugrunde liegende KI-Modell. Weitere Anbieter können über `Organisation → Admin → Integrationen → Veviad AI` ergänzt werden.
-- **Export** — speichert die aktuelle Unterhaltung.
-- **Chat leeren** — setzt die Sitzung zurück.
-- **Eingabe** — `Enter zum Senden, Shift+Enter für eine neue Zeile`.
+## Erwartetes Ergebnis
 
-## Wo er am meisten hilft
+Die Unterhaltung enthält Frage und Antwort auf Basis erlaubter Veviad-Daten.
 
-- Datensätze schnell finden („zeige mir die eingesetzten Laptops der Personalabteilung“)
-- einen Datenbestand vor einem Review zusammenfassen
-- modulübergreifenden Kontext sichtbar machen (Zuweisung, Garantie und jüngste Checklisten-Historie eines Assets auf einen Blick)
-- Aktionen vorbereiten — der Assistent ist eine Abkürzung zum richtigen Filter, kein Ersatz für den Datensatz selbst
+## Bewährte Vorgehensweisen
 
-## Best Practices
+- Stellen Sie eine operative Frage pro Prompt.
+- Fordern Sie Quellen oder genaue Filter an.
+- Vermeiden Sie Secrets, API-Schlüssel und unnötige Personendaten.
+- Verwenden Sie Berichte für wiederholbare Analysen.
 
-- Stellen Sie möglichst fokussierte Fragen — der Assistent verarbeitet auch mehrteilige Anfragen, aber enge Fragen liefern sauberere Tabellen
-- Bestätigen Sie wichtige Entscheidungen anhand der zugrunde liegenden Datensätze unter `Haupt → Assets` / `Haupt → Personen`
-- Kombinieren Sie KI-Ergebnisse für governance-relevante Workflows mit `Analysen → Berichte` und `Analysen → Audit-Logs`
-- Behandeln Sie KI-Ausgaben als Ausgangspunkt für Aktionen, nicht als verbindlichen Datensatz
+## Fehlerbehebung
 
-## Anbieter konfigurieren
+Prüfen Sie Integration und Berechtigung. Grenzen Sie unvollständige Antworten ein und prüfen Sie Quelldaten.
 
-Öffnen Sie `Organisation → Admin → Integrationen` und klicken Sie auf das Zahnrad-Symbol in der Zeile **Veviad AI**. Dort können Sie Anbieter aktivieren oder deaktivieren und festlegen, welches Modell der Assistent standardmäßig verwendet.
+## Verwandte Themen
+
+- [Berichte](/de/analytics/reports)
+- [PDF-Asset-Erfassung](/de/veviad-ai/pdf-asset-extraction)
+- [Integrationen](/de/organization/integrations)

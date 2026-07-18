@@ -1,0 +1,32 @@
+---
+title: "Hotfix-Ablauf"
+sidebarTitle: "Hotfix-Ablauf"
+description: "Dringende Produktionskorrekturen ohne zukünftige develop-Änderungen ausliefern."
+icon: "shield-check"
+---
+
+Ein Hotfix behebt ein dringendes Produktionsproblem mit minimalem Umfang und nachweisbarem Rollback.
+
+## Voraussetzungen
+
+Bestätigen Sie betroffene Version, Quell-SHA, Image-Digest, Reproduktionsschritte und Geschäftsauswirkung. Legen Sie vor jeder Datenänderung einen aktuellen Backup-Nachweis an.
+
+## Ablauf
+
+1. Verzweigen Sie von der betroffenen stabilen Linie oder dem exakten Release-Tag.
+2. Implementieren Sie nur Ursache, Tests und zwingende Dokumentation.
+3. Prüfen Sie PHP-Tests, Frontend-Tests, Build und Qualitätschecks.
+4. Öffnen Sie den Hotfix-PR gegen die freigegebene stabile Basis.
+5. Erzeugen und verifizieren Sie neuen Patch-Tag und Image-Digest.
+6. Rollen Sie den Digest aus und prüfen Sie `/health`, Anmeldung und den betroffenen Workflow.
+7. Führen Sie die Korrektur anschließend in `develop` zurück.
+
+## Abbruchkriterien
+
+Stoppen Sie bei ungeklärter Migration, fehlendem Backup, nicht reproduzierbarer Wirkung oder abweichendem Digest.
+
+## Verwandte Themen
+
+- [Versionierung](/de/release-management/versioning)
+- [Upgrade-Leitfaden](/de/release-management/upgrade-guide)
+- [Datenbank-Rollback](/de/release-management/database-migration-rollback)

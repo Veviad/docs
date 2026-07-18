@@ -1,0 +1,38 @@
+---
+title: "Signed Central feedback ingress"
+sidebarTitle: "Feedback ingress"
+description: "Configure and verify timestamped HMAC delivery from Veviad to Central."
+icon: "message-square-lock"
+---
+
+Admin feedback is sent from an instance to Central through a signed server-to-server request.
+
+## Configuration
+
+Set both values in the instance environment:
+
+- `FEEDBACK_INGRESS_URL`: HTTPS Central ingress endpoint.
+- `FEEDBACK_INGRESS_SECRET`: shared signing secret stored only in secret management.
+- Optional `FEEDBACK_INGRESS_TIMEOUT`: request timeout in seconds; default 15.
+
+The feedback option is available only to administrators when both required values are valid.
+
+## Signature contract
+
+Veviad serializes the exact JSON body, generates a Unix timestamp, and signs `timestamp + "." + body` with HMAC-SHA256. It sends `X-Feedback-Timestamp` and `X-Feedback-Signature: sha256=…`. Central must verify the raw request bytes, timestamp freshness, and constant-time signature equality.
+
+## Verify delivery
+
+1. Configure the endpoint and secret through deployment secrets.
+2. Clear configuration cache or redeploy.
+3. Submit non-sensitive test feedback from the Help menu.
+4. Confirm a success response and the corresponding Central record.
+5. Confirm replayed or modified requests are rejected.
+
+## Failure handling
+
+A missing configuration hides the feature. Transport or non-success responses produce a safe user error and an application log entry without exposing the secret.
+
+## Related runbooks
+
+- [Deployment health checks](/operations/deployment-health)

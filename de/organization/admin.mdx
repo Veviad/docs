@@ -1,98 +1,40 @@
 ---
-title: "Admin"
-sidebarTitle: "Admin"
-description: "Verwalten Sie Personen, Anwendungsbenutzer, Rollen, Einladungen, Integrationen und Anmeldekonfiguration."
+title: "Benutzer und Berechtigungen"
+sidebarTitle: "Benutzer und Berechtigungen"
+description: "Einladungen, Rollen, Berechtigungen und Anwendungszugänge verwalten."
 icon: "shield-user"
 ---
 
-Der Admin-Bereich trennt die Verwaltung der Belegschaft vom Anwendungszugriff. Das Untermenü enthält **Allgemein**, **Personen**, **Benutzer**, **Einladungen**, **Rollen**, **Integrationen** und **Login-Links**.
+![Veviad-Admin-Überblick](/images/screenshots/de/admin.webp)
 
-## Personen
+## Zweck
 
-**Admin → Personen** öffnet das Personenverzeichnis. Es enthält alle Personen, die Zuweisungen erhalten können, einschließlich Personen ohne Anmeldemöglichkeit.
+Admin verwaltet Anwendungszugriff und Plattformintegrationen. Der Bereich ersetzt nicht das Personenverzeichnis.
 
-Die Aktion Bearbeiten öffnet den zentralen administrativen Editor unter /admin/people/{id}. Er steht für Personen mit und ohne Anwendungszugriff zur Verfügung.
+## Hauptbereiche
 
-Berechtigte Administratoren verwalten dort:
+- **Benutzer**: Personen mit Anwendungszugriff oder laufendem Zugriffslebenszyklus.
+- **Einladungen**: lokale Aktivierung, Ablauf, erneuter Versand und Widerruf.
+- **Rollen**: Berechtigungspakete für Anwendungsbenutzer.
+- **Integrationen**: AI, OCR, E-Mail, Identität und Provisionierung.
+- **Anmeldeinhalte und Links**: organisationsspezifische Darstellung.
+- **Systeminformationen**: Version und Laufzeitgesundheit.
 
-- Profil- und Organisationsdaten;
-- Personenstatus;
-- verknüpfte Assets und Lizenzen;
-- Lebenszyklus-Historie und Beziehungsanalyse.
+![Anwendungsbenutzer](/images/screenshots/de/admin-users.webp)
 
-Funktionen des Anwendungskontos erscheinen erst, wenn Zugriff vorhanden ist.
+![Ausstehende Einladungen](/images/screenshots/de/admin-invitations.webp)
 
-![Der administrative Personen-Editor zeigt einen reinen Belegschaftsdatensatz ohne Anwendungszugriff](/images/screenshots/de/admin-person-no-access.webp)
+![Rollen und Berechtigungen](/images/screenshots/de/admin-roles.webp)
 
-## Benutzer
+## Bewährte Vorgehensweisen
 
-**Admin → Benutzer** zeigt nur Personen mit **Ausstehendem**, **Aktivem** oder **Gesperrtem** Anwendungszugriff. Personen mit Zugriff **Keiner** bleiben im Personenverzeichnis und können über **Zugriff gewähren** zu Anwendungsbenutzern werden.
+- Erteilen Sie einer bestehenden Person Zugriff.
+- Verwenden Sie geringste Rechte und testen Sie Rollen.
+- Entziehen Sie Zugriff, ohne Belegschaftshistorie zu löschen.
+- Speichern Sie Secrets nur in geschützten Feldern.
 
-Das Benutzerverzeichnis zeigt Zugriffsstatus, Anmeldeverfahren, Rolle und Verwaltungszuständigkeit. Der Name öffnet das schreibgeschützte Profil; Bearbeiten öffnet denselben administrativen Personen-Editor wie im Personenverzeichnis.
+## Verwandte Themen
 
-![Das Verzeichnis der Anwendungsbenutzer mit Zugriffsstatus, Anmeldeverfahren, Rollen und Aktionen](/images/screenshots/de/admin-users.webp)
-
-## Anwendungszugriff gewähren
-
-Wählen Sie **Zugriff gewähren** und anschließend eine aktive Person ohne Zugriff.
-
-1. Wählen Sie die Person.
-2. Wählen Sie das Anmeldeverfahren.
-3. Bestätigen oder ergänzen Sie die E-Mail-Adresse.
-4. Wählen Sie die Anwendungsrolle.
-5. Gewähren Sie den Zugriff.
-
-![Der Dialog Anwendungszugriff gewähren macht aus einem bestehenden Belegschaftsdatensatz einen Anwendungsbenutzer](/images/screenshots/de/admin-grant-access.webp)
-
-Bei einem lokalen Konto sendet Veviad eine Einladung und setzt den Zugriff auf **Ausstehend**, bis Anmeldedaten eingerichtet wurden. Bei SSO kann der Zugriff ohne lokales Passwort aktiv werden.
-
-Rollen werden erst in diesem Schritt vergeben, weil sie festlegen, was eine angemeldete Person tun darf. Eine reine Person der Belegschaft hat keine Rolle.
-
-Wenn Access SCIM die Zugriffsberechtigung verwaltet, sind Zugriff und Rolle in Veviad schreibgeschützt. Verwalten Sie beide im Identitätsanbieter.
-
-## Unabhängige Statuswerte
-
-| Status | Werte | Bedeutung |
-|---|---|---|
-| Personenstatus | Aktiv, Inaktiv | Ob die Person neue Zuweisungen erhalten kann |
-| Zugriffsstatus | Keiner, Ausstehend, Aktiv, Gesperrt | Ob ein Anwendungskonto besteht und in welchem Zustand |
-| Effektive Anmeldung | Berechtigt oder blockiert | Ergebnis aus beiden Statuswerten und der Anmeldekonfiguration |
-
-Für die Anmeldung müssen Personenstatus und Zugriffsstatus **Aktiv** sein.
-
-Das Deaktivieren einer Person löscht weder Zugriffshistorie noch Rollen. Das Sperren des Zugriffs deaktiviert nicht den Datensatz der Belegschaft.
-
-## Einladungen
-
-Lokale Einladungen verwenden nach Möglichkeit eine bestehende Person und erzeugen keinen doppelten Datensatz.
-
-- **Ausstehend** — Einladung ist gültig, Anmeldedaten fehlen noch
-- **Angenommen** — Zugriff ist aktiv
-- **Abgelaufen** — Ersatz senden, wenn der Zugriff weiterhin vorgesehen ist
-- **Widerrufen** — Einladung kann nicht mehr verwendet werden
-
-![Das Einladungsverzeichnis zeigt ausstehende, angenommene, abgelaufene und widerrufene Zugriffseinladungen](/images/screenshots/de/admin-invitations.webp)
-
-Für dieselbe Person oder normalisierte E-Mail-Adresse kann nicht zweimal gleichzeitig eine aktive ausstehende Einladung erstellt werden.
-
-## Rollen
-
-Rollen gelten nur für Anwendungsbenutzer. Der Tab Rollen ist bei Zugriff **Keiner** deaktiviert.
-
-System- und benutzerdefinierte Rollen definieren Berechtigungen angemeldeter Benutzer. Rollenänderungen benötigen user.assign.role. Access-SCIM-Gruppenzuordnungen können Rollen über den Identitätsanbieter verwalten; Gruppen aus People Directory SCIM vergeben niemals Rollen.
-
-![Der administrative Personen-Editor zeigt die Zuweisung der Anwendungsrolle und die Berechtigungsübersicht](/images/screenshots/de/admin-person-role.webp)
-
-## Berechtigungen und Zuständigkeit
-
-Administrative Aktionen verwenden Berechtigungen statt einer fest codierten Rolle:
-
-- user.view steuert die Sichtbarkeit im Verzeichnis;
-- user.edit steuert den administrativen Editor;
-- user.create steuert das Hinzufügen von Personen und das Gewähren von Zugriff;
-- user.delete steuert Personen-Lebenszyklus und Zugriffssperre;
-- user.assign.role steuert Rollenänderungen.
-
-Die Standardrolle Admin erhält diese Berechtigungen. Delegierte HR- oder IT-Rollen können ohne Änderung des Ablaufs erstellt werden.
-
-Weitere Informationen finden Sie unter [SSO und SCIM](/de/organization/sso-scim).
+- [Personen und Anwendungszugriff](/de/organization/user-access)
+- [Integrationen](/de/organization/integrations)
+- [SSO und SCIM](/de/organization/sso-scim)

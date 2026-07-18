@@ -1,50 +1,51 @@
 ---
-title: "Dashboard"
+title: "Customizable dashboard"
 sidebarTitle: "Dashboard"
-description: "The workspace overview — asset totals, utilization, depreciation, and compliance at a glance."
+description: "Build a personal operational dashboard from configurable widgets."
 icon: "gauge"
 ---
 
-The Dashboard (`/dashboard`) is the operational front page. Open it at the start of the day for a full-workspace snapshot, then dive into the module that needs attention.
+## Purpose
 
-![The Veviad dashboard with KPI tiles, yearly overview chart, and compliance tiles](/images/screenshots/dashboard.webp)
+The dashboard is a personal workspace, not a fixed company scorecard. Arrange standard and configurable widgets around the decisions you make most often.
 
-_View shown: `demo.veviad.cloud/dashboard`_
-## Top KPI tiles
+![Machinery dashboard with configurable widgets](/images/screenshots/dashboard.webp)
 
-Four asset-level KPIs sit across the top of the dashboard:
+## Before you begin
 
-| Tile | What it shows |
-|---|---|
-| **Total Assets** | Count of assets in the workspace, with an "X available" badge for unassigned stock |
-| **Utilization Rate** | % of assets in use (assigned or deployed) |
-| **Depreciation** | Depreciated value (currency) with a % of purchase cost |
-| **Total Asset Value** | Current asset value with a % vs. purchase |
+You need Dashboard access. Creating configurable analytics widgets also requires access to the data domain used by the widget.
 
-"View Reports" (top-right) jumps to `Analytics → Reports`.
+## Customize the dashboard
 
-## Yearly overview
+1. Open **Dashboard**.
+2. Select **Edit dashboard**.
+3. Add a standard widget or open the widget builder.
+4. Choose the data domain, visualization, metric, grouping, filters, and title.
+5. Preview the widget before saving.
+6. Drag widgets into order and resize supported cards.
+7. Save the layout.
 
-Below the KPIs, a bar chart titled "Yearly Overview — Assets Added" shows month-over-month new assets for the current year.
+![Dashboard edit mode](/images/screenshots/dashboard-edit.webp)
 
-## Second-row tiles (compliance + usage)
+![Configurable widget builder](/images/screenshots/dashboard-widget-builder.webp)
 
-Eight smaller tiles group compliance, license, and org signals:
+## Expected result
 
-- **Incomplete Checklists** — needs attention
-- **Completed Checklists** — compliance records
-- **License Utilization (%)** — assigned seats / total
-- **Maintenance Rate (%)** — assets currently under maintenance
-- **Active Users** — active vs. total seats
-- **License Utilization (raw)** — assigned / total seats (absolute count)
-- **Categories** — number of active asset categories
-- **Locations** — number of physical locations configured
+The saved layout is personal to your user. Widgets load their data independently, and the remaining dashboard stays usable if one widget cannot load.
 
-## Typical dashboard flow
+## Best practices
 
-1. scan the top KPIs for drift (utilization dropped? depreciation spiking?)
-2. check checklist and maintenance tiles for unaddressed work
-3. click **View Reports** for a structured deep-dive
-4. jump into `Assets`, `People`, or `Audit Logs` as the signals suggest
+- Keep the first row limited to the measures that change daily decisions.
+- Use a report for detailed row-level analysis; use the dashboard for signals.
+- Name custom widgets by question, such as “Machines due for service”.
+- Reset to the default layout when testing or recovering from an unusable arrangement.
 
-Use the dashboard for orientation. If you already know the exact record, use global search (`Cmd+K` on macOS, `Ctrl+K` on Windows/Linux) or direct module navigation — it's faster.
+## Troubleshooting
+
+A blank widget can mean no matching data, a removed field, or missing domain permission. Edit the widget and preview its configuration.
+
+## Related topics
+
+- [Assets and saved views](/main/assets)
+- [Reports](/analytics/reports)
+- [Audit logs](/analytics/audit-logs)

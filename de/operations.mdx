@@ -5,27 +5,30 @@ description: "Was ein Betriebsteam braucht, um Veviad in verwalteten Umgebungen 
 icon: "server"
 ---
 
-Dieser interne Bereich richtet sich an das Veviad-Team und Betreiber. Er beschreibt operative Abläufe, die nicht Teil des öffentlichen Benutzerhandbuchs sind: Startaufgaben, Seeding, Suche, Deployments und wiederkehrende Prüfungen.
+Die Operator-Runbooks beschreiben Laravel 13 auf PHP 8.4.
 
-## Betriebsmodell
+<CardGroup cols={2}>
+  <Card title="Startup-Tasks" icon="play-circle" href="/de/operations/startup-tasks">
+    Einmalige Aufgaben mit Versionsschlüssel ausführen.
+  </Card>
 
-Veviad sollte als unveränderbares Application Image mit konfigurationsgetriebenen Umgebungswerten betrieben werden. Container können neu starten; deshalb müssen Startverhalten und einmalige Aufgaben sicher wiederholbar oder eindeutig protokolliert sein.
+  <Card title="Suche" icon="search-check" href="/de/operations/search">
+    Idempotente Einstellungen und vier Meilisearch-Indizes betreiben.
+  </Card>
 
-- **Migrationen** laufen kontrolliert und idempotent.
-- **Startup-Tasks** werden über explizite Schlüssel gesteuert.
-- **Seeder** werden zwischen Referenzdaten und destruktiven Test-Resets getrennt.
-- **Suchindizes** sind aus Primärdaten wiederherstellbar.
-- **Queue Worker** laufen getrennt und werden nach Deployments neu gestartet.
+  <Card title="Storage-Gesundheit" icon="hard-drive" href="/de/operations/storage-health">
+    Lokale, öffentliche und Report-Disks per Schreiben, Lesen und Löschen prüfen.
+  </Card>
 
-## Routineprüfungen
+  <Card title="Deployment-Gesundheit" icon="heart-pulse" href="/de/operations/deployment-health">
+    Liveness, Komponenten, Systeminformationen und Smoke-Tests kombinieren.
+  </Card>
 
-- Migrationsstatus ist aktuell.
-- Startup-Tasks wurden erfolgreich abgeschlossen.
-- Queue Worker laufen und fehlgeschlagene Jobs wurden geprüft.
-- Sucheinstellungen und Suchindex sind konsistent.
-- Zentrale Benutzer-Workflows funktionieren nach Installation, Upgrade oder Recovery.
+  <Card title="Feedback-Ingress" icon="message-square-lock" href="/de/operations/feedback-ingress">
+    Zeitgestützte HMAC-Zustellung an Central betreiben.
+  </Card>
 
-## In diesem Abschnitt
-
-- [Startup-Tasks und Seeding](/de/operations/startup-tasks)
-- [Suchbetrieb](/de/operations/search)
+  <Card title="Personen und Zugriff" icon="users-gear" href="/de/operations/people-access-provisioning">
+    Verzeichnis und Anmeldeberechtigung unabhängig provisionieren.
+  </Card>
+</CardGroup>

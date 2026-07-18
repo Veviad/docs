@@ -1,0 +1,36 @@
+---
+title: "Versionierung"
+sidebarTitle: "Versionierung"
+description: "BASE_VERSION, Vorabversionen, Tags und Patch-Regeln."
+icon: "code-branch"
+---
+
+Veviad trennt die im Repository gepflegte Basisversion von Build-, Vorab- und Release-Kennzeichnungen.
+
+## Vertrag
+
+- `BASE_VERSION` ist die autoritative Produktbasis.
+- Repository-Skripte erzeugen daraus die tatsächlich veröffentlichte Version.
+- Tags und Container-Images referenzieren exakt denselben Quellstand.
+- Ein Digest ist der unveränderliche Laufzeitbeleg.
+
+## Vorgehen
+
+1. Lesen Sie `BASE_VERSION` aus dem Ziel-SHA.
+2. Verwenden Sie `scripts/generate-version.sh` beziehungsweise den Release-Workflow.
+3. Prüfen Sie SemVer-Format und vorhandene Tags.
+4. Veröffentlichen Sie keine manuell berechnete Version.
+5. Erfassen Sie Tag und Digest in den Release-Nachweisen.
+
+## Patch-Regel
+
+Ein stabiler Patch wird von der stabilen Linie abgeleitet und darf keine zukünftigen `develop`-Änderungen enthalten. Nach dem Patch wird die Korrektur in `develop` zurückgeführt.
+
+## Fehlerbehebung
+
+Unterscheiden sich UI-Version, Tag und Image-Metadaten, stoppen Sie den Rollout. Ermitteln Sie Quell-SHA und Digest neu, statt Kennzeichnungen nachträglich zu überschreiben.
+
+## Verwandte Themen
+
+- [Release-Handbuch](/de/release-management/release-handbook)
+- [Hotfix-Ablauf](/de/release-management/hotfix-flow)

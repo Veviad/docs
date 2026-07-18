@@ -1,79 +1,47 @@
 ---
-title: "Workflows"
-sidebarTitle: "Workflows"
-description: "Wiederkehrende Arbeit mit Checklisten und automatisierten Aktionen standardisieren."
+title: "Actions"
+sidebarTitle: "Actions"
+description: "Manuelle, ereignisbasierte und geplante Automatisierungen an einer Stelle verwalten."
 icon: "workflow"
 ---
 
-Workflows decken in Veviad zwei sich ergänzende Bereiche ab:
+## Zweck
 
-- **Checklisten** — wiederverwendbare Vorlagen für wiederholbare Schritte (Onboarding, Außerbetriebnahme, Wartung, Übergabe).
-- **Aktionen** — ereignisgesteuerte und geplante Automatisierung für wiederkehrende Folgeaufgaben.
+Actions automatisieren wiederkehrende Asset-Arbeit. Sie reagieren auf Ereignisse oder Zeitpläne und erzeugen Checklisten, Wartung, Übergabeanfragen oder Benachrichtigungen.
 
-Beide werden über die `Einstellungen` konfiguriert (siehe `Organisation → Einstellungen → Checklisten` und `Organisation → Einstellungen → Aktionen`). Im operativen Alltag erscheinen sie in den Bereichen Assets und Personen sowie auf dem Dashboard.
+![Ereignisgesteuerte und geplante Actions](/images/screenshots/de/settings-actions.webp)
 
-## Checklisten
+## Voraussetzungen
 
-![Checklisten-Vorlagen in den Einstellungen](/images/screenshots/de/settings-checklists.webp)
+Sie benötigen Action-Berechtigungen. Vorlagen, Typen, Status und Empfänger müssen existieren; Queue-Worker müssen gesund sein.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/settings/checklists`_
+## Action erstellen
 
-Nutzen Sie Checklisten-Vorlagen, um wiederkehrende Arbeit sichtbar und nachverfolgbar zu machen.
+1. Öffnen Sie **Einstellungen → Actions**.
+2. Wählen Sie Asset-Erstellung, Statusänderung, Zuweisungsänderung oder **Geplant**.
+3. Definieren Sie enge Triggerbedingungen.
+4. Wählen und konfigurieren Sie das Ergebnis.
+5. Setzen Sie bei Zeitplänen Frequenz, lokale Uhrzeit und explizite Zeitzone.
+6. Speichern Sie zunächst inaktiv.
+7. Testen Sie mit einem kontrollierten Asset und aktivieren Sie danach.
 
-**Was eine Vorlage unterstützt:**
+## Erwartetes Ergebnis
 
-- wiederverwendbare Vorlagen, die an einen Entitätstyp gebunden sind (Asset, Benutzer, Wartungseintrag, …)
-- geordnete Punkte mit Beschreibungen
-- Fortschritt in Prozent und Status
-- Benachrichtigungsempfänger (verantwortliche Person, erstellende Person, Abteilungsleitung, eigene E-Mail-Adresse)
-- Aktiv-/Inaktiv-Status, damit alte Vorlagen ausgemustert werden können, ohne die Historie zu verlieren
-- Nachvollziehbarkeit, wer welchen Schritt wann abgeschlossen hat
+Passende Ereignisse oder fällige Zeitpläne dispatchen die konfigurierte Arbeit.
 
-**Gute Checklisten gestalten:**
+## Bewährte Vorgehensweisen
 
-- Konzentrieren Sie jeden Punkt auf eine einzelne Aufgabe
-- Markieren Sie einen Punkt nur dann als kritisch, wenn sofortige Sichtbarkeit wichtig ist
-- Deaktivieren Sie alte Vorlagen, statt nützliche Historie zu löschen
-- Setzen Sie Benachrichtigungen sparsam ein, damit wichtige Signale aussagekräftig bleiben
+- Verwenden Sie mehrere enge statt einer breiten Action.
+- Aktivieren Sie erst nach einem realen Test.
+- Vermeiden Sie doppelte Trigger.
+- Behandeln Sie die Zeitzone als Geschäftsregel.
 
-**Wo Checklisten erscheinen:** im Detailbereich jedes Assets (Registerkarte `Checklisten`), auf dem Dashboard (Kacheln für unvollständige und abgeschlossene Checklisten) und im Audit-Log als Abschlussereignisse.
+## Fehlerbehebung
 
-## Aktionen (Automatisierung)
+Prüfen Sie Aktivstatus, Trigger, Referenzen, nächste Ausführung, Queue-Herzschlag und fehlgeschlagene Jobs.
 
-![Die Aktionsliste mit ereignisgesteuerten Automationen](/images/screenshots/de/settings-actions.webp)
+## Verwandte Themen
 
-_Gezeigte Ansicht: `demo.veviad.cloud/settings/actions`_
-
-Aktionen sorgen für konsistente Folgeschritte ohne manuelle Wiederholung.
-
-**Wofür Aktionen verwendet werden:**
-
-- Folgeschritte aus Lifecycle-Ereignissen von Assets auslösen (Statusänderung, Zuweisung, Checkout/Check-in)
-- geplante Folgeaufgaben für Assets ausführen, die auf die aktuellen Filter passen
-- Checklisten-Instanzen automatisch erstellen
-- geplante Wartungseinträge automatisch erstellen
-- Übergabebestätigungen für Empfang und Rückgabe von Assets anfordern
-- E-Mails oder Benachrichtigungen senden, wenn Prozessbedingungen erfüllt sind
-- operatives Vorgehen teamübergreifend standardisieren
-
-**Wann Automatisierung am meisten hilft:** wenn derselbe Folgeschritt bei jedem Statuswechsel eines Datensatzes oder in einem vorhersehbaren Rhythmus anfallen soll — zum Beispiel, wenn ein neues Asset Onboarding-Aufgaben erhält oder für aktive Geräte monatlich ein Inspektionseintrag erstellt wird.
-
-**Geplante Aktionen:** Der Trigger `Scheduled` läuft in einem wiederverwendbaren Rhythmus und ermittelt passende Assets zur Laufzeit anhand der Zielfilter der Aktion, etwa Kategorie oder Status. In der ersten Version unterstützen geplante Aktionen das Erstellen geplanter Wartungseinträge, das Erstellen von Checklisten und das Senden von In-App-Benachrichtigungen. Geplante E-Mail- und Webhook-Aktionen bleiben bewusst ausgespart, bis robustere Mechanismen für Drosselung und Ausführungshistorie verfügbar sind.
-
-**Automatisierung verständlich halten:**
-
-- Beginnen Sie mit einer kleinen Zahl besonders wertvoller Automatisierungen
-- Benennen Sie sie nach dem operativen Prozess, den sie unterstützen
-- Kombinieren Sie automatisierte Aktionen wo immer möglich mit Checklisten und Audit-Logs
-- Überprüfen Sie Ihre Automatisierung regelmäßig, wenn sich Ihr Betriebsmodell weiterentwickelt
-
-## Wo Sie diese Funktionen konfigurieren
-
-| Bereich | Pfad in der Anwendung |
-|---|---|
-| Checklisten-Vorlagen | `Einstellungen → Checklisten` |
-| Ereignisgesteuerte und geplante Aktionen | `Einstellungen → Aktionen` |
-| Vorgaben für die Asset-Übergabe | `Einstellungen → Allgemein` |
-| Benachrichtigungsrichtlinie | `Einstellungen → Benachrichtigungen` |
-| Checklisten-Fortschritt je Asset | Registerkarte `Assets → {Asset} → Checklisten` |
-| Abschluss- und Trigger-Historie | `Audit-Logs` |
+- [Asset-Checklisten](/de/main/checklists)
+- [Wartung](/de/main/maintenance)
+- [Workflow-Einstellungen](/de/organization/settings-workflows)

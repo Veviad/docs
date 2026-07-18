@@ -1,67 +1,46 @@
 ---
-title: "Wartung"
-sidebarTitle: "Wartung"
-description: "Geplante und abgeschlossene Arbeiten an Assets nachverfolgen, einschließlich Notizen, Kosten, Garantieverlängerungen sowie PDF-Berichten oder Rechnungen."
+title: "Asset-Wartung"
+sidebarTitle: "Asset-Wartung"
+description: "Wartungsereignisse, Kosten und Termine direkt an Assets dokumentieren."
 icon: "wrench"
 ---
 
-Die Wartung hält die Servicehistorie direkt beim zugehörigen Asset. Öffnen Sie ein Asset und wechseln Sie zu `Wartung`, um abgeschlossene Arbeiten zu dokumentieren, anstehende Arbeiten zu planen oder die PDF-Nachweise anzuhängen, die den Eintrag belegen.
+## Zweck
 
-## Was die Registerkarte zeigt
+Wartungen erfassen geplante und erledigte Arbeiten, Partner, Termine, Kosten, Notizen, Dokumente und Ursprung durch Zeitplan oder Action.
 
-Die Registerkarte Wartung beginnt mit einer kompakten Übersicht:
+![Wartungshistorie einer Maschine](/images/screenshots/de/maintenance.webp)
 
-- **Offen** — Wartungseinträge, die noch nicht abgeschlossen sind
-- **Überfällig** — offene Einträge mit einem Plan-/Durchführungsdatum vor dem heutigen Tag
-- **Zuletzt abgeschlossen** — Datum der zuletzt abgeschlossenen Wartung
-- **Als Nächstes geplant** — nächstes offenes Wartungsdatum
+## Voraussetzungen
 
-Offene und abgeschlossene Einträge sind getrennt dargestellt, damit Teams schnell erkennen, was noch Aufmerksamkeit benötigt, ohne die Servicehistorie des Assets aus dem Blick zu verlieren.
+Sie benötigen Asset-Anzeige- und Wartungsrechte. Asset, Lieferant und Wartungstyp müssen existieren.
 
-## Wartungseintrag hinzufügen
+## Wartung erfassen
 
-Verwenden Sie **Wartung hinzufügen** in der Asset-Detailansicht.
+1. Öffnen Sie das Asset und **Wartung**.
+2. Legen Sie einen Wartungsdatensatz an.
+3. Wählen Sie Typ, Lieferant, Startdatum, Umfang und Notizen.
+4. Ergänzen Sie Kosten und Dokumente.
+5. Markieren Sie den Datensatz mit Abschlussdatum als erledigt.
+6. Prüfen Sie nächsten Servicetermin oder Zeitplan.
 
-Jeder Eintrag erfasst den wesentlichen operativen Kontext:
+## Erwartetes Ergebnis
 
-- **Titel** — die Kurzbezeichnung der Arbeit, zum Beispiel „Quartalsinspektion“
-- **Typ** — ein konfigurierter Wartungstyp, zum Beispiel Präventiv, Reparatur, Inspektion, Kalibrierung oder Sonstiges
-- **Plan-/Durchführungsdatum** — das geplante Datum für offene Arbeiten oder das Datum, an dem die Arbeit durchgeführt wurde
-- **Abgeschlossen** — kennzeichnet, ob die Arbeit noch offen oder bereits erledigt ist
-- **Abschlussdatum** — das tatsächliche Fertigstellungsdatum, wenn der Eintrag abgeschlossen ist
-- **Notizen** — optionale Details, Befunde oder Hinweise zu Folgearbeiten als Freitext
-- **Kosten** — optionale Kosten für Berichte und spätere Auswertungen
-- **Garantieverlängerung (Monate)** — optionale Garantieverlängerung, die sich aus der Arbeit ergibt
+Die Wartung bleibt Teil des Asset-Lebenszyklus und steht Berichten, Audit und Automatisierung zur Verfügung.
 
-Der Lieferant ist nicht Teil des sichtbaren Wartungs-Workflows. Hinterlegen Sie Lieferanten- und Herstellerinformationen in den Kaufdetails des Assets, sofern Ihr interner Prozess keine separate Notiz erfordert.
+## Bewährte Vorgehensweisen
 
-## Berichte und Rechnungen anhängen
+- Trennen Sie Prävention, Inspektion, Kalibrierung und Reparatur.
+- Verwenden Sie Anhänge als Nachweis.
+- Schließen Sie Datensätze zeitnah ab.
+- Verwenden Sie geplante Actions für wiederkehrende Arbeit.
 
-Gespeicherte Wartungseinträge können zwei PDF-Anhänge aufnehmen:
+## Fehlerbehebung
 
-- **Bericht** — Servicebericht, Inspektionsergebnis, Kalibrierzertifikat oder Abschlussnachweis
-- **Rechnung** — Lieferantenrechnung oder Abrechnungsbeleg für die Arbeit
+Prüfen Sie Berechtigungen und Pflichttyp. Fehlt geplante Arbeit, prüfen Sie Action, Zeitzone und Queue.
 
-Jeder Anhangsbereich unterstützt **Hochladen**, **Anzeigen**, **Herunterladen**, **Ersetzen** und **Entfernen**. Anhänge werden hinzugefügt, nachdem der Wartungseintrag existiert. Das hält Entwürfe einfach und vermeidet verwaiste Uploads.
+## Verwandte Themen
 
-## Geplante Wartung über Aktionen
-
-Wartungen können auch automatisch über `Einstellungen → Aktionen` erstellt werden.
-
-Verwenden Sie die Aktion **Geplante Wartung erstellen**, wenn dieselbe Arbeit für passende Assets erstellt werden soll:
-
-- nachdem ein Asset erstellt wurde
-- nachdem sich der Status eines Assets geändert hat
-- nach einem wiederkehrenden Zeitplan, zum Beispiel monatlich oder jährlich
-
-Geplante Aktionen verwenden die aktuellen Asset-Filter zum Ausführungszeitpunkt. So kann zum Beispiel eine monatliche Inspektionsaktion alle aktiven Assets einer Kategorie ansprechen und für jedes passende Asset einen offenen Wartungseintrag erstellen.
-
-## Wartungstypen konfigurieren
-
-![Die Einstellungsseite für Wartungstypen](/images/screenshots/de/settings-maintenance-types.webp)
-
-_Gezeigte Ansicht: `demo.veviad.cloud/settings/maintenance-types`_
-
-Admins verwalten die Liste der verfügbaren Typen unter `Einstellungen → Wartungstypen`.
-
-Aktive Typen stehen für neue Einträge zur Verfügung. Bestehende Einträge behalten ihre gespeicherte Typbezeichnung, sodass die alte Servicehistorie lesbar bleibt, auch wenn ein Typ später umbenannt oder deaktiviert wird. Wenn ein Typ bereits verwendet wurde, deaktivieren Sie ihn, statt ihn zu löschen.
+- [Actions](/de/main/workflows)
+- [Asset-Checklisten](/de/main/checklists)
+- [Berichte](/de/analytics/reports)

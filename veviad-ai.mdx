@@ -1,19 +1,20 @@
 ---
 title: "Veviad AI"
-sidebarTitle: "Overview"
-description: "Learn how Veviad AI supports search, analysis, and intake workflows."
+sidebarTitle: "Veviad AI overview"
+description: "Use AI assistance for questions, report summaries, and reviewed PDF asset intake."
 icon: "sparkles"
 ---
 
-Veviad AI is positioned as the natural-language and smart-intake layer of the platform. It helps users find information faster, analyze data with less friction, and reduce manual entry where document-based intake is available.
+Veviad AI provides three controlled assistance paths:
 
-## Highlights
+- [Assistant](/veviad-ai/assistant) for natural-language questions about permitted workspace data.
+- [Report AI summaries](/analytics/reports) for a grounded interpretation of a completed report run.
+- [PDF asset intake](/veviad-ai/pdf-asset-extraction) for extracting candidate asset fields from documents before review.
 
-- Natural-language interaction with workspace data
-- Faster search and explanation workflows
-- PDF-based asset extraction and review support
+## Safety model
 
-## In This Section
+AI uses the current user's authorization scope. Output can be incomplete or incorrect and must be verified against source records. Never provide credentials, secrets, or unrelated personal data in prompts.
 
-- [Assistant](/veviad-ai/assistant)
-- [Veviad AI Import](/veviad-ai/pdf-asset-extraction)
+## Availability
+
+The feature appears only when the required integration is active and the user has permission. A provider can be configured but unhealthy; administrators should review integration and operator health separately.
