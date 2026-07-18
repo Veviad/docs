@@ -1,55 +1,38 @@
-# Mintlify Starter Kit
+# Veviad user handbook and internal runbooks
 
-Use the starter kit to get your docs deployed and ready to customize.
+This repository powers the authenticated documentation at `docs.veviad.com`.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+- **Documentation / Dokumentation** is the English and German Veviad user handbook. It follows common handbook practice: start with product purpose and setup, continue with daily tasks, explain automation and insights, cover administration, and finish with practical help.
+- **Internal / Intern** contains bilingual release, upgrade, deployment, search, storage, feedback-ingress, and access-provisioning runbooks for Veviad operators.
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+Content is written against the current `develop` branch of the Veviad application. English and German pages, navigation entries, icons, links, and screenshots must stay in parity.
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+## Local preview
 
-## AI-assisted writing
-
-Set up your AI coding tool to work with Mintlify:
+From the repository root, run:
 
 ```bash
-npx skills add https://mintlify.com/docs
+npx mintlify@latest dev
 ```
 
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
+The local documentation preview is normally available at `http://localhost:3000`.
 
-See the [AI tools guides](/ai-tools) for tool-specific setup.
+## Validation
 
-## Development
+Run the Mintlify validator before opening a pull request:
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
-npm i -g mint
+```bash
+npx mintlify@latest validate
 ```
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+Also verify that every MDX image reference resolves, every Documentation group and page has an explicit icon, and neither `public: true` nor an `app.veviad.com` navbar CTA has been introduced.
 
-```
-mint dev
-```
+## Screenshots
 
-View your local preview at `http://localhost:3000`.
+User-handbook screenshots come from an isolated local Veviad installation with deterministic synthetic machinery data. Desktop captures use 1440×900; the mobile-navigation example uses 390×844. Store English images in `images/screenshots/` and matching German images in `images/screenshots/de/`.
 
-## Publishing changes
+Never commit credentials, API keys, customer data, or screenshots from a customer environment.
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+## Publishing
 
-## Need help?
-
-### Troubleshooting
-
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+Documentation changes are reviewed in GitHub and deployed from `main`. Keep Documentation and Internal authentication-protected, review the rendered diff, and verify representative English, German, and Internal routes after deployment.
