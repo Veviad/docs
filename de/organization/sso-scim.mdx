@@ -11,6 +11,8 @@ Veviad trennt den Datensatz einer Person von ihrer Berechtigung, die Anwendung z
 - **SCIM-Bereitstellung** verwaltet Anwendungszugriff und Rollenzuordnungen.
 - **SCIM-Personenverzeichnis** synchronisiert die breitere Belegschaft, ohne Anmeldezugriff zu gewähren.
 
+![Das Integrationsverzeichnis mit getrennten Einträgen für SSO, Access SCIM und People Directory SCIM](/images/screenshots/de/admin-integrations.webp)
+
 ## Empfohlener Aufbau in Microsoft Entra
 
 Verwenden Sie zwei Bereitstellungszuweisungen:
@@ -51,6 +53,8 @@ Access SCIM steuert das Anwendungskonto:
 
 Wenn SSO aktiviert ist, kann sich eine berechtigte Person über SSO anmelden. Wird Access SCIM ohne SSO verwendet, sendet Veviad eine Aktivierungseinladung und hält die effektive Anmeldung ausstehend, bis Anmeldedaten eingerichtet wurden.
 
+![Access-SCIM-Einstellungen für die Bereitstellung des Anwendungszugriffs](/images/screenshots/de/scim-access.webp)
+
 ## People Directory SCIM
 
 Öffnen Sie **Admin → Integrationen → SCIM-Personenverzeichnis**.
@@ -64,6 +68,8 @@ People Directory SCIM steuert den Personenstatus:
 - über das Verzeichnis verwaltete Profil- und Lebenszyklusfelder sind in Veviad schreibgeschützt.
 
 Inaktive Personen bleiben in Historie und bestehenden Zuweisungen erhalten, werden aber aus neuen Zuweisungslisten entfernt und können sich nicht anmelden.
+
+![People-Directory-SCIM-Einstellungen für die Bereitstellung der Belegschaft ohne Anwendungszugriff](/images/screenshots/de/scim-people-directory.webp)
 
 ## Profil- und Zugriffszuständigkeit
 
@@ -79,6 +85,8 @@ Nach dem ersten eindeutigen E-Mail-Abgleich verwendet Veviad die zweckgebundene 
 ## Rollenzuordnungen
 
 Rollenzuordnungen gehören zu Access SCIM und SSO, niemals zu People Directory SCIM.
+
+![Access-SCIM-Rollenzuordnungen von Identitätsanbieter-Gruppen zu Veviad-Rollen](/images/screenshots/de/sso-role-mapping.webp)
 
 1. Öffnen Sie **SCIM-Bereitstellung** oder **Single-Sign-On**.
 2. Öffnen Sie **Rollenzuordnung**.

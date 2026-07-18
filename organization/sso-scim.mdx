@@ -11,6 +11,8 @@ Veviad separates a person's workforce record from the entitlement to use the app
 - **SCIM Provisioning** manages application access and role mappings.
 - **SCIM People Directory** synchronizes the wider workforce directory without granting login access.
 
+![The Integrations directory with separate SSO, Access SCIM, and People Directory SCIM entries](/images/screenshots/admin-integrations.webp)
+
 ## Recommended Microsoft Entra layout
 
 Use two provisioning assignments:
@@ -51,6 +53,8 @@ Access SCIM controls the application-account facet:
 
 If SSO is enabled, an entitled person can authenticate through SSO. If Access SCIM is used without SSO, Veviad sends an activation invitation and keeps effective login pending until credentials are established.
 
+![Access SCIM settings for application-access provisioning](/images/screenshots/scim-access.webp)
+
 ## People Directory SCIM
 
 Open **Admin → Integrations → SCIM People Directory**.
@@ -64,6 +68,8 @@ People Directory SCIM controls the workforce facet:
 - directory-managed profile and lifecycle fields are read-only in Veviad.
 
 Inactive people remain in history and keep existing assignments, but they are excluded from new assignment pickers and cannot sign in.
+
+![People Directory SCIM settings for workforce provisioning without application access](/images/screenshots/scim-people-directory.webp)
 
 ## Profile and access authority
 
@@ -79,6 +85,8 @@ After the first unique normalized-email match, Veviad uses the scoped immutable 
 ## Role mappings
 
 Role mappings belong to Access SCIM and SSO, never to People Directory SCIM.
+
+![Access SCIM role mappings from identity-provider groups to Veviad roles](/images/screenshots/sso-role-mapping.webp)
 
 1. Open **SCIM Provisioning** or **Single-Sign-On**.
 2. Open **Role Mapping**.
