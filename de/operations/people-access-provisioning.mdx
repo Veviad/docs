@@ -5,99 +5,38 @@ description: "Betriebsmodell für Personenverzeichnis, Anmeldeberechtigungen, SS
 icon: "users-gear"
 ---
 
-Dieses Runbook beschreibt den getrennten Lebenszyklus von Personen und Anwendungszugriff.
+## Modell
 
-## Kernmodell
+Die Benutzertabelle enthält Personen; Zugriffslebenszyklusfelder bestimmen die Anmeldung. Zuweisungsprofile besitzen aktiven Personenstatus, aber keinen Anwendungszugriff.
 
-Veviad verwendet weiterhin eine users-Tabelle. Jede Zeile ist eine Person und kann optional ein Anwendungskonto besitzen.
+## Provisionierungswege
 
-| Aspekt | Werte | Zuständigkeit |
-|---|---|---|
-| Personenstatus | active, inactive | Lokaler Administrator oder People Directory SCIM |
-| Zugriffsstatus | none, pending, active, suspended | Lokaler Administrator oder Access SCIM |
-| Profilzuständigkeit | local, SCIM directory oder Access-Fallback | Bestimmt bearbeitbare Profilfelder |
-| Zugriffszuständigkeit | local oder Access SCIM | Bestimmt bearbeitbaren Zugriff und Rollen |
+| Weg | Erstellt oder aktualisiert | Anmeldung |
+| --- | --- | --- |
+| Lokale Personen-UI | Personenprofil | Nein |
+| Admin-Zugriff/Einladung | Zugriff einer bestehenden Person | Ja |
+| SSO Just-in-time | Authentifizierte Identität gemäß Richtlinie | Gemäß Richtlinie |
+| Access-SCIM | Profil und Zugriffslebenszyklus | Ja |
+| People-SCIM | Belegschaftsprofil und Organisation | Nein |
 
-Für eine effektive Anmeldung müssen person_status=active und access_status=active sein. Rollen umgehen diese Prüfung niemals.
+## Autorität
 
-## Bereitstellungszwecke
+Verfolgen Sie Profil-, Zugriffs- und Zugangsdatenautorität getrennt. IdP-verwaltete Passwort- und Profilfelder bleiben in Veviad schreibgeschützt.
 
-Beide SCIM-Zwecke verwenden /scim/v2. Das Bearer Token bestimmt Integration und Zweck, bevor eine Benutzeroperation ausgeführt wird.
+## Betriebsprüfung
 
-- **app_access** verwaltet Zugriffsstatus, Access-SCIM-Identitäten, Aktivierungseinladungen und zugeordnete Rollen.
-- **people_directory** verwaltet Personenstatus, Verzeichnisidentitäten und autoritative Profildaten.
+1. Provisionieren Sie eine Person über den vorgesehenen Weg.
+2. Prüfen Sie Abteilung, Standort, Status und externe Identität.
+3. Bestätigen Sie für People-Scope Sichtbarkeit in Personen ohne Anmeldung.
+4. Bestätigen Sie für Access-Scope Zugriff, Rollenmapping und SSO oder Einladung.
+5. Deaktivieren und reaktivieren Sie die Testidentität.
+6. Prüfen Sie Zuweisungen und Audit-Historie.
 
-Externe Identitäten sind nach Integration, Protokoll, Provider und Zweck getrennt. Das alte unscoped external_id bleibt bis zum Abschluss der Contract-Migration als Kompatibilitätsdaten erhalten.
+## Sicherheit
 
-## Zuständigkeitsregeln
+Verwenden Sie getrennte SCIM-Anwendungen, Tokens und Gruppen. Token-Regeneration invalidiert den vorherigen Token.
 
-- Profildaten aus dem Verzeichnis haben Vorrang vor Access-SCIM-Profildaten.
-- Verzeichnisgruppen gewähren niemals Zugriff oder Rollen.
-- Access-Gruppen können Rollen zuordnen; nicht zugeordnete berechtigte Benutzer erhalten die sichere Standardrolle.
-- Von Access SCIM verwalteter Zugriff und Rollen sind lokal schreibgeschützt.
-- Lokale und Break-Glass-Konten bleiben lokal verwaltbar.
-- Eine eindeutige normalisierte E-Mail darf eine Person einmal verknüpfen; mehrdeutige Treffer erzeugen einen Konflikt.
+## Verwandte Runbooks
 
-## Auswirkungen des Lebenszyklus
-
-| Operation | Erforderliche Wirkung |
-|---|---|
-| Person deaktivieren | Zugriff und Zuweisungen erhalten; Anmeldung blockieren; Sitzungen und API-Token widerrufen |
-| Person reaktivieren | Nur Personenstatus wiederherstellen |
-| Zugriff sperren | Personenstatus und Zuweisungen erhalten; Sitzungen und API-Token widerrufen |
-| Lokalen Zugriff wiederherstellen | Nur den unabhängigen Zugriffsaspekt wiederherstellen |
-| Access SCIM deprovisioniert | Nur Zugriff sperren |
-| Directory SCIM deprovisioniert | Nur Person deaktivieren |
-
-Inaktive Personen dürfen nicht in neuen Zuweisungslisten erscheinen. Historische Zuweisungen und Verwahrungsdaten bleiben abrufbar.
-
-## Lokale Einladungen
-
-Eine lokale Zugriffsgewährung verwendet eine bestehende Person oder erstellt eine neue, wenn kein eindeutiger Treffer besteht.
-
-1. Zugriff auf pending setzen.
-2. Rolle in der Einladung speichern.
-3. Bei Annahme Anmeldedaten einrichten.
-4. Zugriff aktivieren und Einladungsrolle synchronisieren.
-5. Ungelöste parallele Einladungen widerrufen.
-
-Pro Person oder normalisierter E-Mail darf nur eine gültige ausstehende manuelle Einladung bestehen.
-
-## SSO und JIT
-
-SSO verknüpft eine providergebundene Identität und verwendet anschließend dieselbe zentrale Zugriffsprüfung wie die Passwortanmeldung.
-
-Kontrolliertes JIT ist standardmäßig deaktiviert. Wenn es aktiviert wird, verwendet es die Standardrolle und ist bei aktivem Access SCIM verboten.
-
-Bei erzwungenem SSO muss ein getestetes lokales Break-Glass-Administratorkonto bestehen.
-
-## Administrative Oberflächen
-
-- /people ist das Personenverzeichnis und der Einstieg in schreibgeschützte Profile.
-- /admin/users enthält nur ausstehende, aktive oder gesperrte Anwendungskonten.
-- /admin/people/{id} ist der zentrale administrative Editor für jede Person.
-- Alte Links unter /admin/users/{id} leiten zum zentralen Editor weiter.
-
-Administrative Fähigkeiten sind berechtigungsbasiert: user.view, user.edit, user.create, user.delete und user.assign.role.
-
-## Betriebsprüfungen
-
-Nach Deployment oder Änderungen an der Identitätskonfiguration prüfen:
-
-1. eine manuell angelegte Person ist aktiv, hat Zugriff none und keine Rolle;
-2. lokale Zugriffsgewährung erzeugt genau eine ausstehende Einladung;
-3. Directory-first und Access-first SCIM ergeben eine Person;
-4. Directory-Deprovisionierung blockiert Anmeldung ohne Änderung des Zugriffsstatus;
-5. Access-Deprovisionierung sperrt Zugriff ohne Änderung des Personenstatus;
-6. beide SCIM-Anwendungen verwenden denselben Endpoint, aber unterschiedliche Zweck-Token;
-7. Konflikte bei externen Identitäten werden gemeldet;
-8. Deaktivierung und Sperre widerrufen bestehende Sitzungen und API-Token;
-9. ein Access-SCIM-Konto verweist Administratoren auf den Identitätsanbieter.
-
-## Fehlerbehebung
-
-Wenn eine Person doppelt erscheint, prüfen Sie normalisierte E-Mail und zweckgebundene externe Identitäten, bevor Sie Daten ändern. Löschen Sie keine Datensätze mit Zuweisungen oder Audit-Historie.
-
-Wenn die Anmeldung unerwartet blockiert ist, prüfen Sie beide Statuswerte, Zugriffszuständigkeit, Anmeldeverfahren und die zugehörige externe Identität.
-
-Wenn SCIM den falschen Lebenszyklusaspekt ändert, rotieren Sie das Token und prüfen Sie, ob die Entra-Anwendung das Token der passenden Veviad-Integration verwendet.
+- [Deployment-Gesundheit](/de/operations/deployment-health)
+- [SSO und SCIM](/de/organization/sso-scim)

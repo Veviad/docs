@@ -1,0 +1,32 @@
+---
+title: "Deployment-Gesundheitsprüfung"
+sidebarTitle: "Deployment-Gesundheit"
+description: "Container, Abhängigkeiten, Anwendung, Queues und Kernrouten nach Deployments prüfen."
+icon: "heart-pulse"
+---
+
+Prüfen Sie mehrere Ebenen, damit ein laufender Container nicht mit einem nutzbaren Veviad-Deployment verwechselt wird.
+
+## Prüfreihenfolge
+
+1. Prüfen Sie App, PostgreSQL, Redis und Meilisearch.
+2. Rufen Sie `GET /up` als leichte Laravel-Liveness-Probe auf.
+3. Rufen Sie `GET /health` für Datenbank, Cache, Storage, E-Mail, Queue, OCR und Suche auf.
+4. Prüfen Sie unter **Admin → Systeminformationen** Version, Laufzeit, Queues und Abhängigkeiten.
+5. Melden Sie sich an und testen Sie Dashboard, Assets, globale Suche, Dateioperation und einen Queue-Workflow.
+
+## Status bewerten
+
+- `pass`: Komponente ist betriebsbereit.
+- `warn`: Deployment ist nutzbar, aber eine nicht kritische Funktion benötigt Aufmerksamkeit.
+- `fail` oder `down`: Promotion stoppen und Abhängigkeit reparieren.
+
+## Release-Nachweis
+
+Erfassen Sie UTC-Zeit, Quell-SHA, Version, Image-Digest, Migration, Health-Payload und Smoke-Test.
+
+## Verwandte Runbooks
+
+- [Storage-Schreibprüfung](/de/operations/storage-health)
+- [Suchbetrieb](/de/operations/search)
+- [Startup-Tasks](/de/operations/startup-tasks)

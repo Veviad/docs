@@ -1,84 +1,54 @@
 ---
-title: "People"
+title: "People and assignments"
 sidebarTitle: "People"
-description: "Maintain the workforce directory used for assignments, custody, and organizational records."
+description: "Maintain assignable workforce records independently from application access."
 icon: "users"
 ---
 
-People (/people) is the workforce directory. A person can receive assets, licenses, accessories, and organizational assignments without having an application account.
+## Purpose
 
-Application access is a separate entitlement. Creating or importing a person does not assign a role, create credentials, send an invitation, or allow sign-in.
+People is the workforce directory used for asset and license assignments, custody, departments, locations, and reporting. A person does not need application access.
 
-## People and application users
+![People directory with machinery workforce records](/images/screenshots/people.webp)
 
-| Record | Purpose | Can sign in? |
-|---|---|---|
-| Person | Workforce identity used for assignments and history | Only when application access is active |
-| Application user | A person with pending, active, or suspended application access | Depends on person status and access status |
+## Before you begin
 
-Use **People** for workforce records. Use **Admin → Users** for login access, authentication methods, roles, and invitations.
+You need People view permission. Creating or editing people and managing application access require separate permissions.
 
-![The People directory with workforce records and assignment-ready organization data](/images/screenshots/people.webp)
+## Manage a person
 
-## Directory views
+1. Open **People** and search by name, email, department, location, or status.
+2. Open the person record.
+3. Maintain locally authoritative identity and organization fields.
+4. Review assigned assets and related history.
+5. Leave application access unchanged unless the person must sign in.
 
-The People submenu provides these standard views:
+## Grant application access
 
-- **All People** — every person visible to you
-- **Active** — people available for new assignments
-- **Inactive** — retained workforce records that are no longer assignable
-- **Managers** — people configured as workforce managers
+1. Open **Admin → Users**.
+2. Select the existing person.
+3. Grant access, choose a role, and send an activation invitation when required.
+4. Revoke access later without deleting the person.
 
-The name in the **Person** column opens the read-only profile. Depending on your permissions, row actions also let you view the profile or open the administrative editor.
+![Grant application access to an existing person](/images/screenshots/admin-grant-access.webp)
 
-## Add and import people
+## Expected result
 
-Choose **Add Person** to create one workforce record, or **Import People** for a CSV-based directory import.
+The workforce directory can contain all assignable people while Admin → Users shows only those with sign-in access.
 
-A new person starts with:
+## Best practices
 
-- person status **Active**;
-- application access **None**;
-- no role;
-- no password or SSO entitlement;
-- no invitation email.
+- Create one person per human identity.
+- Do not create a second user to solve an access problem.
+- Let SCIM remain authoritative for synchronized fields.
+- Keep inactive former workers for historical assignments, then remove access.
 
-This makes it practical to import a complete workforce directory even when only a small subset uses Veviad.
+## Troubleshooting
 
-## View and edit a person
+A person missing from Admin → Users normally has no application access. A disabled field may be identity-provider managed.
 
-The profile at /people/{id} is a read-only directory view.
+## Related topics
 
-Administrators and delegated roles with the user.edit permission can open **Admin → People** at /admin/people/{id}. The administrative editor contains profile and organization fields plus linked assets, licenses, history, and relationship analysis.
-
-When the person has no application access, the editor shows **No application access** and a **Grant Access** action. The Roles tab is unavailable because roles only control authenticated application capabilities.
-
-![The administrative person editor for a workforce record without application access](/images/screenshots/admin-person-no-access.webp)
-
-## Person lifecycle
-
-Authorized administrators can change the person's Active switch in the administrative editor.
-
-Deactivating a person:
-
-- preserves existing assignments, custody records, and audit history;
-- removes the person from new assignment pickers;
-- keeps the independent application-access entitlement unchanged;
-- immediately blocks effective sign-in and revokes active sessions and API tokens when access exists.
-
-Reactivating restores workforce status only. It does not grant access or change a role.
-
-For directory-SCIM-managed people, profile and lifecycle fields are read-only in Veviad. Make those changes in the identity provider.
-
-## When to use each area
-
-| Task | Area |
-|---|---|
-| Add or import workforce records | People |
-| View assignments and workforce history | People |
-| Edit profile or organization data | Admin → People |
-| Activate or deactivate a workforce record | Admin → People |
-| Grant, suspend, or restore application access | Admin → Users or the administrative person editor |
-| Send or manage a local invitation | Admin → Users / Invitations |
-| Assign an application role | Admin → People, after access exists |
-| Manage an identity-provider-owned record | Identity provider |
+- [People and application access](/organization/user-access)
+- [Assets](/main/assets)
+- [SSO and SCIM](/organization/sso-scim)

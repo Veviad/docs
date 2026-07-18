@@ -1,50 +1,45 @@
 ---
-title: "Accessories"
+title: "Accessories and stock"
 sidebarTitle: "Accessories"
-description: "Track supporting inventory like cables, chargers, and peripherals alongside core assets."
+description: "Manage quantity-based parts, consumables, and supporting inventory."
 icon: "cable"
 ---
 
-Accessories are for items that support the main asset estate but do not behave like primary assets — cables, chargers, monitors, docks, adapters, and similar. Keeping them separate from the asset register prevents bloat while still giving teams visibility.
+## Purpose
 
-![The accessories list with stock and assignments](/images/screenshots/accessories.webp)
+Accessories track stock quantities for supporting items that do not need an individual asset lifecycle.
 
-_View shown: `demo.veviad.cloud/accessories`_
-## What the accessories list shows
+![Machinery accessories and maintenance stock](/images/screenshots/accessories.webp)
 
-Filtered views available at `Main → Accessories`:
+## Before you begin
 
-- **All** — every accessory in the workspace
-- **Active** — currently in use
-- **In Storage** — unassigned stock
-- **Archived** — retired / written off
+You need Accessory view permission. Creating, editing, deleting, and checking out stock require separate permissions.
 
-**Custom views:**
+## Manage accessory stock
 
-- **Unassigned Accessories** — stock available to hand out
-- **My Accessories** — accessories assigned to the current user
+1. Open **Accessories** and select an item.
+2. Record model, quantity, minimum quantity, location, supplier, manufacturer, and unit cost.
+3. Mark the item requestable when users may request it.
+4. Record checkouts and returns against the appropriate person.
+5. Review available quantity and replenish before the minimum threshold.
 
-## Record fields
+## Expected result
 
-Each accessory row exposes:
+Available stock reflects the total quantity less open checkouts.
 
-- **ID** — internal identifier
-- **Serial** — serial number where applicable
-- **Name** — descriptive item name
-- **Category** — taxonomy group
-- **Status** — active, in storage, or archived
+## Best practices
 
-## Common tasks
+- Use an Asset instead when each unit needs its own tag, serial, maintenance, or handover.
+- Use clear pack sizes and unit names.
+- Keep minimum quantities aligned with lead times.
+- Consolidate duplicates before reporting.
 
-- add an accessory (`+` toolbar action)
-- assign to a person or a location
-- move to "In Storage" when it returns to stock
-- archive when an accessory is retired
+## Troubleshooting
 
-## Accessories vs. assets
+If available quantity looks wrong, review open checkouts and returned quantities. A deleted or inactive person should not erase checkout history.
 
-- use **Assets** for items tracked individually with lifecycle, warranty, depreciation (laptops, workstations, phones, network equipment)
-- use **Accessories** for peripheral items tracked in simpler terms (cables, adapters, mice)
-- use **Licenses** for software entitlements
+## Related topics
 
-Put items in the right type early — moving a record across types later is not a one-click operation.
+- [Assets](/main/assets)
+- [People](/main/people)
+- [Organization settings](/organization/settings-organization)

@@ -1,58 +1,53 @@
 ---
-title: "Zugang und Navigation"
-sidebarTitle: "Zugang und Navigation"
-description: "So bewegen Sie sich durch die Veviad-Oberfläche und nutzen die globale Suche effektiv."
+title: "Zugang, Navigation und Suche"
+sidebarTitle: "Zugang, Navigation und Suche"
+description: "Anmelden, die konsolidierte Navigation verwenden und Datensätze schnell finden."
 icon: "signpost"
 ---
 
-Veviad ist um eine dauerhaft sichtbare linke Navigation, eine kontextbezogene Kopfzeile und modulspezifische Ansichten herum aufgebaut. Die Hauptnavigationsgruppen entsprechen der typischen Arbeitsweise von Teams: operative Arbeit, Analysen, Organisation und Administration.
+## Zweck
 
-![Der Veviad-Anmeldebildschirm mit Feldern für E-Mail und Passwort](/images/screenshots/de/sign-in.webp)
+Verwenden Sie die konsolidierte Navigation für Module und Einstellungen; nutzen Sie die globale Suche für einen bereits bekannten Datensatz.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/login`_
+![Veviad-Anmeldung](/images/screenshots/de/sign-in.webp)
 
-## Hauptnavigation
+## Voraussetzungen
 
-Die Seitenleiste der Anwendung enthält die Kernmodule, die die meisten Teams täglich nutzen:
+Sie benötigen einen aktiven Anwendungsbenutzer. Lokale Konten verwenden Einladung oder Passwort; SSO-Konten den Identitätsanbieter.
 
-- `Dashboard` für KPIs und operative Übersicht
-- `Assets` für Asset-Datensätze und Lifecycle-Arbeit
-- `Lizenzen` und `Zubehör` für ergänzendes Inventar
-- `Personen` für Benutzer- und Zuweisungskontext
-- `Berichte` für gespeicherte und geplante Auswertungen
-- `Audit-Logs` für Historie und Nachvollziehbarkeit
-- `Einstellungen` und `Admin` für Konfiguration und Governance
+## Anmelden und navigieren
 
-## Aktionen in der Kopfzeile
+1. Öffnen Sie die Veviad-URL Ihrer Organisation.
+2. Melden Sie sich lokal oder per SSO an.
+3. Nutzen Sie die Hauptnavigation für **Dashboard, Assets, Lizenzen, Zubehör, Personen** und **Berichte**.
+4. Nutzen Sie den Organisationsbereich für **Audit-Logs, Einstellungen** und **Admin**.
+5. Öffnen Sie auf kleinen Bildschirmen den Navigations-Drawer.
 
-Der obere Navigationsbereich bietet schnelle Hilfsmittel, die während der Arbeit verfügbar bleiben:
+![Mobile Veviad-Navigation](/images/screenshots/de/mobile-navigation.webp)
 
-- globale Suche
-- Benachrichtigungen
-- Hilfe-Links zu Systeminformationen, Dokumentation und Support
-- Profil- und Abmeldefunktionen
+## Datensatz finden
 
-## Globale Suche
+1. Drücken Sie **Cmd\+K** unter macOS oder **Ctrl\+K** unter Windows/Linux.
+2. Suchen Sie Asset-Tag, Seriennummer, Name, Person, Lizenz oder Zubehör.
+3. Grenzen Sie den Ergebnistyp ein.
+4. Öffnen Sie den Treffer.
 
-Veviad enthält eine globale Suche für schnelles Nachschlagen im gesamten Workspace.
+## Erwartetes Ergebnis
 
-- Öffnen Sie die Suche mit `Cmd+K` auf macOS oder `Strg+K` auf Windows/Linux
-- Geben Sie mindestens zwei Zeichen ein, um Ergebnisse zu erhalten
-- Die Suche ist entprellt, damit die Oberfläche reaktionsschnell bleibt
-- Die Ergebnisliste ist begrenzt, damit Sie schnell zum Ziel springen können, statt lange Listen zu durchsuchen
+Die Navigation zeigt nur erlaubte Bereiche. Die Suche öffnet den kanonischen Detaildatensatz.
 
-Nutzen Sie die globale Suche, wenn Sie ungefähr wissen, was Sie brauchen, und den schnellsten Weg dorthin möchten.
+## Bewährte Vorgehensweisen
 
-## Hilfe in der Anwendung
+- Suchen Sie möglichst nach Asset-Tag oder Seriennummer.
+- Verwenden Sie gespeicherte Asset-Ansichten für wiederkehrende Listen.
+- Teilen Sie keine Direktlinks mit Personen ohne Berechtigung.
 
-Das Hilfemenü in der Anwendung verlinkt auf:
+## Fehlerbehebung
 
-- `docs.veviad.com` für das öffentliche Handbuch
-- `support.veviad.com` für Support-Workflows
-- Systeminformationen für Umgebungs- und Statusübersicht
+Prüfen Sie bei Anmeldeproblemen Einladung, Zugriffsstatus und IdP-Autorität. Fehlt ein Suchtreffer, öffnen Sie das Modul direkt und lassen Sie die Indexierung prüfen.
 
-## Gute erste Gewohnheiten
+## Verwandte Themen
 
-- Prägen Sie sich Ihren häufigsten Navigationspfad ein: Dashboard, Assets, Personen, Berichte oder Einstellungen
-- Nutzen Sie die globale Suche für direktes Nachschlagen und die Navigationsmenüs zum Entdecken
-- Halten Sie diese Dokumentation während des Onboardings in einem zweiten Tab geöffnet, damit Ihr Team Referenzmaterial griffbereit hat
+- [Profil und Präferenzen](/de/getting-started/profile-and-preferences)
+- [Assets](/de/main/assets)
+- [Fehlerbehebung](/de/faq/troubleshooting)

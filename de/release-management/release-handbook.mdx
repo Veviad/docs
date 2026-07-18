@@ -1,0 +1,40 @@
+---
+title: "Release-Handbuch"
+sidebarTitle: "Release-Handbuch"
+description: "Release-Zweige, Produktions-Releases und Nachweise für Veviad."
+icon: "book-open"
+---
+
+Dieses Handbuch beschreibt den freigabefähigen Weg von `develop` bis zu einem überprüften Produktionsartefakt.
+
+## Laufzeitbasis
+
+Aktuelle Releases verwenden Laravel 13 auf PHP 8.4. `develop` ist die Integrationslinie für kommende Änderungen; stabile Tags und Digests sind unveränderliche Release-Belege.
+
+## Release-Ablauf
+
+1. Synchronisieren Sie `develop` und prüfen Sie, dass alle vorgesehenen PRs enthalten sind.
+2. Ermitteln Sie die Version ausschließlich mit den Repository-Skripten und `BASE_VERSION`.
+3. Führen Sie Tests, statische Analyse, Build und Sicherheitsprüfungen aus.
+4. Erstellen Sie den Release-PR entsprechend dem aktuellen Workflow.
+5. Prüfen Sie nach Merge Tag, GitHub Release, Container-Tag, Digest und Attestierung.
+6. Führen Sie Upgrade- und Gesundheitsprüfung auf einer repräsentativen Umgebung aus.
+7. Dokumentieren Sie SHA, Version, Digest, Migrationen und Rollback-Entscheidung.
+
+## Erforderliche Nachweise
+
+- Quell-SHA und Basiszweig
+- Test- und Qualitätschecks
+- unveränderlicher Image-Digest
+- Migrationsstatus und Backup
+- `/health`-Ergebnis sowie Kern-Workflows
+
+## Regeln
+
+Ändern Sie einen veröffentlichten Tag nicht. Bewerben Sie denselben getesteten Digest zwischen Umgebungen. Ein Hotfix enthält nur die dringende Korrektur und die nötigen Tests.
+
+## Verwandte Themen
+
+- [Versionierung](/de/release-management/versioning)
+- [Upgrade-Leitfaden](/de/release-management/upgrade-guide)
+- [Datenbank-Rollback](/de/release-management/database-migration-rollback)

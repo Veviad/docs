@@ -5,58 +5,36 @@ description: "Maintainer handbook for Veviad release branches, production releas
 icon: "book-open"
 ---
 
-This internal handbook defines how Veviad maintainers plan, prepare, publish, patch, and verify releases. It is intentionally separated from the public user manual because it contains operational rules for branches, release evidence, production images, hotfixes, and rollback decisions.
+This handbook defines the releasable path from <code>develop</code> to a verified production artifact.
 
-## Release principles
+## Runtime baseline
 
-- `develop` is the rolling development line.
-- Planned feature work is merged into `develop` when it is ready for integration.
-- Stable releases are published from release tags and exact image digests, not from a moving branch name.
-- Patch releases for an older stable line are cut from `release/X.Y`, not from `develop`, once `develop` has moved ahead.
-- Security and production fixes are forward-ported back to `develop` after the stable patch is prepared.
-- Production deployments use immutable tags or digests, never `develop`, `latest`, or an unreviewed local image.
+Current releases use Laravel 13 on PHP 8.4. <code>develop</code> is the integration line for upcoming work; stable tags and image digests are immutable release evidence.
 
-## Branch roles
+## Release flow
 
-| Branch or tag | Purpose | Merge direction |
-| --- | --- | --- |
-| `develop` | Rolling integration and development releases | Feature and fix branches merge here. |
-| `feature/*` | Planned product work | Merge into `develop` when ready. |
-| `fix/*` | Non-urgent fixes for the next planned release | Merge into `develop`. |
-| `release/X.Y` | Stable maintenance line for `X.Y.z` patches and release candidates | Receives patch fixes, then fixes are forward-ported to `develop`. |
-| `hotfix/*` | Urgent production or security fix | Branch from `release/X.Y`; merge back to `release/X.Y`; forward-port to `develop`. |
-| `vX.Y.Z` | Immutable production release tag | Source for GitHub Release and production image tags. |
+1. Synchronize <code>develop</code> and confirm every intended PR is included.
+2. Derive the version only through the repository's version scripts and <code>BASE_VERSION</code>.
+3. Run tests, static analysis, frontend build, and security checks.
+4. Open the release PR according to the current workflow.
+5. After merge, verify the tag, GitHub release, container tag, digest, and attestation.
+6. Exercise the upgrade and health checks in a representative environment.
+7. Record source SHA, version, digest, migrations, and rollback decision.
 
-## Normal feature release flow
+## Required evidence
 
-1. Merge planned features and normal fixes into `develop`.
-2. Keep `BASE_VERSION` set to the next intended minor or major line.
-3. Stabilize a release branch when the feature set is ready.
-4. Build and test release candidates from the release branch.
-5. Publish the stable GitHub Release tag when validation is complete.
-6. Verify image tags, digest, SBOM, release evidence, and rollout notes.
+- source SHA and base branch
+- test and quality checks
+- immutable image digest
+- migration and backup status
+- <code>/health</code> payload and critical smoke tests
 
-## Patch and security release flow
+## Rules
 
-A patch release must not include unrelated future work from `develop`. For example, if production is `v1.0.0` and `develop` already contains `1.1.0` features, ship `v1.0.1` from `release/1.0`.
+Never move a published tag. Promote the same tested digest between environments. A hotfix contains only the urgent correction and its required tests.
 
-The patch fix must then be forward-ported to `develop` so the next planned release also contains it.
-
-## Release evidence
-
-Every production release should record:
-
-- source commit and release tag;
-- Docker image digest;
-- generated application version;
-- SBOM artifacts;
-- CI run and validation result;
-- attestation status, if available;
-- migration and rollback notes.
-
-## Related guides
+## Related runbooks
 
 - [Versioning](/release-management/versioning)
-- [Hotfix Flow](/release-management/hotfix-flow)
-- [Upgrade Guide](/release-management/upgrade-guide)
-- [Database Rollback](/release-management/database-migration-rollback)
+- [Upgrade guide](/release-management/upgrade-guide)
+- [Database rollback](/release-management/database-migration-rollback)

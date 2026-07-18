@@ -1,0 +1,36 @@
+---
+title: "Upgrade-Leitfaden"
+sidebarTitle: "Upgrade-Leitfaden"
+description: "Veviad per Tag oder Digest mit Prüfung und Rollback-Bereitschaft aktualisieren."
+icon: "arrow-up"
+---
+
+Aktualisieren Sie Veviad mit einem geprüften Release-Digest und einem dokumentierten Rollback-Punkt.
+
+## Vor dem Upgrade
+
+- Release Notes und Migrationen lesen
+- Datenbank und persistenten Storage sichern
+- freie Kapazität, PHP 8.4 und abhängige Dienste prüfen
+- Ziel-Digest und bisherige Version notieren
+- Wartungs- und Rollback-Fenster festlegen
+
+## Upgrade
+
+1. Aktualisieren Sie das Deployment auf den freigegebenen Digest.
+2. Starten Sie Datenbank, Redis und Meilisearch vor der Anwendung.
+3. Lassen Sie Laravel-Migrationen und idempotente Startup-Tasks abschließen.
+4. Führen Sie Such-Einstellungen aus; ein großer Reindex darf als nicht blockierende Aufgabe laufen.
+5. Prüfen Sie `/up`, anschließend `/health?verbose=true` gemäß Sicherheitsrichtlinie.
+6. Prüfen Sie Anmeldung, Dashboard, Assets, Suche, Queue und Datei-Upload.
+7. Bestätigen Sie Version, SHA und Digest in Systeminformationen.
+
+## Nach dem Upgrade
+
+Beobachten Sie Fehlerlogs, Queue-Alter, Suchindexierung und Storage-Schreibprüfung. Rollen Sie nur anhand des vorab definierten Plans zurück.
+
+## Verwandte Themen
+
+- [Startup-Tasks](/de/operations/startup-tasks)
+- [Suchbetrieb](/de/operations/search)
+- [Deployment-Gesundheit](/de/operations/deployment-health)

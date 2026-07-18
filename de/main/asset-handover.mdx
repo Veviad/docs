@@ -1,168 +1,46 @@
 ---
-title: "Asset-Übergabe"
-sidebarTitle: "Asset-Übergabe"
-description: "Empfang und Rückgabe von Assets mit Anmeldung oder externem Link bestätigen lassen."
+title: "Asset-Übergaben"
+sidebarTitle: "Asset-Übergaben"
+description: "Nachvollziehbare Ausgaben, Rückgaben und Bestätigungen verwalten."
 icon: "clipboard-check"
 ---
 
-Die Asset-Übergabe hilft dabei, den Empfang und die Rückgabe von Firmenequipment nachvollziehbar zu dokumentieren. Veviad erstellt einen Übergabeeintrag, sendet die passende Benachrichtigung, speichert ein PDF-Übergabeprotokoll und zeigt das Ergebnis in der Asset-Historie.
+## Zweck
 
-Nutzen Sie diese Funktion für Laptops, Smartphones, Werkzeuge, Zutrittsgeräte oder andere Assets, bei denen Mitarbeitende und Asset-Verantwortliche einen verlässlichen Nachweis benötigen.
+Übergaben weisen nach, dass ein Empfänger Zuweisung, Rückgabe oder Verwahrungsänderung bestätigt hat.
 
-## Wofür Übergabeprotokolle gedacht sind
+![Status und Verlauf einer Asset-Übergabe](/images/screenshots/de/asset-handover.webp)
 
-Übergabeprotokolle sind Bestätigungen, keine Freigaben vor der Zuweisung. Die Asset-Zuweisung oder Rückgabe wird sofort gespeichert. Das Übergabeprotokoll dokumentiert anschließend, ob die verantwortliche Person bestätigt, widersprochen oder noch nicht reagiert hat.
+## Voraussetzungen
 
-Es gibt zwei zentrale Arten:
+Sie benötigen Übergaberechte, ein Asset und einen Empfänger. Organisationsvorgaben steuern Kanäle, PDF und externe Links.
 
-| Art | Wird verwendet, wenn | Wer normalerweise reagiert |
-|---|---|---|
-| **Empfang** | Ein Asset einer Person zugewiesen wird | Die empfangende Person |
-| **Rückgabe** | Ein Asset zurückgegeben oder von einer Person entfernt wird | Der Asset Manager oder die Person, die die Rückgabe erfasst |
+## Bestätigung anfordern
 
-Wenn etwas nicht stimmt, kann die Person widersprechen statt zu bestätigen. So wird eine Benachrichtigung nicht stillschweigend als Zustimmung gewertet.
+1. Öffnen Sie das Asset und die Übergabeaktion.
+2. Prüfen Sie Empfänger, Statusänderung und Bestätigungstyp.
+3. Wählen Sie erlaubte Kanäle und PDF-Verhalten.
+4. Senden Sie die Anfrage.
+5. Beobachten Sie ausstehend, bestätigt, beanstandet oder abgelaufen.
+6. Korrigieren Sie Beanstandungen am Quell-Asset und erstellen Sie bei Bedarf neu.
 
-## Wo Sie die Funktion konfigurieren
+## Erwartetes Ergebnis
 
-![Übergabe-Einstellungen mit Bestätigungsmodus und Link-Optionen](/images/screenshots/de/settings-handover.webp)
+Veviad speichert Anfrage, unveränderlichen Asset-Snapshot, Zustellung, bestätigende Identität und Zeitstempel.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/settings/handover`_
+## Bewährte Vorgehensweisen
 
-Die Übergabe wird an zwei Stellen konfiguriert.
+- Nutzen Sie Kontopflicht, wenn der Empfänger sich anmelden kann.
+- Nutzen Sie externe Links nur wenn nötig.
+- E-Mail-Zustellung ist noch keine Bestätigung.
+- Korrigieren Sie die Asset-Zuweisung vor der Anfrage.
 
-| Bereich | Pfad | Was Sie konfigurieren |
-|---|---|---|
-| Globale Vorgaben | `Einstellungen → Allgemein` | Standardmodus für Bestätigungen, Verfügbarkeit externer Links, Link-Ablauf und PDF-Zugriff |
-| Workflow-Aktion | `Einstellungen → Aktionen` | Wann Übergabeprotokolle erstellt werden, welche Kanäle genutzt werden, ob PDFs erzeugt werden und ob eine Aktion den globalen Modus überschreibt |
+## Fehlerbehebung
 
-In der Regel ist es sinnvoll, mit den globalen Vorgaben zu starten und nur einzelne Aktionen abweichend zu konfigurieren.
+Prüfen Sie Zugriffsmodus, Linkablauf, Kontozugriff und E-Mail. Übernehmen Sie niemals einen Live-Token in Tickets.
 
-## Bestätigungsmodus wählen
+## Verwandte Themen
 
-Veviad unterstützt zwei Bestätigungsmodi.
-
-### Anmeldung erforderlich
-
-Verwenden Sie diesen Modus, wenn Mitarbeitende Veviad-Konten haben und die Übergabe in der Anwendung bestätigen sollen.
-
-Dieser Modus passt besonders für:
-
-- Mitarbeitende, die Veviad bereits nutzen;
-- Organisationen, die Bestätigungen eindeutig mit angemeldeten Benutzerkonten verbinden möchten;
-- Workflows mit In-App-Benachrichtigungen;
-- Teams, die stark mit Rollen, Berechtigungen und Abteilungszugriffen arbeiten.
-
-Die Person erhält eine In-App-Benachrichtigung und, wenn aktiviert, zusätzlich eine E-Mail. Der Link öffnet die Übergabe nach der Anmeldung.
-
-### Externer Link erlaubt
-
-Verwenden Sie diesen Modus, wenn Personen per E-Mail bestätigen sollen, ohne ein Veviad-Konto zu erhalten.
-
-Dieser Modus passt besonders für:
-
-- gelegentliche Empfängerinnen und Empfänger, die Veviad sonst nicht nutzen;
-- externe Mitarbeitende, befristete Mitarbeitende oder Offboarding-Fälle;
-- Rückgaben, bei denen die frühere Person keinen Kontozugriff mehr hat.
-
-Die E-Mail enthält einen sicheren Übergabelink. Die externe Seite zeigt nur den gespeicherten Übergabe-Snapshot, PDF-Aktionen falls erlaubt sowie Bestätigen- oder Widersprechen-Schaltflächen. Sie öffnet nicht das vollständige Asset und keinen weiteren Bereich der Anwendung.
-
-Externe Links belegen den Zugriff auf die Empfänger-E-Mail-Adresse. Sie haben nicht dieselbe Aussagekraft wie eine Bestätigung durch ein angemeldetes Veviad-Benutzerkonto.
-
-## Aktion für Empfangsbestätigungen einrichten
-
-Nutzen Sie diese Einrichtung, wenn Mitarbeitende neu zugewiesene Assets bestätigen sollen.
-
-1. Öffnen Sie `Einstellungen → Aktionen`.
-2. Erstellen oder bearbeiten Sie eine Aktion.
-3. Wählen Sie den Trigger für Asset-Zuweisungen.
-4. Wählen Sie den Aktionstyp, der eine Asset-Übergabebestätigung anfordert.
-5. Setzen Sie die Bestätigungsart auf **Empfang**.
-6. Wählen Sie Kategorien, Statuswerte oder andere Bedingungen, bei denen ein Übergabeprotokoll erstellt werden soll.
-7. Wählen Sie die Benachrichtigungskanäle: In-App, E-Mail oder beides.
-8. Lassen Sie PDF-Übergabeprotokolle aktiviert, sofern es keinen organisatorischen Grund dagegen gibt.
-9. Entscheiden Sie, ob die Aktion den globalen Bestätigungsmodus übernimmt oder Anmeldung beziehungsweise externen Link vorgibt.
-10. Speichern Sie die Aktion.
-
-Danach erstellt Veviad bei passenden Asset-Zuweisungen ein ausstehendes Empfangsprotokoll für die empfangende Person.
-
-## Aktion für Rückgabebestätigungen einrichten
-
-Nutzen Sie diese Einrichtung, wenn zurückgegebene Assets durch Asset Manager oder die erfassende Person bestätigt werden sollen.
-
-1. Öffnen Sie `Einstellungen → Aktionen`.
-2. Erstellen oder bearbeiten Sie eine Aktion.
-3. Wählen Sie den Zuweisungs- oder Statusänderungs-Trigger, der in Ihrem Prozess eine Rückgabe bedeutet.
-4. Wählen Sie den Aktionstyp, der eine Asset-Übergabebestätigung anfordert.
-5. Setzen Sie die Bestätigungsart auf **Rückgabe**.
-6. Wählen Sie Rückgabestatus, Kategorien oder andere Bedingungen, bei denen ein Übergabeprotokoll erstellt werden soll.
-7. Entscheiden Sie, ob beim Speichern der Asset-Änderung ein Rückgabedialog angezeigt werden soll.
-8. Konfigurieren Sie die Benachrichtigungskanäle.
-9. Ergänzen Sie zusätzliche Rückgabe-E-Mail-Adressen nur, wenn diese Teil Ihres Prozesses sind, zum Beispiel HR oder ein Offboarding-Postfach.
-10. Speichern Sie die Aktion.
-
-Wenn der Rückgabedialog übersprungen wird, speichert Veviad die Asset-Änderung trotzdem. Es wird weiterhin eine ausstehende Rückgabebestätigung erstellt, damit der Vorgang später abgeschlossen werden kann.
-
-## Was Mitarbeitende sehen
-
-Bei Übergaben mit Anmeldung öffnen Mitarbeitende die Benachrichtigung oder den E-Mail-Link, melden sich an, prüfen die Asset-Details und bestätigen oder widersprechen.
-
-Bei externen Links öffnen Mitarbeitende den E-Mail-Link direkt. Die Seite zeigt:
-
-- den Asset-Snapshot zum Zeitpunkt der Anforderung;
-- ob es um Empfang oder Rückgabe geht;
-- die Empfänger-E-Mail oder beteiligte Person;
-- den aktuellen Status;
-- PDF-Vorschau und Download, wenn aktiviert;
-- Bestätigen- und Widersprechen-Aktionen, solange eine Antwort aussteht.
-
-Nach einer Bestätigung oder einem Widerspruch werden die Antwort-Schaltflächen nicht mehr angezeigt. Das PDF bleibt verfügbar, bis der Link abläuft oder widerrufen wird, sofern PDF-Zugriff aktiviert ist.
-
-## Was Asset Manager sehen
-
-Öffnen Sie im Asset die Registerkarte **Übergabe**. Dort sehen Sie Empfangs- und Rückgabeprotokolle mit ihrem aktuellen Status.
-
-Diese Ansicht unterstützt Sie dabei:
-
-- ausstehende, bestätigte, widersprochene und stornierte Übergaben zu prüfen;
-- einen Eintrag aufzuklappen und Snapshot sowie Notizen zu lesen;
-- das PDF-Übergabeprotokoll vorzuschauen oder herunterzuladen;
-- zu sehen, wer wann reagiert hat;
-- strittige oder offene Einträge nachzuverfolgen.
-
-Übergabeereignisse erscheinen außerdem in der Asset-Historie und im Audit Log.
-
-## Statuswerte
-
-| Status | Bedeutung |
-|---|---|
-| **Ausstehend** | Eine Antwort ist noch erforderlich |
-| **Bestätigt** | Die verantwortliche Person hat Empfang oder Rückgabe bestätigt |
-| **Widersprochen** | Die verantwortliche Person meldet, dass etwas nicht stimmt |
-| **Storniert** | Die Übergabe ist nicht mehr aktiv |
-
-Widersprochene Einträge sollten nachverfolgt werden. Meist müssen Asset, Zuordnung, Rückgabezustand oder Zeitpunkt geprüft werden.
-
-## PDF-Übergabeprotokolle
-
-PDFs sind als Übergabeprotokolle für Mitarbeitende und Asset Manager gedacht. Sie enthalten Asset-Identität, beteiligte Personen, Daten, Übergabeart, Status und Antwortinformationen. Anschaffungskosten werden standardmäßig nicht aufgenommen.
-
-PDFs basieren auf dem gespeicherten Übergabe-Snapshot. Spätere Änderungen am Asset überschreiben den ursprünglichen Nachweis daher nicht.
-
-Das PDF kann im Browser angezeigt oder für Personalunterlagen, interne Dokumentation oder Offboarding-Prozesse heruntergeladen werden.
-
-## Empfohlene Einrichtung
-
-Für die meisten Organisationen:
-
-1. Starten Sie global mit **Anmeldung erforderlich**.
-2. Aktivieren Sie **externe Links** nur für Prozesse, bei denen nicht jede empfangende Person ein Veviad-Konto hat.
-3. Nutzen Sie Empfangsbestätigungen für hochwertige oder persönlich zugewiesene Geräte.
-4. Nutzen Sie Rückgabebestätigungen für Offboarding, Check-in und Bestandsrückgaben.
-5. Lassen Sie PDFs aktiviert.
-6. Prüfen Sie widersprochene und überfällige Einträge regelmäßig.
-
-## Rechtliche und organisatorische Hinweise
-
-Übergabebestätigungen sind elektronische Bestätigungen, keine qualifizierten elektronischen Signaturen. Sie unterstützen einen nachvollziehbaren Nachweis, aber Ihre Organisation entscheidet, wie lange diese Unterlagen aufbewahrt werden und wie sie in Personal-, Steuer- oder Arbeitsschutzunterlagen eingeordnet werden.
-
-Vor dem Rollout sollten Datenschutz, HR, IT-Asset-Management und, soweit relevant, Betriebsrat oder Mitarbeitendenvertretung den Prozess prüfen.
+- [Personen](/de/main/people)
+- [Workflow-Einstellungen](/de/organization/settings-workflows)
+- [Audit-Logs](/de/analytics/audit-logs)

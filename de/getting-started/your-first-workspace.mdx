@@ -1,45 +1,48 @@
 ---
-title: "Ihr erster Workspace"
-sidebarTitle: "Ihr erster Workspace"
-description: "Empfohlene Ersteinrichtung von Veviad für einen sauberen, skalierbaren Workspace."
+title: "Ersten Workspace einrichten"
+sidebarTitle: "Ersten Workspace einrichten"
+description: "Organisation, Asset-Struktur, Personen und Zugriffsmodell für den produktiven Start vorbereiten."
 icon: "building-2"
 ---
 
-Der schnellste Weg zu einem nützlichen Veviad-Workspace führt über die gemeinsame Struktur — richten Sie diese ein, bevor Sie eine größere Zahl von Datensätzen importieren oder zuweisen.
+## Zweck
 
-![Das Kachelraster der Einstellungen mit gemeinsamen Konfigurationsbereichen](/images/screenshots/de/settings.webp)
+Richten Sie gemeinsame Organisationsdaten vor dem Asset-Import ein, damit Zuweisungen, Berichte, Automatisierung und Berechtigungen stabile Werte nutzen.
 
-_Ansicht: `demo.veviad.cloud/settings`_
+## Voraussetzungen
 
-## Empfohlene Reihenfolge der Einrichtung
+Sie benötigen die passenden Settings- und Admin-Berechtigungen. Legen Sie Verantwortliche für Asset-Daten, Anwendungszugriff, Identität und Workflows fest.
 
-1. Bestätigen Sie Benutzer, Rollen und Abteilungen.
-2. Definieren Sie Standorte, Status-Labels, Kategorien und Lieferanten.
-3. Prüfen Sie Kostenstellen, Abschreibungsregeln und Asset-Tag-Einstellungen.
-4. Erstellen Sie ein bis zwei Checklisten-Vorlagen für wiederkehrende Workflows.
-5. Entscheiden Sie, ob Berichte, Benachrichtigungen und SSO sofort konfiguriert werden sollen.
+## Reihenfolge
 
-## Warum zuerst die Struktur?
+1. Währung und Anzeigevorgaben unter **Einstellungen → Allgemein** setzen.
+2. Standorte, Abteilungen, Kostenstellen, Lieferanten und Hersteller anlegen.
+3. Status, Kategorien, Abschreibung, Asset-Tags und Zusatzfelder konfigurieren.
+4. Wartungstypen, Checklisten, Übergaben und Benachrichtigungen konfigurieren.
+5. Personen anlegen oder synchronisieren.
+6. Nur benötigten Personen Anwendungszugriff und Rollen erteilen.
+7. Integrationen, SSO und die passenden SCIM-Zwecke konfigurieren.
+8. Eine kleine geprüfte Asset-Stichprobe importieren.
+9. Suche, Ansichten, Wartung, Übergabe, Actions und Berichte validieren.
+10. Restbestand importieren.
 
-Assets lassen sich leichter suchen, auswerten und verwalten, wenn die zugrunde liegende Taxonomie stabil ist. Frühe Struktur zahlt sich aus durch:
+## Erwartetes Ergebnis
 
-- sauberere Importe
-- konsistente Zuweisungen
-- aussagekräftigere Berichte
-- besseres Verhalten von Automationen und Checklisten
+Datensätze verwenden konsistente Werte; Anmeldung bleibt vom Personenverzeichnis getrennt und wichtige Änderungen sind auditierbar.
 
-## Checkliste für die Mindesteinrichtung
+## Bewährte Vorgehensweisen
 
-- Abteilungen und Standorte entsprechen der realen Organisation
-- Kategorien und Status-Labels passen zur Arbeitsweise Ihres Teams
-- Lieferanten und Hersteller stehen für neue Datensätze bereit
-- der Einladungsprozess ist für die ersten operativen Benutzer vorbereitet
-- Support-Links und der Zugang zur Dokumentation sind intern bekannt
+- Pilotieren Sie mit repräsentativen Datensätzen und Rollen.
+- Verwenden Sie kurze stabile Benennungen.
+- Rollen Sie Identitäts- und Automatisierungsänderungen kontrolliert aus.
+- Benennen Sie einen Eigentümer pro Integration.
 
-## Nach der Einrichtung
+## Fehlerbehebung
 
-Sobald die Workspace-Struktur steht, machen Sie weiter mit:
+Prüfen Sie bei Importfehlern Pflichtfelder und kategoriespezifische Zusatzfelder. Unterscheiden Sie bei Anmeldeproblemen Person und Anwendungszugriff.
 
-- [Assets](/de/main/assets)
-- Einstellungen in Veviad
-- [Checklisten und Workflows](/de/main/workflows)
+## Verwandte Themen
+
+- [Organisationseinstellungen](/de/organization/settings-organization)
+- [Asset-Konfiguration](/de/organization/settings-assets)
+- [Personen und Anwendungszugriff](/de/organization/user-access)

@@ -1,0 +1,41 @@
+---
+title: "People and application access"
+sidebarTitle: "People vs. users"
+description: "Understand workforce records, login access, invitations, and roles."
+icon: "users-round"
+---
+
+Veviad separates the People directory from application access. Every assignee is a person; only selected people can sign in.
+
+## Before you begin
+
+Viewing People requires directory permission. Granting or revoking access, inviting users, and assigning roles require Admin permissions.
+
+## Manage a person and access
+
+1. Create or synchronize the person in **People**.
+2. Use the person for asset, license, or custody assignments without granting login access.
+3. In **Admin → Users**, grant application access only when the person needs to sign in.
+4. Send or resend an invitation when local activation is used.
+5. Assign the least-privileged role needed.
+6. Revoke access when sign-in is no longer needed; keep the person record for assignments and history.
+
+## Expected result
+
+The directory remains complete while the application-user list contains only login-enabled people.
+
+## Best practices
+
+- Treat roles as authorization bundles, not job titles.
+- Let SSO or SCIM remain authoritative when configured.
+- Review pending and expired invitations regularly.
+
+## Troubleshooting
+
+A person who cannot sign in may have no application access, a pending invitation, an inactive access state, or identity-provider-managed credentials.
+
+## Related topics
+
+- [People](/main/people)
+- [Admin](/organization/admin)
+- [SSO and SCIM](/organization/sso-scim)

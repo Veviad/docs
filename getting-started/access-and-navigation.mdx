@@ -1,58 +1,53 @@
 ---
-title: "Access and Navigation"
-sidebarTitle: "Access and Navigation"
-description: "Learn how to move through the Veviad interface and use global search effectively."
+title: "Access, navigation, and search"
+sidebarTitle: "Access and navigation"
+description: "Sign in, use the consolidated navigation, and find records with global search."
 icon: "signpost"
 ---
 
-Veviad is organized around a persistent left-hand navigation, a contextual header, and module-specific views. The main navigation groups align with how teams usually work: operations, analytics, organization, and administration.
+## Purpose
 
-![The Veviad sign-in screen with email and password fields](/images/screenshots/sign-in.webp)
+Use Veviad's consolidated navigation for modules and settings; use global search when you already know the record.
 
-_View shown: `demo.veviad.cloud/login`_
+![Veviad sign-in screen](/images/screenshots/sign-in.webp)
 
-## Main navigation
+## Before you begin
 
-The application sidebar includes the core modules most teams visit every day:
+You need an active application user. Local accounts use an invitation or password; SSO-managed accounts use the configured identity provider.
 
-- `Dashboard` for KPIs and operational visibility
-- `Assets` for asset records and lifecycle work
-- `Licenses` and `Accessories` for supporting inventory
-- `People` for user and assignee context
-- `Reports` for saved and scheduled reporting
-- `Audit Logs` for history and accountability
-- `Settings` and `Admin` for configuration and governance
+## Sign in and navigate
 
-## Header actions
+1. Open your organization's Veviad URL.
+2. Sign in locally or choose the configured SSO option.
+3. Use the main navigation for **Dashboard, Assets, Licenses, Accessories, People,** and **Reports**.
+4. Use the organization section for **Audit Logs, Settings,** and **Admin**.
+5. On a small screen, open the navigation drawer and select the same destinations.
 
-The top navigation area provides quick utilities that stay available while you work:
+![Veviad mobile navigation drawer](/images/screenshots/mobile-navigation.webp)
 
-- global search
-- notifications
-- help links for system information, documentation, and support
-- profile and logout controls
+## Find a record
 
-## Global search
+1. Press **Cmd\+K** on macOS or **Ctrl\+K** on Windows/Linux, or open Search.
+2. Enter an asset tag, serial, name, person, license, or accessory.
+3. Refine by result type when needed.
+4. Open the result directly.
 
-Veviad includes a global search experience designed for quick lookup across the workspace.
+## Expected result
 
-- Use `Cmd+K` on macOS or `Ctrl+K` on Windows/Linux to open search
-- Start typing at least two characters to return results
-- Search is debounced to keep the interface responsive
-- Results are limited so you can jump quickly instead of browsing a huge list
+Navigation shows only permitted areas. Global search returns current indexed records and opens the canonical detail page.
 
-Use global search when you know roughly what you need and want the fastest possible route to it.
+## Best practices
 
-## In-app help
+- Search by asset tag or serial for the most precise match.
+- Use saved asset views for recurring lists; use global search for one known record.
+- Do not share direct links with users who lack permission.
 
-The in-app help menu links back to:
+## Troubleshooting
 
-- `docs.veviad.com` for the public manual
-- `support.veviad.com` for support workflows
-- system information for environment and health visibility
+If sign-in fails, check invitation/access status and identity-provider authority. If search misses a recent item, open its module directly and ask an operator to verify indexing.
 
-## Good first habits
+## Related topics
 
-- Pin your most common navigation path mentally: dashboard, assets, people, reports, or settings
-- Use global search for direct lookup and navigation menus for discovery
-- Open this docs site in another tab during onboarding so your team has reference material close by
+- [Profile and preferences](/getting-started/profile-and-preferences)
+- [Assets](/main/assets)
+- [Troubleshooting](/faq/troubleshooting)

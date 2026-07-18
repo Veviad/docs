@@ -1,48 +1,45 @@
 ---
-title: "Lizenzen"
-sidebarTitle: "Lizenzen"
-description: "Software-Lizenzen, Gültigkeit, Zuteilung und zugewiesene Lizenzplätze verfolgen."
+title: "Software-Lizenzen"
+sidebarTitle: "Software-Lizenzen"
+description: "Lizenzbestände, Zuweisungen, Kosten und Verlängerungen verwalten."
 icon: "badge-check"
 ---
 
-Lizenzen sind in Veviad ein vollwertiger Datensatztyp neben Assets und Zubehör. Nutzen Sie sie, um Software-Eigentum, die Gültigkeit von Abonnements und die Zuteilung einzelner Lizenzplätze zu verfolgen — relevant für Beschaffung und Compliance.
+## Zweck
 
-![Die Lizenzliste mit Lizenzplätzen und Gültigkeit](/images/screenshots/de/licenses.webp)
+Lizenzdatensätze beschreiben Berechtigung und verfügbare Plätze; sie sind von installierten Assets und Zubehör getrennt.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/licenses`_
-## Was die Lizenzliste zeigt
+![Industriesoftware-Lizenzen](/images/screenshots/de/licenses.webp)
 
-Die Lizenzliste (`Haupt → Lizenzen`) unterstützt gefilterte Ansichten:
+## Voraussetzungen
 
-- **Alle** — jede Lizenz im Workspace
-- **Aktiv** — aktuell genutzte Lizenzen
-- **Abgelaufen** — Lizenzen mit überschrittenem Enddatum, die weiterhin erfasst bleiben
-- **Archiviert** — stillgelegte Lizenzen, die für die Historie aufbewahrt werden
+Sie benötigen Lizenz-Anzeigerechte. Erstellen, Bearbeiten, Löschen und Platzzuweisung besitzen eigene Berechtigungen.
 
-**Benutzerdefinierte Ansichten** (gespeicherte Filter):
+## Lizenz verwalten
 
-- **Nicht zugewiesene Lizenzen** — Lizenzplätze, die zur Zuweisung verfügbar sind
-- **Meine Lizenzen** — Lizenzen, die der aktuellen Benutzerin oder dem aktuellen Benutzer zugewiesen sind
+1. Öffnen Sie **Lizenzen** und einen Datensatz.
+2. Erfassen Sie Produkt, Vertragskennung, lizenzierte Organisation, Kaufdaten und Gültigkeit.
+3. Setzen Sie Plätze und Wiederzuweisbarkeit.
+4. Weisen Sie Plätze Personen oder Assets zu, wenn die Berechtigung dies erlaubt.
+5. Prüfen Sie Ablauf und Wartungsstatus.
 
-## Datensatzfelder
+## Erwartetes Ergebnis
 
-Jede Lizenzzeile zeigt:
+Veviad berechnet freie Plätze aus Berechtigung und Zuweisungen; Änderungen bleiben auditierbar.
 
-- **ID** — interne Kennung
-- **Lizenzschlüssel** — der Schlüssel selbst (wo angebracht maskiert)
-- **Name** — Produkt- oder Paketname
-- **Typ** — Software-Typ beziehungsweise Kategorie
-- **Status** — aktiv, abgelaufen oder archiviert
+## Bewährte Vorgehensweisen
 
-## Häufige operative Aufgaben
+- Übernehmen Sie echte Lizenzschlüssel nie in Screenshots oder Tickets.
+- Verwenden Sie einen Datensatz je Vertragsgrenze.
+- Trennen Sie Verlängerung und Kündigung.
+- Nutzen Sie Berichte für Ablauf und Auslastung.
 
-- eine neue Lizenz anlegen (`+`-Aktion in der Symbolleiste)
-- einen Lizenzplatz zuweisen oder freigeben
-- das Ablaufdatum aktualisieren, sobald eine Verlängerung eintrifft
-- eine Lizenz archivieren statt löschen, damit die Berichtshistorie erhalten bleibt
+## Fehlerbehebung
 
-## Praktische Hinweise
+Prüfen Sie bei fehlendem Platz Zuweisungen und Gesamtzahl. Prüfen Sie bei fehlender Person das Verzeichnis statt Zugriff zu erteilen.
 
-- die Lizenzauslastung wird über das Dashboard und die KPI-Kacheln des Admin-Dashboards verfolgt
-- die Berechnung der Lizenzplätze (zugewiesen gegenüber gesamt) bestimmt die prozentualen Auslastungswerte im Dashboard
-- abgelaufene Lizenzen bleiben abfragbar — verwenden Sie Archiviert, wenn eine Lizenz endgültig stillgelegt ist
+## Verwandte Themen
+
+- [Personen](/de/main/people)
+- [Berichte](/de/analytics/reports)
+- [Integrationen](/de/organization/integrations)

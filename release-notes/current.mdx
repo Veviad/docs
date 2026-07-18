@@ -5,27 +5,34 @@ description: "Snapshot of the public Veviad docs launch baseline."
 icon: "calendar-clock"
 ---
 
-This public docs launch focuses on the operational and administrative product experience rather than internal engineering detail.
+This handbook was rebuilt against <code>Veviad/veviad_app</code> <code>develop</code> at source SHA <code>48a68722d01898dfcb7c21f172d14246fe1d589b</code> on 18 July 2026.
 
-## Included in the current baseline
+## Runtime
 
-- getting started guidance
-- core module overviews for dashboard, assets, people, supporting inventory, and reports
-- workflow documentation for checklists, audit logs, invitations, and automation
-- asset maintenance documentation for service history, PDF reports / invoices, maintenance types, and scheduled maintenance actions
-- administration guidance for settings, notifications, SSO, and system info
-- Veviad AI and PDF extraction overviews
-- FAQ coverage for common rollout and support questions
+- Laravel 13
+- PHP 8.4
+- Vue 3 and Inertia 2
+- PostgreSQL, Redis, and Meilisearch
 
-## Intentionally not included
+## User-visible baseline
 
-- public API documentation
-- deployment runbooks
-- internal testing notes
-- engineering completion trackers and ETA language
+- personal modular dashboard and configurable widgets
+- lazy-loaded 10,000-row asset grid and saved views
+- consolidated navigation with Reports and Actions
+- asset-only checklists
+- report charts, run snapshots, schedules, and AI summaries
+- user timezone preferences
+- People directory separated from application access
+- SSO role mapping and two purpose-scoped SCIM integrations
 
-## Next likely growth areas
+## Operator baseline
 
-- expanded German content
-- deeper task-based walkthroughs
-- future semantic search enhancements when the docs corpus grows
+- idempotent Meilisearch index creation
+- non-blocking search reindex startup task
+- persistent storage write/read/delete health probe
+- signed Central feedback ingress
+- Laravel 13 and PHP 8.4 release evidence
+
+<Note>
+  This SHA is the documentation verification baseline, not a stable production release identifier.
+</Note>

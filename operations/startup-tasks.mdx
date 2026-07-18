@@ -5,152 +5,39 @@ description: "How Veviad runs operational work once per deploy key without repea
 icon: "play-circle"
 ---
 
-Container startup must be repeatable. Veviad handles this by separating normal migrations from one-time operational tasks. The task ledger lives in the application database, so multiple containers can start together without running the same task more than once.
+## Contract
 
-## Startup sequence
+<code>STARTUP_TASKS</code> is a comma-separated list of <code>task-name:version-key</code> entries. The database ledger ensures each key completes once across concurrent containers.
 
-The container startup process performs these steps:
+Supported tasks are:
 
-1. Wait for the database connection.
-2. Run schema migrations when migration auto-run is enabled.
-3. Add required bootstrap tasks when initial admin credentials are configured.
-4. Run the startup task runner when `STARTUP_TASKS` is not empty.
-5. Create the initial user when `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD` are configured.
-6. Continue to the container command.
+- <code>essential-seeders</code>
+- <code>search-ensure-settings</code>
+- <code>search-reindex</code>
+- <code>fresh-db-seed</code>
 
-Migrations are allowed to run on every deploy. Seeders, search setup, search reindexing, and database resets must go through startup tasks.
+## Blocking behavior
 
-## Configuration
+Essential seeders, search settings, and fresh database seed block startup on failure. <code>search-reindex</code> is non-blocking: another container may already own it, and a failed reindex is recorded without preventing the application from starting.
 
-| Variable | Default | Purpose |
-| --- | --: | --- |
-| `STARTUP_TASKS` | empty | Comma-separated one-time tasks in `task-name:key` format. |
-| `STARTUP_TASK_TIMEOUT_MINUTES` | `120` | Time before a running task is considered stale and reclaimable. |
-| `STARTUP_TASK_POLL_SECONDS` | `5` | Wait interval when another container owns a task. |
-| `ALLOW_DESTRUCTIVE_STARTUP_TASKS` | `false` | Required before `fresh-db-seed` can wipe and reseed the database. |
+## Production example
 
-Example:
-
-```txt
-STARTUP_TASKS=essential-seeders:reference-data-v1,search-ensure-settings:search-settings-v1
-```
-
-## Task keys
-
-A task key is the durable identity of one operation. Completed keys are skipped forever. To run the same type of operation again, use a new key.
-
-Good keys describe why the task exists:
-
-```txt
-essential-seeders:reference-data-v1
-search-ensure-settings:search-schema-v2
-search-reindex:search-upgrade-YYYY-MM-DD
-fresh-db-seed:test-reset-YYYY-MM-DD
-```
-
-Do not use random keys for routine deploys. A changed key means "run this task again".
-
-## Supported tasks
-
-| Task | What it does | Safe for production |
-| --- | --- | --- |
-| `essential-seeders:<key>` | Runs reference-data seeders such as roles, categories, statuses, locations, and report templates. | Yes |
-| `search-ensure-settings:<key>` | Creates or configures search indexes and waits for settings tasks in strict mode. | Yes |
-| `search-reindex:<key>` | Rebuilds search documents from primary application data and waits for search tasks in strict mode. | Yes, schedule during a maintenance window for large datasets |
-| `fresh-db-seed:<key>` | Resets and reseeds the database. | No, test/disposable environments only |
-
-Fresh database resets are destructive. Use `fresh-db-seed:<key>` only in disposable environments and only when `ALLOW_DESTRUCTIVE_STARTUP_TASKS=true`.
-
-## Demo dataset profiles
-
-Use the profile-driven demo seeder only for local, demo, performance, or other disposable environments. Select a profile with `DEMO_DATASET_PROFILE`.
-
-| Profile | Assets | Users | Departments | Operational locations | Intended use |
-| --- | --: | --: | --: | --: | --- |
-| `small` | 250 | 25 | 4 | 6 | Fast local development and smoke tests |
-| `demo` | 5,000 | 250 | 10 | 18 | Realistic demo instances; default in `.env.demo.example` and the fresh Docker stack |
-| `performance` | 10,000 | 500 | 12 | 24 | Explicit large-dataset and lazy-loading performance validation |
-
-The generator creates connected organizational and asset data rather than isolated asset rows:
-
-- departments with managers, cost centers, users, roles, and operational locations;
-- 10, 14, or 18 asset categories, depending on the profile, with manufacturer and model catalogs;
-- supplier and manufacturer records plus all seven listing statuses, including `Deprecated`;
-- typed custom attributes for text, numbers, dates, booleans, selects, and multi-selects;
-- bounded checklist, maintenance, handover, and saved-view records;
-- deliberately missing categories, locations, and serial numbers, plus unassigned assets and varied statuses, dates, costs, and checklist states.
-
-Assets and their related values are written in batches of 500. This avoids dispatching per-row Eloquent events and automation jobs when generating 5,000–10,000 assets. `DEMO_FAKER_SEED` controls deterministic output and defaults to `404`, so the same profile and seed can be reproduced.
-
-Run a profile directly:
-
-```bash
-DEMO_DATASET_PROFILE=demo DEMO_FAKER_SEED=404 php artisan migrate:fresh --seed
-```
-
-For the 10,000-row performance dataset:
-
-```bash
-DEMO_DATASET_PROFILE=performance DEMO_FAKER_SEED=404 php artisan migrate:fresh --seed
-```
-
-For the isolated fresh Docker stack, `demo` is the default. Select `performance` explicitly when validating large datasets:
-
-```bash
-DEMO_DATASET_PROFILE=performance docker compose -f docker-compose.yml -f docker-compose.fresh.yml up --build
-```
-
-<Warning>
-  Demo profiles reset or populate application data and are not production reference-data seeders. Never run them against a customer database. In the production environment, demo generation is skipped unless `DEMO_DATASET_PROFILE` is explicitly configured.
-</Warning>
-
-## Concurrency behavior
-
-When several containers start at the same time:
-
-- one container claims a pending, failed, or stale task;
-- other containers wait for completion;
-- completed tasks are skipped;
-- failed tasks are retried on later startups;
-- stale running tasks are reclaimed after `STARTUP_TASK_TIMEOUT_MINUTES`.
-
-This makes startup tasks suitable for horizontally scaled SaaS deployments.
-
-## Fresh installation
-
-For a new environment, use migrations plus safe startup tasks:
-
-```txt
-STARTUP_TASKS=essential-seeders:reference-data-v1,search-ensure-settings:search-settings-v1
+```dotenv
+STARTUP_TASKS=essential-seeders:release-2026-07,search-ensure-settings:meili-v1-43-0,search-reindex:release-2026-07
 ALLOW_DESTRUCTIVE_STARTUP_TASKS=false
 ```
 
-If an initial admin account should be created automatically, configure `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD`. The user creation command is idempotent; it will not recreate an existing user on every restart.
+Change a version key only when the task must run again.
 
-## Test reset
+## Performance screenshot dataset
 
-For local or disposable test environments only:
+The <code>performance</code> profile seeds 10,000 assets and 500 people. <code>fresh-db-seed</code> requires <code>ALLOW_DESTRUCTIVE_STARTUP_TASKS=true</code> and is restricted to disposable local or test databases.
 
-```txt
-ALLOW_DESTRUCTIVE_STARTUP_TASKS=true
-STARTUP_TASKS=fresh-db-seed:test-reset-YYYY-MM-DD
-```
+## Verification
 
-After the reset succeeds, turn destructive startup tasks off again or change the environment back to a normal startup task set.
+Review the startup-task ledger and logs. A completed key must skip on restart. A non-blocking reindex may finish after liveness becomes ready.
 
-## Troubleshooting
+## Related runbooks
 
-Check the startup task ledger first. The most useful fields are the task key, status, attempt count, start/completion timestamps, and latest error message.
-
-Common responses:
-
-- `completed`: the key already ran; use a new key only when you intentionally want to rerun work.
-- `failed`: fix the underlying service or data problem, then restart the container or rerun the startup task runner.
-- `running`: another container may own the task. Check logs before waiting for the stale timeout.
-- `last_error`: contains the most recent failure message captured by the runner.
-
-Manual runs should use the same task key format as `STARTUP_TASKS`:
-
-```txt
-search-ensure-settings:manual-check
-```
+- [Search operations](/operations/search)
+- [Deployment health](/operations/deployment-health)

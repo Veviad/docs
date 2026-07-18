@@ -1,0 +1,40 @@
+---
+title: "Integrationen"
+sidebarTitle: "Integrationen"
+description: "AI-, OCR-, E-Mail-, SSO- und SCIM-Integrationen sicher konfigurieren."
+icon: "plug"
+---
+
+Integrationen verbinden Veviad mit Identitäts-, AI-, Dokument- und Zustelldiensten.
+
+## Voraussetzungen
+
+Sie benötigen die Admin-Berechtigung für Integrationen und die Provider-Werte Ihrer Organisation. Übernehmen Sie niemals Secrets in Dokumentation oder Screenshots.
+
+## Integration konfigurieren
+
+1. Öffnen Sie **Admin → Integrationen**.
+2. Wählen Sie den Integrationstyp.
+3. Tragen Sie Endpunkt, Kennung und Secret ein.
+4. Speichern und aktivieren Sie die Integration; verwenden Sie vorhandene Tests.
+5. Prüfen Sie die abhängige Funktion mit einem nicht sensiblen Datensatz.
+
+## Erwartetes Ergebnis
+
+Die Integration zeigt einen aktiven oder gesunden Zustand und die abhängige Funktion steht berechtigten Benutzern zur Verfügung.
+
+## Bewährte Vorgehensweisen
+
+- Verwenden Sie dedizierte Servicekonten und begrenzte Rechte.
+- Rotieren Sie Secrets ohne stabile Kennungen unnötig zu ändern.
+- Dokumentieren Sie Eigentümerschaft außerhalb von Secret-Feldern.
+
+## Fehlerbehebung
+
+Eine Integration kann konfiguriert, aber inaktiv oder aktiv, aber nicht erreichbar sein. Prüfen Sie Zustand und Verbindung getrennt.
+
+## Verwandte Themen
+
+- [SSO und SCIM](/de/organization/sso-scim)
+- [Veviad AI](/de/veviad-ai)
+- [PDF-Asset-Erfassung](/de/veviad-ai/pdf-asset-extraction)

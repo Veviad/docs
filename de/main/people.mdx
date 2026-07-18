@@ -1,84 +1,54 @@
 ---
-title: "Personen"
-sidebarTitle: "Personen"
-description: "Pflegen Sie das Personenverzeichnis für Zuweisungen, Verwahrung und Organisationsdaten."
+title: "Personen und Zuweisungen"
+sidebarTitle: "Personen und Zuweisungen"
+description: "Mitarbeitende verwalten, Assets zuweisen und Personen von Anwendungszugängen unterscheiden."
 icon: "users"
 ---
 
-Personen (/people) ist das Verzeichnis der Belegschaft. Eine Person kann Assets, Lizenzen, Zubehör und Organisationszuordnungen erhalten, ohne ein Anwendungskonto zu besitzen.
+## Zweck
 
-Der Anwendungszugriff ist eine separate Berechtigung. Das Erstellen oder Importieren einer Person weist keine Rolle zu, erzeugt keine Anmeldedaten, versendet keine Einladung und erlaubt keine Anmeldung.
+Personen ist das Verzeichnis für Zuweisungen, Verwahrung, Abteilungen, Standorte und Berichte. Eine Person benötigt keinen Anwendungszugriff.
 
-## Personen und Anwendungsbenutzer
+![Personenverzeichnis im Maschinenbau](/images/screenshots/de/people.webp)
 
-| Datensatz | Zweck | Anmeldung möglich? |
-|---|---|---|
-| Person | Identität der Belegschaft für Zuweisungen und Historie | Nur bei aktivem Anwendungszugriff |
-| Anwendungsbenutzer | Person mit ausstehendem, aktivem oder gesperrtem Anwendungszugriff | Abhängig von Personen- und Zugriffsstatus |
+## Voraussetzungen
 
-Verwenden Sie **Personen** für Datensätze der Belegschaft. Verwenden Sie **Admin → Benutzer** für Anwendungszugriff, Anmeldeverfahren, Rollen und Einladungen.
+Sie benötigen Personen-Anzeigerechte. Erstellen, Bearbeiten und Anwendungszugriff besitzen getrennte Berechtigungen.
 
-![Das Personenverzeichnis mit Datensätzen der Belegschaft und Organisationsdaten für Zuweisungen](/images/screenshots/de/people.webp)
+## Person verwalten
 
-## Verzeichnisansichten
+1. Öffnen Sie **Personen** und suchen Sie nach Name, E-Mail, Abteilung, Standort oder Status.
+2. Öffnen Sie den Datensatz.
+3. Pflegen Sie lokal autoritative Identitäts- und Organisationsfelder.
+4. Prüfen Sie zugewiesene Assets und Historie.
+5. Lassen Sie den Anwendungszugriff unverändert, wenn keine Anmeldung nötig ist.
 
-Das Untermenü Personen bietet folgende Standardansichten:
+## Anwendungszugriff erteilen
 
-- **Alle Personen** — alle für Sie sichtbaren Personen
-- **Aktiv** — Personen, die für neue Zuweisungen verfügbar sind
-- **Inaktiv** — aufbewahrte Datensätze, die nicht mehr neu zugewiesen werden können
-- **Manager** — als Führungskräfte konfigurierte Personen
+1. Öffnen Sie **Admin → Benutzer**.
+2. Wählen Sie die bestehende Person.
+3. Erteilen Sie Zugriff, Rolle und gegebenenfalls Einladung.
+4. Entziehen Sie den Zugriff später, ohne die Person zu löschen.
 
-Der Name in der Spalte **Person** öffnet das schreibgeschützte Profil. Abhängig von Ihren Berechtigungen können Sie über die Zeilenaktionen das Profil anzeigen oder den administrativen Editor öffnen.
+![Anwendungszugriff erteilen](/images/screenshots/de/admin-grant-access.webp)
 
-## Personen hinzufügen und importieren
+## Erwartetes Ergebnis
 
-Wählen Sie **Person hinzufügen** für einen einzelnen Datensatz oder **Personen importieren** für einen CSV-Import.
+Das Personenverzeichnis kann die gesamte Belegschaft enthalten; Admin → Benutzer nur anmeldeberechtigte Personen.
 
-Eine neue Person beginnt mit:
+## Bewährte Vorgehensweisen
 
-- Personenstatus **Aktiv**;
-- Anwendungszugriff **Keiner**;
-- keiner Rolle;
-- keinem Passwort und keiner SSO-Berechtigung;
-- keiner Einladungs-E-Mail.
+- Legen Sie eine Person pro Identität an.
+- Erzeugen Sie keinen zweiten Benutzer für Zugriffsprobleme.
+- Lassen Sie SCIM für synchronisierte Felder autoritativ.
+- Bewahren Sie Historie inaktiver Personen, entziehen Sie aber Zugriff.
 
-So kann das vollständige Personenverzeichnis importiert werden, auch wenn nur ein kleiner Teil Veviad verwendet.
+## Fehlerbehebung
 
-## Personen anzeigen und bearbeiten
+Eine in Admin fehlende Person besitzt normalerweise keinen Anwendungszugriff. Deaktivierte Felder können IdP-verwaltet sein.
 
-Das Profil unter /people/{id} ist eine schreibgeschützte Verzeichnisansicht.
+## Verwandte Themen
 
-Administratoren und delegierte Rollen mit der Berechtigung user.edit können unter /admin/people/{id} den administrativen Editor öffnen. Er enthält Profil- und Organisationsfelder sowie verknüpfte Assets, Lizenzen, Historie und Beziehungsanalyse.
-
-Wenn kein Anwendungszugriff besteht, zeigt der Editor **Kein Anwendungszugriff** und die Aktion **Zugriff gewähren**. Der Tab Rollen ist nicht verfügbar, weil Rollen ausschließlich die Berechtigungen angemeldeter Benutzer steuern.
-
-![Der administrative Personen-Editor für einen Datensatz ohne Anwendungszugriff](/images/screenshots/de/admin-person-no-access.webp)
-
-## Personen-Lebenszyklus
-
-Berechtigte Administratoren ändern den Aktiv-Schalter im administrativen Editor.
-
-Das Deaktivieren einer Person:
-
-- erhält bestehende Zuweisungen, Verwahrungsdaten und Audit-Historie;
-- entfernt die Person aus neuen Zuweisungslisten;
-- lässt die unabhängige Zugriffsberechtigung unverändert;
-- blockiert die Anmeldung sofort und widerruft aktive Sitzungen und API-Token, wenn Zugriff vorhanden ist.
-
-Die Reaktivierung stellt nur den Personenstatus wieder her. Sie gewährt keinen Zugriff und ändert keine Rolle.
-
-Bei über Verzeichnis-SCIM verwalteten Personen sind Profil- und Lebenszyklusfelder in Veviad schreibgeschützt. Nehmen Sie Änderungen im Identitätsanbieter vor.
-
-## Welcher Bereich ist der richtige?
-
-| Aufgabe | Bereich |
-|---|---|
-| Personen der Belegschaft hinzufügen oder importieren | Personen |
-| Zuweisungen und Historie anzeigen | Personen |
-| Profil- oder Organisationsdaten bearbeiten | Admin → Personen |
-| Person aktivieren oder deaktivieren | Admin → Personen |
-| Anwendungszugriff gewähren, sperren oder wiederherstellen | Admin → Benutzer oder administrativer Personen-Editor |
-| Lokale Einladung versenden oder verwalten | Admin → Benutzer / Einladungen |
-| Anwendungsrolle zuweisen | Admin → Personen, nachdem Zugriff besteht |
-| Vom Identitätsanbieter verwalteten Datensatz ändern | Identitätsanbieter |
+- [Personen und Anwendungszugriff](/de/organization/user-access)
+- [Assets](/de/main/assets)
+- [SSO und SCIM](/de/organization/sso-scim)

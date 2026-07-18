@@ -1,67 +1,46 @@
 ---
-title: "Maintenance"
+title: "Asset maintenance"
 sidebarTitle: "Maintenance"
-description: "Track scheduled and completed work on assets, including notes, costs, warranty extensions, and PDF reports or invoices."
+description: "Plan, document, automate, and complete service work on assets."
 icon: "wrench"
 ---
 
-Maintenance keeps service history close to the asset it belongs to. Open an asset and go to `Maintenance` to document completed work, schedule upcoming work, or attach the PDF evidence that supports the record.
+## Purpose
 
-## What the tab shows
+Maintenance records capture planned and completed work, responsible suppliers, dates, costs, notes, documents, and the originating schedule or Action.
 
-The Maintenance tab starts with a compact summary:
+![Machinery maintenance history on an asset](/images/screenshots/maintenance.webp)
 
-- **Open** — maintenance records that are not completed yet
-- **Overdue** — open records with a scheduled / performed date before today
-- **Last completed** — most recent completed maintenance date
-- **Next scheduled** — next open maintenance date
+## Before you begin
 
-Open and completed records are separated so teams can quickly see what still needs attention without losing the asset's service history.
+You need Asset view and maintenance permission. The asset and any supplier or maintenance type must already exist.
 
-## Add a maintenance record
+## Record maintenance
 
-Use **Add Maintenance** from the asset detail panel.
+1. Open the asset and its **Maintenance** section.
+2. Create a maintenance record.
+3. Choose the maintenance type, supplier, start date, expected scope, and notes.
+4. Add cost and supporting documents when known.
+5. Mark the record complete and record the completion date.
+6. Review the next service date or schedule.
 
-Each record captures the essential operational context:
+## Expected result
 
-- **Title** — the short name of the work, such as "Quarterly inspection"
-- **Type** — a configured maintenance type, such as Preventive, Repair, Inspection, Calibration, or Other
-- **Scheduled / performed date** — the planned date for open work, or the date the work happened
-- **Completed** — marks whether the work is still open or already finished
-- **Completion date** — the actual finish date when the record is completed
-- **Notes** — optional plain-text details, findings, or follow-up instructions
-- **Cost** — optional cost for reporting and later review
-- **Warranty Extension (months)** — optional warranty extension gained through the work
+The maintenance remains part of the asset lifecycle and is available to Reports, audit history, and automation.
 
-Supplier is not part of the visible maintenance workflow. Keep supplier and manufacturer information on the asset's purchase details unless your internal process requires a separate note.
+## Best practices
 
-## Attach reports and invoices
+- Separate preventive, inspection, calibration, and repair work.
+- Use attachments for evidence; keep secrets and personal data out of filenames.
+- Complete records promptly so dashboard and reports remain accurate.
+- Use scheduled Actions for recurring work at scale.
 
-Saved maintenance records can hold two PDF attachments:
+## Troubleshooting
 
-- **Report** — service report, inspection result, calibration certificate, or completion evidence
-- **Invoice** — supplier invoice or billing document for the work
+If a maintenance record cannot be created, check the asset permission and required type. If scheduled work is missing, review the Action, schedule timezone, and queue health.
 
-Each attachment area supports **Upload**, **View**, **Download**, **Replace**, and **Remove**. Attachments are added after the maintenance record exists, which keeps draft records simple and avoids orphan uploads.
+## Related topics
 
-## Scheduled maintenance from Actions
-
-Maintenance can also be created automatically from `Settings → Actions`.
-
-Use the **Create Scheduled Maintenance** action when the same work should be created for matching assets:
-
-- after an asset is created
-- after an asset status changes
-- on a reusable schedule, such as monthly or yearly
-
-Scheduled actions use the current asset filters at run time. For example, a monthly inspection action can target all active assets in one category and create an open maintenance record for each matching asset.
-
-## Configure maintenance types
-
-![The Maintenance Types settings page](/images/screenshots/settings-maintenance-types.webp)
-
-_View shown: `demo.veviad.cloud/settings/maintenance-types`_
-
-Admins manage the available type list in `Settings → Maintenance Types`.
-
-Active types are available on new records. Existing records keep their stored type label, so old service history stays readable even if a type is later renamed or deactivated. If a type has already been used, deactivate it instead of deleting it.
+- [Actions](/main/workflows)
+- [Asset checklists](/main/checklists)
+- [Reports](/analytics/reports)

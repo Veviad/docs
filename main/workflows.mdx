@@ -1,79 +1,47 @@
 ---
-title: "Workflows"
-sidebarTitle: "Workflows"
-description: "Standardize recurring work with checklists and automated actions."
+title: "Actions"
+sidebarTitle: "Actions"
+description: "Create event-driven and scheduled automation for asset work."
 icon: "workflow"
 ---
 
-Workflows in Veviad cover two complementary surfaces:
+## Purpose
 
-- **Checklists** — reusable templates for repeatable steps (onboarding, retirement, maintenance, handoff).
-- **Actions** — event-driven and scheduled automation for repeatable follow-up work.
+Actions automate repeatable asset work. They can react to asset events or run on a schedule, then create checklists, maintenance, handover requests, or notifications.
 
-Both are configured from `Settings` (see `Organization → Settings → Checklists` and `Organization → Settings → Actions`). They show up operationally across Assets, People, and the Dashboard.
+![Actions listing with event-driven and scheduled rules](/images/screenshots/settings-actions.webp)
 
-## Checklists
+## Before you begin
 
-![Checklist templates in Settings](/images/screenshots/settings-checklists.webp)
+You need Action permissions. Referenced templates, types, statuses, and recipients must already exist. Queue workers must be healthy.
 
-_View shown: `demo.veviad.cloud/settings/checklists`_
+## Create an Action
 
-Use checklist templates to turn recurring work into something visible and trackable.
+1. Open **Settings → Actions**.
+2. Choose an event trigger such as asset creation, status change, or assignment change—or choose **Scheduled**.
+3. Set narrow trigger conditions.
+4. Choose the outcome and configure its required values.
+5. For scheduled Actions, select frequency, local time, and an explicit timezone.
+6. Save the Action inactive.
+7. Test with a controlled asset, then activate it.
 
-**What a template supports:**
+## Expected result
 
-- reusable templates scoped to an entity type (asset, user, maintenance record, …)
-- ordered items with descriptions
-- completion percentage and status
-- notification recipients (owner, creator, department head, custom email)
-- active / inactive state so old templates can be retired without losing history
-- audit trail of who completed each step and when
+Matching events or due schedules dispatch the configured work and record the resulting activity.
 
-**Good checklist design:**
+## Best practices
 
-- keep each item focused on one task
-- mark an item as critical only when immediate visibility matters
-- deactivate old templates instead of deleting useful history
-- use notifications sparingly so important signals stay meaningful
+- Prefer several narrow Actions over one broad rule.
+- Keep new Actions inactive until a real test succeeds.
+- Avoid duplicate triggers that create the same checklist or maintenance.
+- Treat schedule timezone as part of the rule's business meaning.
 
-**Where checklists appear:** on each asset's detail panel (`Checklists` tab), on the Dashboard (Incomplete / Completed Checklists tiles), and in the audit log as completion events.
+## Troubleshooting
 
-## Actions (automation)
+Review active state, trigger conditions, referenced configuration, next run time, queue worker heartbeat, and failed jobs. A saved Action is not proof that it executed.
 
-![The Actions list with event-driven automations](/images/screenshots/settings-actions.webp)
+## Related topics
 
-_View shown: `demo.veviad.cloud/settings/actions`_
-
-Actions make follow-up behavior consistent without manual repetition.
-
-**What actions are used for:**
-
-- triggering follow-up steps from asset lifecycle events (status change, assignment, checkout/checkin)
-- running scheduled follow-up work for assets that match current filters
-- creating checklist instances automatically
-- creating scheduled maintenance records automatically
-- requesting asset handover confirmations for receipts and returns
-- sending emails or notifications when process conditions are met
-- standardizing operational behavior across teams
-
-**When automation helps most:** when the same follow-up should happen every time a record changes state or on a predictable cadence — for example, a new asset gets onboarding tasks, or active equipment gets a monthly inspection record.
-
-**Scheduled actions:** the `Scheduled` trigger runs on a reusable cadence and resolves matching assets at run time using the action's target filters, such as category or status. In the first version, scheduled actions support Create Scheduled Maintenance, Create Checklist, and Send In-App Notification. Scheduled email and webhook actions are intentionally left out until stronger throttling and execution-history controls are available.
-
-**Keep automation understandable:**
-
-- start with a small number of high-value automations
-- name them after the operational process they support
-- pair automated actions with checklists and audit logs wherever possible
-- review automation periodically as your operating model evolves
-
-## Where to configure these
-
-| Surface | Path in the app |
-|---|---|
-| Checklist templates | `Settings → Checklists` |
-| Event-driven and scheduled actions | `Settings → Actions` |
-| Asset handover defaults | `Settings → General` |
-| Notifications policy | `Settings → Notifications` |
-| Per-asset checklist progress | `Assets → {asset} → Checklists` tab |
-| Completion / trigger history | `Audit Logs` |
+- [Asset checklists](/main/checklists)
+- [Maintenance](/main/maintenance)
+- [Workflow settings](/organization/settings-workflows)

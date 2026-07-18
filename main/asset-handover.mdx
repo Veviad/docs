@@ -1,168 +1,46 @@
 ---
-title: "Asset Handover"
-sidebarTitle: "Asset Handover"
-description: "Request and confirm asset receipts and returns with login-based or external-link acknowledgements."
+title: "Asset handovers"
+sidebarTitle: "Asset handover"
+description: "Request and record asset receipt or return acknowledgements."
 icon: "clipboard-check"
 ---
 
-Asset Handover helps your organization document when employees receive or return company equipment. It creates a clear handover record, sends the right notification, stores a PDF handover record, and keeps the result visible on the asset history.
+## Purpose
 
-Use it when you want a documented acknowledgement for laptops, phones, tools, access devices, or other items where the employee and asset manager should both have a reliable record.
+Handovers provide evidence that a recipient accepted an assignment, return, or other custody change.
 
-## What handover records are for
+![Asset handover status and acknowledgement history](/images/screenshots/asset-handover.webp)
 
-Handover records are acknowledgements, not approval gates. The asset assignment or return is saved immediately. The handover record documents that the responsible person later confirmed, disputed, or still needs to respond.
+## Before you begin
 
-There are two main record types:
+You need handover permission, an asset, and a recipient. Organization defaults determine channels, PDF inclusion, and whether an external link is allowed.
 
-| Type | Used when | Who usually responds |
-|---|---|---|
-| **Receipt** | An asset is assigned to an employee | The receiving employee |
-| **Return** | An asset is returned or removed from an employee | The asset manager or the person recording the return |
+## Request an acknowledgement
 
-If somebody disagrees with the handover, they can dispute it instead of confirming it. This avoids treating a notification as silent acceptance.
+1. Open the asset and choose the handover or custody action.
+2. Confirm the recipient, status or assignment change, and acknowledgement type.
+3. Choose permitted delivery channels and PDF behavior.
+4. Send the request.
+5. Monitor pending, confirmed, disputed, or expired state.
+6. Resolve disputes on the source asset and create a corrected request when necessary.
 
-## Where to configure it
+## Expected result
 
-![Handover settings with acknowledgement mode and link options](/images/screenshots/settings-handover.webp)
+Veviad stores the request, immutable asset snapshot, delivery settings, confirmation identity, and timestamp.
 
-_View shown: `demo.veviad.cloud/settings/handover`_
+## Best practices
 
-Handover behavior is configured in two places.
+- Use account-required acknowledgements when the recipient can sign in.
+- Use external links only when permitted and necessary.
+- Do not treat email delivery alone as confirmation.
+- Keep the asset assignment accurate before requesting acknowledgement.
 
-| Area | Path | What you configure |
-|---|---|---|
-| Global defaults | `Settings → General` | Default acknowledgement mode, external-link availability, link expiry, and PDF access policy |
-| Workflow action | `Settings → Actions` | When handover records are created, which channels are used, whether PDF records are included, and whether a specific action overrides the global acknowledgement mode |
+## Troubleshooting
 
-Most organizations should start with the global default, then override individual actions only where a process needs different behavior.
+If the recipient cannot confirm, check access mode, link expiry, account access, and mail delivery. Never copy a live external token into a support ticket.
 
-## Choose the acknowledgement mode
+## Related topics
 
-Veviad supports two acknowledgement modes.
-
-### Require user login
-
-Use this when employees have Veviad accounts and should confirm inside the app.
-
-This mode is best for:
-
-- employees who already use Veviad;
-- organizations that want acknowledgements tied to authenticated user accounts;
-- in-app notification workflows;
-- teams that use department or role-based access controls heavily.
-
-The employee receives an in-app notification and, if enabled, an email. The link opens the asset handover page after login.
-
-### Allow external magic link
-
-Use this when some employees should acknowledge by email without receiving a Veviad account.
-
-This mode is best for:
-
-- occasional assignees who do not normally use Veviad;
-- contractors, temporary staff, or offboarding situations;
-- return confirmations where the previous employee may no longer have account access.
-
-The email contains a secure handover link. The external page shows only the handover snapshot, PDF actions if allowed, and the confirm or dispute controls. It does not open the full asset record or the rest of the app.
-
-External magic links prove access to the recipient email address. They are not the same assurance level as a logged-in Veviad user.
-
-## Create a receipt confirmation action
-
-Use this setup when employees should acknowledge newly assigned assets.
-
-1. Go to `Settings → Actions`.
-2. Create or edit an action.
-3. Choose the asset assignment trigger.
-4. Select the action type that requests an asset handover confirmation.
-5. Set the confirmation type to **Receipt**.
-6. Choose the asset categories, statuses, or other conditions that should create a handover record.
-7. Select notification channels: in-app, email, or both.
-8. Keep PDF handover records enabled unless your organization has a reason not to generate them.
-9. Choose whether the action uses the global acknowledgement mode or overrides it with login-required or external-link acknowledgement.
-10. Save the action.
-
-After this, assigning a matching asset creates a pending receipt handover record for the recipient.
-
-## Create a return confirmation action
-
-Use this setup when returned assets should be confirmed by the asset manager or the person recording the return.
-
-1. Go to `Settings → Actions`.
-2. Create or edit an action.
-3. Choose the asset assignment or status-change trigger that represents a return in your process.
-4. Select the action type that requests an asset handover confirmation.
-5. Set the confirmation type to **Return**.
-6. Choose the return statuses, categories, or conditions that should create a handover record.
-7. Decide whether the return dialog should be shown during the asset update.
-8. Configure notification channels.
-9. Add extra return email recipients only when they are part of your process, such as HR or an offboarding mailbox.
-10. Save the action.
-
-If the return prompt is skipped, the asset update still saves. Veviad still creates a pending return confirmation so the handover can be finished afterwards.
-
-## What employees see
-
-For login-based handovers, employees open the notification or email link, sign in, review the asset details, then confirm or dispute the handover.
-
-For external-link handovers, employees open the email link directly. The page shows:
-
-- the asset snapshot at the time the handover was requested;
-- whether this is a receipt or return;
-- the recipient email or involved person;
-- the current handover status;
-- a PDF preview and download when enabled;
-- confirm and dispute controls while a response is still pending.
-
-After a handover is confirmed or disputed, response buttons are no longer shown. The PDF remains available until the link expires or is revoked, if PDF access is enabled.
-
-## What asset managers see
-
-On the asset detail page, open the **Handover** tab. It lists receipt and return records with their current status.
-
-Use this tab to:
-
-- see pending, confirmed, disputed, and cancelled handovers;
-- expand a record to review the stored snapshot and notes;
-- preview or download the PDF handover record;
-- see who responded and when;
-- follow up on disputed or still-pending records.
-
-Handover activity is also reflected in the asset history and audit log.
-
-## Statuses
-
-| Status | Meaning |
-|---|---|
-| **Pending** | A response is still required |
-| **Confirmed** | The responsible person acknowledged the receipt or return |
-| **Disputed** | The responsible person reported that something is incorrect |
-| **Cancelled** | The handover is no longer active |
-
-Use disputed records as a follow-up queue. They usually mean the asset, assignee, return condition, or timing needs review.
-
-## PDF handover records
-
-PDFs are designed as handover records for employees and asset managers. They include the asset identity, involved people, dates, handover type, status, and response information. Purchase cost is not included by default.
-
-PDFs are based on the stored handover snapshot, so later asset edits do not rewrite the original handover evidence.
-
-The PDF can be previewed in the browser or downloaded for employee files, internal records, or offboarding documentation.
-
-## Recommended setup
-
-For most organizations:
-
-1. Start with **Require user login** as the global default.
-2. Enable **external magic links** only for processes where not every recipient has a Veviad account.
-3. Use receipt confirmations for high-value or personally assigned equipment.
-4. Use return confirmations for offboarding, asset check-in, and inventory handback.
-5. Keep PDFs enabled.
-6. Review disputed and overdue records regularly.
-
-## Legal and policy notes
-
-Handover confirmations are electronic acknowledgements, not qualified electronic signatures. They help create an audit-grade record, but your organization decides how long to retain them and how they fit into employee, tax, or equipment-safety records.
-
-Before rollout, review the process with the teams responsible for employee data protection, HR, IT asset management, and, where applicable, works council or employee representation.
+- [People](/main/people)
+- [Workflow settings](/organization/settings-workflows)
+- [Audit logs](/analytics/audit-logs)

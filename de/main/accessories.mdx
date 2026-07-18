@@ -1,50 +1,45 @@
 ---
-title: "Zubehör"
-sidebarTitle: "Zubehör"
-description: "Ergänzendes Inventar wie Kabel, Ladegeräte und Peripheriegeräte neben den Kern-Assets verwalten."
+title: "Zubehör und Bestand"
+sidebarTitle: "Zubehör und Bestand"
+description: "Zubehörbestände erfassen, ausgeben und zurücknehmen."
 icon: "cable"
 ---
 
-Zubehör ist für Gegenstände gedacht, die den Asset-Bestand ergänzen, sich aber nicht wie primäre Assets verhalten — Kabel, Ladegeräte, Monitore, Docks, Adapter und Ähnliches. Die Trennung vom Asset-Register hält dieses übersichtlich und gibt Teams dennoch den nötigen Überblick.
+## Zweck
 
-![Die Zubehörliste mit Bestand und Zuweisungen](/images/screenshots/de/accessories.webp)
+Zubehör verfolgt Mengen von Artikeln, die keinen individuellen Asset-Lebenszyklus benötigen.
 
-_Gezeigte Ansicht: `demo.veviad.cloud/accessories`_
-## Was die Zubehörliste zeigt
+![Maschinenzubehör und Wartungsbestand](/images/screenshots/de/accessories.webp)
 
-Gefilterte Ansichten unter `Haupt → Zubehör`:
+## Voraussetzungen
 
-- **Alle** — sämtliches Zubehör im Workspace
-- **Aktiv** — aktuell in Verwendung
-- **Im Lager** — nicht zugewiesener Bestand
-- **Archiviert** — ausgemustert / abgeschrieben
+Sie benötigen Zubehör-Anzeigerechte. Erstellen, Bearbeiten, Löschen und Ausgeben besitzen getrennte Berechtigungen.
 
-**Benutzerdefinierte Ansichten:**
+## Bestand verwalten
 
-- **Nicht zugewiesenes Zubehör** — Bestand, der ausgegeben werden kann
-- **Mein Zubehör** — Zubehör, das der aktuellen Benutzerin oder dem aktuellen Benutzer zugewiesen ist
+1. Öffnen Sie **Zubehör** und einen Artikel.
+2. Erfassen Sie Modell, Menge, Mindestmenge, Standort, Partner und Stückkosten.
+3. Markieren Sie den Artikel bei Bedarf als anforderbar.
+4. Erfassen Sie Ausgabe und Rückgabe.
+5. Prüfen Sie verfügbare Menge und füllen Sie rechtzeitig nach.
 
-## Datensatzfelder
+## Erwartetes Ergebnis
 
-Jede Zubehörzeile zeigt:
+Verfügbarer Bestand ergibt sich aus Gesamtmenge abzüglich offener Ausgaben.
 
-- **ID** — interne Kennung
-- **Seriennummer** — Seriennummer, sofern vorhanden
-- **Name** — beschreibender Name des Gegenstands
-- **Kategorie** — Taxonomiegruppe
-- **Status** — aktiv, im Lager oder archiviert
+## Bewährte Vorgehensweisen
 
-## Häufige Aufgaben
+- Verwenden Sie ein Asset, wenn jede Einheit Tag, Seriennummer, Wartung oder Übergabe braucht.
+- Benennen Sie Packungsgröße und Einheit eindeutig.
+- Richten Sie Mindestmengen an Lieferzeiten aus.
+- Konsolidieren Sie Duplikate.
 
-- Zubehör hinzufügen (Aktion `+` in der Symbolleiste)
-- einer Person oder einem Standort zuweisen
-- in „Im Lager“ verschieben, wenn es in den Bestand zurückkehrt
-- archivieren, wenn ein Zubehörteil ausgemustert wird
+## Fehlerbehebung
 
-## Zubehör vs. Assets
+Prüfen Sie offene Ausgaben und Rückgabemengen. Gelöschte oder inaktive Personen dürfen die Historie nicht entfernen.
 
-- Verwenden Sie **Assets** für Gegenstände, die einzeln mit Lifecycle, Garantie und Abschreibung verfolgt werden (Laptops, Workstations, Telefone, Netzwerkausrüstung)
-- Verwenden Sie **Zubehör** für Peripheriegegenstände, die vereinfacht erfasst werden (Kabel, Adapter, Mäuse)
-- Verwenden Sie **Lizenzen** für Software-Nutzungsrechte
+## Verwandte Themen
 
-Ordnen Sie Gegenstände frühzeitig dem richtigen Typ zu — einen Datensatz später in einen anderen Typ zu überführen, ist nicht mit einem Klick erledigt.
+- [Assets](/de/main/assets)
+- [Personen](/de/main/people)
+- [Organisationseinstellungen](/de/organization/settings-organization)

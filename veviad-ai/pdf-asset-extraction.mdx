@@ -1,31 +1,48 @@
 ---
-title: "Veviad AI Import"
-sidebarTitle: "Veviad AI Import"
-description: "Import asset data from documents with Veviad AI and review results before creating records."
+title: "PDF asset intake"
+sidebarTitle: "PDF asset intake"
+description: "Extract candidate asset data from PDFs and review every field before creation."
 icon: "file-scan"
 ---
 
-Veviad supports AI-assisted extraction of asset data from PDF invoices and similar documents. This workflow is intended to reduce manual entry while keeping a review step in place.
+## Purpose
 
-![The assets list with toolbar actions used to start Veviad AI Import](/images/screenshots/assets.webp)
+PDF intake reduces manual entry from invoices, delivery notes, and equipment documents. Extraction produces a reviewable candidate, not an automatic source of truth.
 
-_View shown: `demo.veviad.cloud/assets`_
+![PDF asset intake review](/images/screenshots/pdf-asset-intake.webp)
 
-## Workflow at a glance
+## Before you begin
 
-1. upload a supported PDF document
-2. allow the extraction process to read and classify the content
-3. review extracted values in the guided interface
-4. correct or enrich the results where needed
-5. create the resulting asset records
+You need Asset create and AI-import permission, an active AI/OCR integration, and a supported PDF without secrets unrelated to the asset.
 
-## What makes the workflow useful
+## Extract and create
 
-- faster intake from supplier documentation
-- reduced copy-and-paste work
-- reviewable results before records are created
-- alignment with supplier and manufacturer data already stored in Veviad
+1. Open the Veviad AI import flow.
+2. Upload the PDF.
+3. Wait for OCR and extraction to finish.
+4. Review every proposed asset and field.
+5. Correct category, status, tag, serial, cost, dates, supplier, manufacturer, and custom fields.
+6. Resolve required-field validation.
+7. Confirm only the reviewed records.
+8. Open each created asset and verify attachments and values.
 
-## Operational note
+## Expected result
 
-Extraction quality can vary by document quality, OCR needs, and data consistency. Treat the workflow as an accelerator, not a substitute for final review.
+Veviad creates only confirmed assets and retains the extraction job status for troubleshooting.
+
+## Best practices
+
+- Split unrelated documents into separate jobs.
+- Redact bank data, personal data, and credentials before upload.
+- Never accept a guessed serial or cost without source evidence.
+- Use bulk import instead when the source is already structured.
+
+## Troubleshooting
+
+Check file type and size, OCR provider health, job status, queue health, and required fields. A failed extraction does not create an asset.
+
+## Related topics
+
+- [Assets](/main/assets)
+- [Integrations](/organization/integrations)
+- [Troubleshooting](/faq/troubleshooting)

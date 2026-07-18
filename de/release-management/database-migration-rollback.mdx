@@ -1,0 +1,33 @@
+---
+title: "Datenbank-Migrations-Rollback"
+sidebarTitle: "Datenbank-Rollback"
+description: "Sichere Entscheidungen für Laravel-Migrationen, Backups und Wiederherstellung."
+icon: "database"
+---
+
+Ein Anwendungs-Rollback ist nur sicher, wenn das Datenbankschema zur älteren Version kompatibel ist.
+
+## Entscheidungsreihenfolge
+
+1. Identifizieren Sie vorwärts und rückwärts inkompatible Migrationen.
+2. Prüfen Sie, ob ein Anwendungs-Rollback ohne Schemaänderung möglich ist.
+3. Bevorzugen Sie bei additiven Migrationen einen Code-Rollback mit unverändertem Schema.
+4. Verwenden Sie `migrate:rollback` nur, wenn die konkrete Migration reversibel geprüft wurde.
+5. Stellen Sie ein Backup wieder her, wenn Daten transformiert oder gelöscht wurden und kein sicherer `down`-Pfad existiert.
+
+## Nachweis vor Änderung
+
+Erfassen Sie Backup-Zeitpunkt, Datenbankversion, Release-SHA, Migrationsliste und erwartete Ausfallzeit. Testen Sie Restore-Zugang und Zielpfad.
+
+## Prüfung
+
+Nach Rollback oder Restore prüfen Sie Migrationstatus, Datensatzanzahl, Anmeldung, zentrale Assets, Suche, Queue und `/health`. Halten Sie Abweichungen fest.
+
+<Warning>
+  Führen Sie keinen pauschalen Rollback-Befehl gegen eine unbekannte Produktionsmigration aus.
+</Warning>
+
+## Verwandte Themen
+
+- [Hotfix-Ablauf](/de/release-management/hotfix-flow)
+- [Upgrade-Leitfaden](/de/release-management/upgrade-guide)
