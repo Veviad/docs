@@ -42,6 +42,8 @@ Wählen Sie **Zugriff gewähren** und anschließend eine aktive Person ohne Zugr
 4. Wählen Sie die Anwendungsrolle.
 5. Gewähren Sie den Zugriff.
 
+![Der Dialog Anwendungszugriff gewähren macht aus einem bestehenden Belegschaftsdatensatz einen Anwendungsbenutzer](/images/screenshots/de/admin-grant-access.webp)
+
 Bei einem lokalen Konto sendet Veviad eine Einladung und setzt den Zugriff auf **Ausstehend**, bis Anmeldedaten eingerichtet wurden. Bei SSO kann der Zugriff ohne lokales Passwort aktiv werden.
 
 Rollen werden erst in diesem Schritt vergeben, weil sie festlegen, was eine angemeldete Person tun darf. Eine reine Person der Belegschaft hat keine Rolle.
@@ -69,6 +71,8 @@ Lokale Einladungen verwenden nach Möglichkeit eine bestehende Person und erzeug
 - **Abgelaufen** — Ersatz senden, wenn der Zugriff weiterhin vorgesehen ist
 - **Widerrufen** — Einladung kann nicht mehr verwendet werden
 
+![Das Einladungsverzeichnis zeigt ausstehende, angenommene, abgelaufene und widerrufene Zugriffseinladungen](/images/screenshots/de/admin-invitations.webp)
+
 Für dieselbe Person oder normalisierte E-Mail-Adresse kann nicht zweimal gleichzeitig eine aktive ausstehende Einladung erstellt werden.
 
 ## Rollen
@@ -76,6 +80,8 @@ Für dieselbe Person oder normalisierte E-Mail-Adresse kann nicht zweimal gleich
 Rollen gelten nur für Anwendungsbenutzer. Der Tab Rollen ist bei Zugriff **Keiner** deaktiviert.
 
 System- und benutzerdefinierte Rollen definieren Berechtigungen angemeldeter Benutzer. Rollenänderungen benötigen user.assign.role. Access-SCIM-Gruppenzuordnungen können Rollen über den Identitätsanbieter verwalten; Gruppen aus People Directory SCIM vergeben niemals Rollen.
+
+![Der administrative Personen-Editor zeigt die Zuweisung der Anwendungsrolle und die Berechtigungsübersicht](/images/screenshots/de/admin-person-role.webp)
 
 ## Berechtigungen und Zuständigkeit
 

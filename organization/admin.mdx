@@ -42,6 +42,8 @@ Choose **Grant Access** and select an existing active person without access.
 4. Select the application role.
 5. Grant access.
 
+![The Grant application access dialog for promoting an existing workforce record to an application user](/images/screenshots/admin-grant-access.webp)
+
 For a local account, Veviad sends an invitation and sets access to **Pending** until the recipient establishes credentials. For SSO, access can become active without a local password.
 
 Roles are assigned at this stage because they answer what an authenticated person may do. A workforce-only person has no role.
@@ -69,6 +71,8 @@ Local invitations reuse an existing person when possible and do not create a dup
 - **Expired** — generate a replacement when access is still intended
 - **Revoked** — the invitation can no longer be used
 
+![The invitation directory showing pending, accepted, expired, and revoked access invitations](/images/screenshots/admin-invitations.webp)
+
 An active pending invitation for the same person or normalized email cannot be created twice.
 
 ## Roles
@@ -76,6 +80,8 @@ An active pending invitation for the same person or normalized email cannot be c
 Roles only apply to application users. The Roles tab is disabled when access is **None**.
 
 System and custom roles define authenticated permissions. Role assignment requires user.assign.role. Access SCIM group mappings can manage roles from the identity provider; People Directory SCIM groups never assign roles.
+
+![The administrative person editor showing application-role assignment and permission coverage](/images/screenshots/admin-person-role.webp)
 
 ## Permissions and ownership
 
