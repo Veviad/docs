@@ -1,0 +1,42 @@
+---
+title: "Systemrollen und Berechtigungen"
+sidebarTitle: "Systemrollen"
+description: "Die fünf Veviad-Systemrollen, ihre vorgesehenen Benutzer und wichtigsten Berechtigungsgrenzen verstehen."
+icon: "user-shield"
+---
+
+Veviad enthält fünf geschützte Systemrollen. Verwenden Sie diese als praktische Ausgangspunkte für typische Verantwortungsbereiche.
+
+<Note>
+  Eine Rolle steuert, was ein Anwendungsbenutzer nach aktivierter Zugangsberechtigung tun darf. Die Rollenzuweisung allein erteilt keinen Anmeldezugriff.
+</Note>
+
+![Rollen und Berechtigungsumfang im Admin-Bereich](/images/screenshots/de/admin-roles.webp)
+
+## Systemrollen im Überblick
+
+| Systemrolle | Vorgesehen für | Wichtigste Fähigkeiten und Grenzen |
+| --- | --- | --- |
+| **Admin** (<code>admin</code>) | Eine kleine Gruppe von Plattformadministratoren | Vollzugriff auf Anwendung, Benutzer, Rollen, Einstellungen, Integrationen, operative Daten, Berichte und Audit-Logs. |
+| **Asset Manager** (<code>asset-manager</code>) | Das zentrale Asset-Management-Team | Verwaltet Assets abteilungsübergreifend, Wartung, operative Asset-Konfiguration, Actions, Checklisten-Vorlagen und Berichte. Darf Personen sehen, aber keine Anwendungszugänge oder Integrationen administrieren. |
+| **Department Manager** (<code>department-manager</code>) | Verantwortliche für eine Abteilung | Arbeitet mit bestehenden Abteilungs-Assets, Zuweisungen, Audits, Wartungsanfragen und Abteilungsberichten. Besitzt keine globale Administration und keine uneingeschränkten Rechte zum Erstellen oder Löschen von Assets. |
+| **Employee** (<code>employee</code>) | Reguläre Anwendungsbenutzer | Sieht zugewiesene Assets und grundlegende Organisationsdaten und kann Wartungsanfragen erstellen. Verwaltet keine Berichte, Konfiguration oder Anwendungszugänge. |
+| **Finance** (<code>finance</code>) | Finanz-, Compliance- und Audit-Teams | Abteilungsübergreifender Lese-, Berichts-, Export-, Abschreibungs- und Audit-Zugriff. Verwaltet keine operativen Datensätze, Benutzer oder Einstellungen. |
+
+## Rolle auswählen und prüfen
+
+- Beginnen Sie mit der Systemrolle mit den geringsten passenden Rechten.
+- Öffnen Sie **Admin → Rollen** und wählen Sie eine Rolle, um die exakten Berechtigungen und zugewiesenen Benutzer zu sehen.
+- Systemrollen werden von Veviad verwaltet und können nicht bearbeitet oder gelöscht werden.
+- Erstellen Sie eine benutzerdefinierte Rolle, wenn eine Systemrolle zu weit oder zu eng gefasst ist.
+- Prüfen Sie Rollenzuordnungen in SSO oder SCIM, wenn der Identity Provider autoritativ ist.
+
+## Fehlerbehebung
+
+Fehlt ein Modul oder eine Aktion, prüfen Sie aktiven Anwendungszugriff, vorgesehene Rolle und erforderliche Berechtigung. Abteilungsgebundene Rollen benötigen außerdem die richtige Abteilungszuordnung.
+
+## Verwandte Themen
+
+- [Personen und Anwendungszugriff](/de/organization/user-access)
+- [Benutzer und Berechtigungen](/de/organization/admin)
+- [SSO und SCIM](/de/organization/sso-scim)
