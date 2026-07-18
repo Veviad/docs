@@ -23,10 +23,6 @@
             "groups": [
               {
                 "group": "Start here",
-                "icon": {
-                  "name": "compass",
-                  "library": "lucide"
-                },
                 "expanded": true,
                 "pages": [
                   "index",
@@ -38,10 +34,6 @@
               },
               {
                 "group": "Daily work",
-                "icon": {
-                  "name": "briefcase-business",
-                  "library": "lucide"
-                },
                 "expanded": true,
                 "pages": [
                   "main",
@@ -55,11 +47,6 @@
               },
               {
                 "group": "Automation & insights",
-                "icon": {
-                  "name": "chart-column",
-                  "library": "lucide"
-                },
-                "expanded": false,
                 "pages": [
                   "analytics",
                   "main/workflows",
@@ -72,11 +59,6 @@
               },
               {
                 "group": "Administration",
-                "icon": {
-                  "name": "settings",
-                  "library": "lucide"
-                },
-                "expanded": false,
                 "pages": [
                   "organization",
                   "organization/settings",
@@ -91,7 +73,6 @@
               },
               {
                 "group": "Help",
-                "icon": "question-circle",
                 "pages": [
                   "faq",
                   "faq/common-questions",
