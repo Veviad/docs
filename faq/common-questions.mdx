@@ -1,49 +1,48 @@
 ---
-title: "Common Questions"
-sidebarTitle: "Common Questions"
-description: "Practical answers to common Veviad documentation questions."
-icon: "messages-square"
+title: "Common questions"
+sidebarTitle: "Common questions"
+description: "Concise answers to common Veviad behavior and permission questions."
+icon:
+  name: "messages-square"
+  library: "lucide"
 ---
 
-## Where should a new user start?
+## Why is a module or button missing?
 
-Start with [Getting Started](/getting-started), then move into the module that matches the user's daily work.
+Your role does not include the required permission, or the feature integration is inactive. Ask an administrator to confirm the intended responsibility.
 
-## Where do I configure shared structure such as departments or locations?
+## Why can I assign an asset to someone who cannot sign in?
 
-Use the Settings area in Veviad. Shared taxonomy and system-wide rules belong there rather than in individual records.
+People and application access are separate. Assignment-only workforce records are intentional.
 
-## How do I find something quickly?
+## Where are Workflows?
 
-Use the in-app global search shortcut:
+The product uses **Actions** for automation. Configure them under Settings → Actions. Asset-only checklist templates are managed separately.
 
-- `Cmd+K` on macOS
-- `Ctrl+K` on Windows and Linux
+## Can checklists belong to maintenance or people?
 
-## What should I use for repeatable operational processes?
+No. Current checklist instances belong to assets only. Maintenance has its own records and documents.
 
-Use [Checklists and Workflows](/main/workflows): checklists for visible step-by-step execution, and workflow actions when lifecycle events should trigger follow-up automatically.
+## Does the dashboard look the same for everyone?
 
-## How do invitations usually fail?
+No. The dashboard layout and configurable widgets are personal to each user.
 
-The most common causes are:
+## Can the asset grid handle 10,000 records?
 
-- wrong email address
-- email delivered to spam or junk
-- expired or revoked invitation
+Yes. It uses server-side filtering, sorting, and lazy row loading. Use saved views or Reports instead of loading or exporting everything.
 
-Use the Admin area in Veviad for managing invitations.
+## Are report AI summaries authoritative?
 
-## Where do I check whether the environment is healthy?
+No. They are grounded assistance attached to a report run. Validate them against rows and chart values.
 
-Use the Admin Dashboard in Veviad to review system health before contacting support.
+## Which SCIM endpoint should we use?
 
-## Is Veviad AI a replacement for manual review?
+Use application-access SCIM for people who should sign in. Use People-directory SCIM for the broader assignable workforce.
 
-No. Veviad AI is best used as an accelerator for discovery, analysis, and intake. For sensitive operational or compliance decisions, review the underlying records.
+## Why is my profile field disabled?
 
-## Where can I ask for help?
+SSO or SCIM may be authoritative for that field. Change it in the identity provider.
 
-- this docs site for the public manual
-- `support.veviad.com` for support workflows
-- `support@veviad.com` for direct support contact
+## Where should I report a problem?
+
+Follow [Troubleshooting and support](/faq/troubleshooting) and use your organization's configured support path.

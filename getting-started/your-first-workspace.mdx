@@ -1,43 +1,50 @@
 ---
-title: "Your First Workspace"
-sidebarTitle: "Your First Workspace"
-description: "Recommended first-time Veviad setup for a clean, scalable workspace."
-icon: "building-2"
+title: "Set up your first workspace"
+sidebarTitle: "Your first workspace"
+description: "Recommended order for configuring a clean, scalable Veviad workspace."
+icon:
+  name: "building-2"
+  library: "lucide"
 ---
 
-The quickest way to make Veviad useful is to set up the shared structure before importing or assigning a large number of records.
+## Purpose
 
-![The settings tile grid with shared configuration areas](/images/screenshots/settings.webp)
+Build shared organization data before importing assets so assignments, reporting, automation, and permissions use stable values.
 
-## Recommended setup order
+## Before you begin
 
-1. Confirm your users, roles, and departments.
-2. Define locations, status labels, categories, and suppliers.
-3. Review cost centers, depreciation rules, and asset tag settings.
-4. Create one or two checklist templates for repeatable workflows.
-5. Decide whether reports, notifications, and SSO should be configured immediately.
+You need the relevant Settings and Admin permissions. Decide who owns asset data, application access, identity integration, and workflow design.
 
-## Why structure first?
+## Setup order
 
-Assets become easier to search, report on, and govern when the underlying taxonomy is stable. Early structure pays off in:
+1. In **Settings → General**, choose currency and shared display defaults.
+2. Create locations, departments, cost centers, suppliers, and manufacturers.
+3. Configure asset statuses, categories, depreciation rules, tag generation, and custom fields.
+4. Configure maintenance types, checklist templates, handover defaults, and notifications.
+5. Create or synchronize People.
+6. Grant application access to the small subset that needs to sign in; assign roles.
+7. Configure integrations, SSO, and the appropriate SCIM purposes.
+8. Import a small verified asset sample.
+9. Validate global search, saved views, maintenance, handover, Actions, and Reports.
+10. Import the remaining inventory.
 
-- cleaner imports
-- consistent assignment
-- more meaningful reports
-- better automation and checklist behavior
+## Expected result
 
-## Minimum setup checklist
+Records share consistent organizational values, sign-in access is separate from the workforce directory, and administrators can audit every important change.
 
-- departments and locations reflect the real organization
-- categories and status labels match how your team works
-- suppliers and manufacturers are available for new records
-- invitation flow is ready for the first operational users
-- support links and documentation access are known internally
+## Best practices
 
-## After setup
+- Pilot with representative records and permissions before bulk import.
+- Keep naming rules short and stable.
+- Treat identity and automation changes as controlled rollouts.
+- Record the owner of every integration.
 
-Once the workspace structure is in place, continue with:
+## Troubleshooting
 
-- [Assets](/main/assets)
-- Settings in Veviad
-- [Checklists and Workflows](/main/workflows)
+If imports reject rows, review required fields and category-specific custom fields. If users cannot sign in, distinguish the Person record from application access.
+
+## Related topics
+
+- [Organization settings](/organization/settings-organization)
+- [Asset configuration](/organization/settings-assets)
+- [People and application access](/organization/user-access)

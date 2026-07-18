@@ -1,0 +1,29 @@
+---
+title: "Storage-Schreibprüfung"
+sidebarTitle: "Storage-Gesundheit"
+description: "Persistenten lokalen, öffentlichen und Report-Storage ohne Rückstände prüfen."
+icon: "hard-drive"
+---
+
+Veviad behandelt beschreibbaren persistenten Storage als erforderlichen Dienst.
+
+## Funktionsweise
+
+Die Dateisystemprüfung testet jeden konfigurierten Report-Datenträger sowie `local` und `public`. Sie schreibt eine Zufallsdatei unter `.healthchecks/`, liest den Inhalt zurück und löscht sie. Fehler bei Schreiben, Lesen oder Löschen markieren Storage als nicht verfügbar.
+
+## Storage prüfen
+
+1. Prüfen Sie den persistenten Mount auf den vorgesehenen `storage/app`-Pfad.
+2. Rufen Sie `GET /health?verbose=true` auf, wenn ausführliche Probes erlaubt sind.
+3. Bestätigen Sie für `storage` den Status `pass`.
+4. Laden Sie ein nicht sensibles Testdokument über die Anwendung hoch.
+5. Starten Sie den App-Container neu und prüfen Sie die Persistenz.
+
+## Fehler diagnostizieren
+
+Prüfen Sie Eigentümer des Mounts, Platz, Inodes, Read-only-Flags, Disk-Konfiguration und den Logeintrag mit dem fehlerhaften Datenträger. Deaktivieren Sie die Prüfung nicht.
+
+## Verwandte Runbooks
+
+- [Deployment-Gesundheit](/de/operations/deployment-health)
+- [Upgrade-Leitfaden](/de/release-management/upgrade-guide)

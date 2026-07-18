@@ -1,52 +1,37 @@
 ---
-title: "Settings"
-sidebarTitle: "Settings"
-description: "Configuration areas that shape how the workspace behaves for every user."
-icon: "sliders-horizontal"
+title: "Settings overview"
+sidebarTitle: "Settings overview"
+description: "Find the grouped configuration area that owns a Veviad behavior."
+icon:
+  name: "sliders-horizontal"
+  library: "lucide"
 ---
 
-Settings (`/settings`) is a tile grid of shared configuration areas. Each tile opens a dedicated page. Use Settings for shared structure and system-wide rules — not for one-off record edits.
+![Grouped Veviad settings landing page](/images/screenshots/settings.webp)
 
-![The settings tile grid with shared configuration areas](/images/screenshots/settings.webp)
+## Choose the right area
 
-## Settings areas
-
-| Tile | What it configures |
+| Responsibility | Configuration |
 | --- | --- |
-| **General** | Organization currency and display settings |
-| **Cost Center** | Cost centers and budget allocations |
-| **Depreciations** | Depreciation schedules applied to assets |
-| **Departments** | Org departments (used by People, Assets, and reports) |
-| **Locations** | Physical sites and locations |
-| **Status Labels** | Asset status labels and types (drives Active / In Storage / Deprecated / Disposed views) |
-| **Categories** | Asset categories (drives the Dashboard "Categories" KPI) |
-| **Maintenance Types** | Type options used when adding asset maintenance records |
-| **Suppliers & Manufacturers** | Vendor directory for purchase and warranty records |
-| **Asset Tag Configuration** | How new asset tags are generated |
-| **Asset Tag Label** | Printable QR code layout for physical labels |
-| **Field Visibility & Required Fields** | Which record fields are visible and which are mandatory |
-| **Handover** | Acknowledgement mode, external links, and PDF access for asset handovers |
-| **Actions** | Event-driven and scheduled automation triggers (see Workflows) |
-| **Checklists** | Reusable checklist templates (see Workflows) |
-| **Notifications** | Notification settings and alert thresholds |
+| Shared organization data | General, locations, departments, cost centers, suppliers, manufacturers |
+| Asset lifecycle | Statuses, categories, depreciation, tag generation, labels, custom fields, field rules |
+| Work execution | Checklist templates, maintenance types, Actions, notification defaults, handover defaults |
+| User preferences | Profile language, timezone, and notification preferences |
+| Sign-in and provisioning | Admin users, invitations, roles, integrations, SSO, and SCIM |
 
-## Rules of thumb
+## Permission behavior
 
-- If it shapes how **many** records behave → it belongs here.
-- If it only changes **one** record → it belongs on that record.
+Settings uses granular permissions. A user can manage one configuration area without seeing all Settings pages.
 
-## Recommended setup order for a new workspace
+## Best practices
 
-1. **General** — set organization currency
-2. **Departments** and **Locations** — the taxonomy People and Assets reference
-3. **Categories**, **Status Labels**, and **Maintenance Types** — the taxonomy Assets and maintenance records reference
-4. **Suppliers & Manufacturers** — referenced from purchase info
-5. **Asset Tag Configuration** and **Asset Tag Label** — before bulk import
-6. **Depreciations** — before reporting financial KPIs
-7. **Notifications**, **Actions**, **Checklists** — once operational data is flowing
+- Configure shared values before importing records.
+- Deactivate values that are already referenced.
+- Test changes with one representative record.
+- Review Audit Logs after material configuration changes.
 
-Getting this order right reduces cleanup later: assets imported before categories exist will need backfilling.
+## Related topics
 
-## Maintenance type rules
-
-Maintenance types are global options for asset maintenance records. Active types are available for new maintenance entries and scheduled maintenance actions. If a type is already used by records, deactivate it instead of deleting it so historical service data remains readable.
+- [Organization settings](/organization/settings-organization)
+- [Asset configuration](/organization/settings-assets)
+- [Workflow settings](/organization/settings-workflows)

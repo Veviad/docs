@@ -1,0 +1,43 @@
+---
+title: "Workflow and notification settings"
+sidebarTitle: "Workflow settings"
+description: "Configure checklist templates, Actions, maintenance types, notifications, and handover defaults."
+icon:
+  name: "workflow"
+  library: "lucide"
+---
+
+Workflow settings define the reusable rules behind checklists, maintenance, Actions, notifications, and handovers.
+
+## Before you begin
+
+You need the Settings permission for the area you change. Action execution also requires a running queue worker.
+
+## Configure workflow behavior
+
+1. Open **Settings**.
+2. Maintain asset checklist templates and their items.
+3. Maintain maintenance types used by manual and automated records.
+4. Configure organization notification defaults and per-user delivery options.
+5. Configure handover acknowledgement, PDF, and external-link defaults.
+6. Create event-driven or scheduled Actions from the **Actions** settings page.
+
+## Expected result
+
+New workflow instances use the configured defaults. Existing checklist instances retain their original template snapshot.
+
+## Best practices
+
+- Keep new Actions inactive until trigger conditions and recipients are reviewed.
+- Set an explicit timezone for schedules.
+- Avoid sending notifications to broad groups during testing.
+
+## Troubleshooting
+
+If an Action does not run, check that it is active, the trigger matches, and the queue is healthy.
+
+## Related topics
+
+- [Asset checklists](/main/checklists)
+- [Actions](/main/workflows)
+- [Asset handover](/main/asset-handover)

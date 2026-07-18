@@ -1,20 +1,40 @@
 ---
-title: "Organization"
-sidebarTitle: "Organization"
-description: "Tenant settings, authentication, access, and integrations."
-icon: "building-2"
+title: "Administration"
+sidebarTitle: "Overview"
+description: "Configure the shared workspace, application access, permissions, and integrations."
+icon:
+  name: "building-2"
+  library: "lucide"
 ---
 
-Organization groups everything that shapes the workspace: business taxonomy, authentication, permissions, and integrations. Split between Settings (operational configuration) and Admin (access and identity).
+Administration is organized by responsibility, and every area is permission-dependent.
 
-## Highlights
+<CardGroup cols={2}>
+  <Card title="Organization settings" icon="building-cog" href="/organization/settings-organization">
+    Currency, locations, departments, cost centers, suppliers, and manufacturers.
+  </Card>
 
-- Sixteen settings areas for currency, depreciation, taxonomy, and more
-- Roles, users, invitations, SSO, and SCIM under Admin
-- Veviad AI provider configuration through Admin → Integrations
+  <Card title="Asset configuration" icon="package-cog" href="/organization/settings-assets">
+    Categories, statuses, depreciation, tags, custom fields, and field rules.
+  </Card>
 
-## In This Section
+  <Card title="Workflow settings" icon="workflow" href="/organization/settings-workflows">
+    Checklists, Actions, maintenance types, notifications, and handover defaults.
+  </Card>
 
-- [Settings](/organization/settings)
-- [Admin](/organization/admin)
-- [SSO and SCIM](/organization/sso-scim)
+  <Card title="People and access" icon="users-round" href="/organization/user-access">
+    People, application users, invitations, roles, and identity authority.
+  </Card>
+
+  <Card title="Integrations" icon="plug" href="/organization/integrations">
+    AI, OCR, email, SSO, and SCIM services.
+  </Card>
+
+  <Card title="SSO and SCIM" icon="key-round" href="/organization/sso-scim">
+    Authentication, role mapping, application-access provisioning, and workforce-directory sync.
+  </Card>
+</CardGroup>
+
+<Warning>
+  Administrative changes can affect every user. Test permission, identity, and automation changes with representative accounts before broad rollout.
+</Warning>

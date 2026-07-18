@@ -1,21 +1,32 @@
 ---
-title: "Analytics"
+title: "Automation and insights"
 sidebarTitle: "Overview"
-description: "Reports and audit logs for operational visibility."
-icon: "chart-no-axes-column"
+description: "Turn Veviad records into repeatable work, charts, summaries, and audit evidence."
+icon:
+  name: "chart-no-axes-column"
+  library: "lucide"
 ---
 
-Analytics is the read-only lens over the workspace. Reports surface configurable views of assets, licenses, users, and activity. Audit logs record who did what, when, and to which entity.
+Automation and insights connect source records to operational follow-up.
 
-![The reports area with KPI tiles and report templates](/images/screenshots/reports.webp)
+<CardGroup cols={2}>
+  <Card title="Actions" icon="workflow" href="/main/workflows">
+    Trigger checklist, maintenance, handover, or notification work from events or schedules.
+  </Card>
 
-## Highlights
+  <Card title="Reports" icon="file-chart-column" href="/analytics/reports">
+    Build reusable datasets with filters, charts, schedules, runs, and AI summaries.
+  </Card>
 
-- Six built-in report templates plus scheduled custom reports
-- Audit logs filtered by user action, security event, or system event
-- KPI tiles for executions, failed runs, and active schedules
+  <Card title="Audit logs" icon="clipboard-list" href="/analytics/audit-logs">
+    Trace who changed which record and when.
+  </Card>
 
-## In This Section
+  <Card title="Veviad AI" icon="sparkles" href="/veviad-ai">
+    Ask questions and extract asset data from PDF documents.
+  </Card>
+</CardGroup>
 
-- [Reports](/analytics/reports)
-- [Audit Logs](/analytics/audit-logs)
+## Operating principle
+
+Automation must remain observable: keep triggers narrow, schedules timezone-aware, recipients intentional, and source records auditable. Validate AI-generated or extracted content before making decisions or creating records.

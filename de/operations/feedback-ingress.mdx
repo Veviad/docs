@@ -1,0 +1,38 @@
+---
+title: "Signierter Central-Feedback-Ingress"
+sidebarTitle: "Feedback-Ingress"
+description: "Zeitgestützte HMAC-Zustellung von Veviad an Central konfigurieren und prüfen."
+icon: "message-square-lock"
+---
+
+Admin-Feedback wird über eine signierte Server-zu-Server-Anfrage an Central gesendet.
+
+## Konfiguration
+
+Setzen Sie in der Instanz:
+
+- `FEEDBACK_INGRESS_URL`: HTTPS-Endpunkt in Central.
+- `FEEDBACK_INGRESS_SECRET`: gemeinsames Signatur-Secret im Secret-Management.
+- Optional `FEEDBACK_INGRESS_TIMEOUT`: Timeout in Sekunden, Standard 15.
+
+Die Feedback-Funktion erscheint nur für Administratoren, wenn beide Pflichtwerte gültig sind.
+
+## Signaturvertrag
+
+Veviad serialisiert den exakten JSON-Body, erzeugt einen Unix-Zeitstempel und signiert `timestamp + "." + body` per HMAC-SHA256. Gesendet werden `X-Feedback-Timestamp` und `X-Feedback-Signature: sha256=…`. Central prüft Rohdaten, Zeitfenster und Signatur mit konstantem Zeitverhalten.
+
+## Zustellung prüfen
+
+1. Konfigurieren Sie Endpunkt und Secret über Deployment-Secrets.
+2. Leeren Sie den Konfigurationscache oder deployen Sie neu.
+3. Senden Sie nicht sensibles Testfeedback aus dem Hilfe-Menü.
+4. Prüfen Sie Erfolg und den Central-Datensatz.
+5. Prüfen Sie, dass veränderte oder wiederholte Requests abgewiesen werden.
+
+## Fehlerverhalten
+
+Fehlende Konfiguration blendet die Funktion aus. Transport- und Fehlerantworten erzeugen eine sichere Benutzermeldung und einen Logeintrag ohne Secret.
+
+## Verwandte Runbooks
+
+- [Deployment-Gesundheit](/de/operations/deployment-health)

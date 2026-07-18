@@ -1,0 +1,44 @@
+---
+title: "Integrations"
+sidebarTitle: "Integrations"
+description: "Configure AI, OCR, email, SSO, and SCIM integrations without exposing secrets."
+icon:
+  name: "plug"
+  library: "lucide"
+---
+
+Integrations connect Veviad to identity, AI, document, and delivery services.
+
+![Administration overview for configured integrations](/images/screenshots/admin-integrations.webp)
+
+## Before you begin
+
+You need Admin integration permission and the provider values supplied by your organization. Never paste secrets into documentation or support screenshots.
+
+## Configure an integration
+
+1. Open **Admin → Integrations**.
+2. Select the integration type.
+3. Enter the required endpoint, identifier, and secret values.
+4. Save, activate, and use the built-in test where available.
+5. Verify the dependent feature with a non-sensitive test record.
+
+## Expected result
+
+The integration shows an active or healthy state and its dependent feature becomes available to authorized users.
+
+## Best practices
+
+- Use dedicated service accounts and scoped credentials.
+- Rotate secrets without changing stable identifiers unnecessarily.
+- Document ownership and renewal dates outside Veviad secrets fields.
+
+## Troubleshooting
+
+An integration can be configured but inactive, or active but unreachable. Check both state and connectivity, then review the related operator runbook.
+
+## Related topics
+
+- [SSO and SCIM](/organization/sso-scim)
+- [Veviad AI](/veviad-ai)
+- [PDF asset intake](/veviad-ai/pdf-asset-extraction)

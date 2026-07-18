@@ -1,0 +1,33 @@
+---
+title: "Storage write health"
+sidebarTitle: "Storage health"
+description: "Verify persistent local, public, and report storage without leaving probe files."
+icon: "hard-drive"
+---
+
+Veviad treats writable persistent storage as a required service, not an optional upload feature.
+
+## What the health check does
+
+The filesystem checker probes every configured report disk plus the `local` and `public` disks. For each disk it writes a random file under `.healthchecks/`, reads the exact contents back, and deletes the probe. Any failed write, read, or cleanup marks storage unavailable.
+
+## Verify storage
+
+1. Confirm the container mounts persistent storage at the intended `storage/app` path.
+2. Request `GET /health?verbose=true` where verbose probes are permitted.
+3. Confirm the `storage` component reports `pass`.
+4. Upload a non-sensitive test document through the application.
+5. Restart the application container and confirm the file remains available.
+
+## Diagnose a failure
+
+Check mount ownership for the runtime user, available space and inodes, read-only flags, disk configuration, and the application log entry identifying the failing disk. Fix the mount or permissions; do not disable the probe.
+
+## Expected result
+
+All configured disks pass write/read/delete and no stale probe files remain.
+
+## Related runbooks
+
+- [Deployment health checks](/operations/deployment-health)
+- [Upgrade guide](/release-management/upgrade-guide)

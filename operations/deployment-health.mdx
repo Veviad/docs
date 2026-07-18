@@ -1,0 +1,36 @@
+---
+title: "Deployment health checks"
+sidebarTitle: "Deployment health"
+description: "Validate containers, dependencies, application health, queues, and critical routes after deployment."
+icon: "heart-pulse"
+---
+
+Use layered health checks so a running container is not mistaken for a usable Veviad deployment.
+
+## Probe order
+
+1. Check container state for the application, PostgreSQL, Redis, and Meilisearch.
+2. Request `GET /up` for the lightweight Laravel liveness probe.
+3. Request `GET /health` for database, cache, storage, email, queue, OCR, and search components.
+4. In **Admin → System Information**, confirm version, runtime, queues, and dependency status.
+5. Sign in and verify Dashboard, Assets, global search, a file read/write path, and one queued workflow.
+
+## Interpret status
+
+- `pass`: required component is operational.
+- `warn`: deployment is usable but a non-critical capability needs attention, such as email in a local environment.
+- `fail` or `down`: stop promotion and repair the dependency.
+
+## Release evidence
+
+Record UTC timestamp, source SHA, application version, image digest, migration result, health payload, and the human smoke-test result.
+
+## Troubleshooting
+
+Use service-specific logs and identifiers. Avoid copying secrets or full customer payloads into incident notes.
+
+## Related runbooks
+
+- [Storage write health](/operations/storage-health)
+- [Search operations](/operations/search)
+- [Startup tasks and seeding](/operations/startup-tasks)

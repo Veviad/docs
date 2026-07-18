@@ -5,99 +5,38 @@ description: "Operational model for workforce records, login entitlements, SSO, 
 icon: "users-gear"
 ---
 
-This runbook describes the identity lifecycle introduced with the People and Application Access separation.
+## Model
 
-## Core model
+The users table contains people, while access lifecycle fields determine who can sign in. Assignment-only people have an active person status and no application access.
 
-Veviad keeps one users table. Each row is a person and may optionally have an application account.
+## Provisioning paths
 
-| Facet | Values | Authority |
-|---|---|---|
-| Person status | active, inactive | Local administrator or People Directory SCIM |
-| Access status | none, pending, active, suspended | Local administrator or Access SCIM |
-| Profile authority | local, SCIM directory, or access fallback | Determines editable profile fields |
-| Access authority | local or Access SCIM | Determines editable access and roles |
+| Path | Creates or updates | Grants sign-in |
+| --- | --- | --- |
+| Local People UI | Person profile | No |
+| Admin grant access/invitation | Existing person access | Yes |
+| SSO just-in-time behavior | Authenticated identity according to policy | According to policy |
+| Application-access SCIM | Profile and access lifecycle | Yes |
+| People-directory SCIM | Workforce profile and organization data | No |
 
-Effective authentication requires person_status=active and access_status=active. Roles never bypass this gate.
+## Authority
 
-## Provisioning purposes
-
-Both SCIM purposes use /scim/v2. The bearer token resolves the integration and purpose before any user operation runs.
-
-- **app_access** manages access status, Access-SCIM external identities, activation invitations, and mapped roles.
-- **people_directory** manages person status, directory external identities, and authoritative profile data.
-
-External identities are scoped by integration, protocol, provider, and purpose. The legacy unscoped external_id remains compatibility data until the contract migration is complete.
-
-## Ownership rules
-
-- Directory profile data wins over Access-SCIM profile data.
-- Directory groups never grant access or roles.
-- Access groups can map to roles; unmapped entitled users receive the safe default role.
-- Access-SCIM-owned access and roles are read-only locally.
-- Local and break-glass accounts remain locally manageable.
-- A unique normalized email may link a person once; ambiguous matches return a conflict.
-
-## Lifecycle effects
-
-| Operation | Required effect |
-|---|---|
-| Deactivate person | Preserve access entitlement and assignments; block login; revoke sessions and API tokens |
-| Reactivate person | Restore person status only |
-| Suspend access | Preserve person status and assignments; revoke sessions and API tokens |
-| Restore local access | Restore the independent access facet |
-| Access SCIM deprovision | Suspend access only |
-| Directory SCIM deprovision | Deactivate person only |
-
-Inactive people must not appear in new assignment pickers. Historical assignments and custody data remain queryable.
-
-## Local invitation lifecycle
-
-A local grant reuses an existing person or creates one when no unambiguous match exists.
-
-1. Set access to pending.
-2. Store the role on the invitation.
-3. Establish credentials when the invitation is accepted.
-4. Activate access and synchronize the invitation role.
-5. Revoke unresolved sibling invitations.
-
-Only one valid pending manual invitation may exist for a person or normalized email.
-
-## SSO and JIT
-
-SSO links a provider-scoped identity and then applies the same central login gate as password authentication.
-
-Controlled JIT is off by default. When enabled, it uses the configured default role and is prohibited while Access SCIM is enabled.
-
-Keep a tested local break-glass administrator when Force SSO is enabled.
-
-## Administrative surfaces
-
-- /people is the workforce directory and read-only profile entry point.
-- /admin/users contains only pending, active, or suspended application accounts.
-- /admin/people/{id} is the canonical administrative editor for every person.
-- Legacy /admin/users/{id} links redirect to the canonical editor.
-
-Administrative capability is permission-based: user.view, user.edit, user.create, user.delete, and user.assign.role.
+Track profile, access, and credential authority separately. Identity-provider-managed password and profile fields must remain read-only in Veviad.
 
 ## Operational checks
 
-After deployment or identity configuration changes, verify:
+1. Provision one person through the intended path.
+2. Verify department, location, status, and external identity.
+3. For assignment-only scope, confirm the person appears in People but cannot sign in.
+4. For access scope, confirm active access, role mapping, and SSO or invitation.
+5. Deactivate and reactivate the test identity.
+6. Confirm asset assignments and audit history remain intact.
 
-1. a manually added person has active person status, access none, and no role;
-2. granting local access creates one pending invitation;
-3. directory-first and access-first SCIM processing resolve to one person;
-4. directory deprovision blocks login without changing access status;
-5. access deprovision suspends access without changing person status;
-6. both SCIM applications use the same endpoint but different purpose tokens;
-7. access and directory identity collisions return a conflict;
-8. deactivation and suspension revoke existing sessions and API tokens;
-9. an Access-SCIM-owned account directs administrators to the identity provider.
+## Safety
 
-## Troubleshooting
+Use separate SCIM applications, tokens, and groups for access and People purposes. Token regeneration invalidates the previous token.
 
-If a person appears twice, compare normalized email and scoped external identities before changing data. Do not delete records that already own assignments or audit history.
+## Related runbooks
 
-If authentication is unexpectedly blocked, inspect both statuses, the access authority, the authentication method, and the relevant external identity.
-
-If SCIM requests affect the wrong lifecycle facet, rotate the credential and confirm that the Entra application uses the token generated by the matching Veviad integration.
+- [Deployment health](/operations/deployment-health)
+- [SSO and SCIM user guide](/organization/sso-scim)

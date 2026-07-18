@@ -1,168 +1,61 @@
 ---
-title: "SSO and SCIM"
+title: "SSO and purpose-scoped SCIM"
 sidebarTitle: "SSO and SCIM"
-description: "Configure SSO and independent SCIM feeds for application access and the workforce directory."
-icon: "key-round"
+description: "Configure authentication, role mapping, and two independent SCIM provisioning purposes."
+icon:
+  name: "key-round"
+  library: "lucide"
 ---
 
-Veviad separates a person's workforce record from the entitlement to use the application.
+## Purpose
 
-- **Single Sign-On (SSO)** authenticates a person who already has application access.
-- **SCIM Provisioning** manages application access and role mappings.
-- **SCIM People Directory** synchronizes the wider workforce directory without granting login access.
+SSO authenticates users. SCIM provisions identities. Veviad supports two separate SCIM purposes so workforce records do not automatically become application users.
 
-![The Integrations directory with separate SSO, Access SCIM, and People Directory SCIM entries](/images/screenshots/admin-integrations.webp)
+![SSO and SCIM settings](/images/screenshots/scim-access.webp)
 
-## Recommended Microsoft Entra layout
+## Before you begin
 
-Use two provisioning assignments:
+You need identity integration permission and an administrator in the identity provider. Decide which system is authoritative for profiles, access, credentials, and roles.
 
-| Enterprise application | People assigned | Veviad purpose |
-|---|---|---|
-| Veviad application access | Only users and groups that may use Veviad | SSO plus Access SCIM |
-| Veviad people directory | The broader workforce required for assignments | People Directory SCIM |
+## Configure SSO
 
-The SSO application and Access SCIM configuration can be the same Microsoft Entra enterprise application. The full People Directory should use a separate provisioning assignment and Veviad token.
+1. Open the SSO integration.
+2. Configure OIDC or SAML values.
+3. Save secrets in protected fields.
+4. Test with a non-admin account.
+5. Configure external-group-to-Veviad-role mappings and the role-sync policy.
 
-A person can appear in both feeds. Veviad links both immutable external identities to one person record, regardless of which feed arrives first.
+![SSO role mappings](/images/screenshots/sso-role-mapping.webp)
 
-## Why both SCIM integrations use the same endpoint
+## Configure SCIM by purpose
 
-Both integrations intentionally use the same SCIM base URL:
+### Application access
 
-**https://your-veviad-host/scim/v2**
+Use the application-access endpoint and token for people who should sign in. Provisioning controls access lifecycle and can synchronize role mappings.
 
-The bearer token identifies the provisioning purpose:
+### People directory
 
-- an **app_access** token routes the request to Access SCIM;
-- a **people_directory** token routes it to People Directory SCIM.
+Use the workforce-directory endpoint and token for assignable people who may never sign in. This feed maintains profile and organization data without granting application access.
 
-Generate and rotate each token independently. Never reuse one token for both enterprise applications.
+![People-directory SCIM configuration](/images/screenshots/scim-people-directory.webp)
 
-## Access SCIM
+## Expected result
 
-Open **Admin → Integrations → SCIM Provisioning**.
+SSO handles authentication, application SCIM controls login entitlement, and People SCIM maintains assignment-ready workforce records.
 
-Access SCIM controls the application-account facet:
+## Best practices
 
-- SCIM active grants or maintains the application-access entitlement;
-- SCIM deprovisioning changes access to **Suspended** but preserves the person and assignments;
-- Access SCIM groups can map to Veviad roles;
-- an unmapped access user receives the configured safe default role, normally **Employee**;
-- access status and managed roles are read-only in Veviad while this feed is authoritative.
-
-If SSO is enabled, an entitled person can authenticate through SSO. If Access SCIM is used without SSO, Veviad sends an activation invitation and keeps effective login pending until credentials are established.
-
-![Access SCIM settings for application-access provisioning](/images/screenshots/scim-access.webp)
-
-## People Directory SCIM
-
-Open **Admin → Integrations → SCIM People Directory**.
-
-People Directory SCIM controls the workforce facet:
-
-- SCIM active keeps person status **Active**;
-- deprovisioning changes person status to **Inactive**;
-- it creates no password, invitation, application role, or login entitlement;
-- directory groups never grant roles or application access;
-- directory-managed profile and lifecycle fields are read-only in Veviad.
-
-Inactive people remain in history and keep existing assignments, but they are excluded from new assignment pickers and cannot sign in.
-
-![People Directory SCIM settings for workforce provisioning without application access](/images/screenshots/scim-people-directory.webp)
-
-## Profile and access authority
-
-When the same person is in both feeds:
-
-- People Directory profile data takes precedence over Access SCIM profile data;
-- Access SCIM manages access and mapped roles;
-- local notes and fields that are not identity-provider-owned remain editable;
-- ambiguous or duplicate normalized emails return a conflict instead of being merged automatically.
-
-After the first unique normalized-email match, Veviad uses the scoped immutable external identity rather than repeatedly matching by email.
-
-## Role mappings
-
-Role mappings belong to Access SCIM and SSO, never to People Directory SCIM.
-
-![Access SCIM role mappings from identity-provider groups to Veviad roles](/images/screenshots/sso-role-mapping.webp)
-
-1. Open **SCIM Provisioning** or **Single-Sign-On**.
-2. Open **Role Mapping**.
-3. Map an identity-provider group ID or attribute value to each Veviad role.
-4. Configure a safe default role.
-5. Save and verify the mapping.
-
-Roles answer what an authenticated person may do. They do not enable authentication by themselves.
-
-## SSO and controlled JIT
-
-SSO sign-in still passes Veviad's central eligibility gate. The person must be **Active** and application access must be **Active**.
-
-Controlled just-in-time creation is off by default. When enabled, it uses the configured default role. JIT cannot create or activate access while Access SCIM is enabled because the SCIM feed is authoritative for that entitlement.
-
-Recommended patterns:
-
-| Pattern | Behavior |
-|---|---|
-| Access SCIM plus SSO | Recommended for managed application accounts and passwordless authentication |
-| People Directory SCIM plus Access SCIM plus SSO | Recommended when Veviad also needs the wider workforce for assignments |
-| People Directory SCIM plus local invitations | Directory records are synchronized; administrators grant access to selected people |
-| SSO with controlled JIT | Suitable only when no Access SCIM feed governs access |
-| Local only | Add/import people, then grant access and invite only those who use Veviad |
-
-## Provisioning steps
-
-For each Microsoft Entra enterprise application:
-
-1. Open the corresponding integration in Veviad.
-2. Copy the SCIM endpoint ending in /scim/v2.
-3. Generate the bearer token for that integration.
-4. In Entra, set Provisioning mode to **Automatic**.
-5. Use the endpoint as **Tenant URL** and the token as **Secret Token**.
-6. Run **Test Connection**.
-7. Review user and group attribute mappings.
-8. Assign the intended users or groups.
-9. Start provisioning and review Entra provisioning logs.
-
-For Access SCIM, assign only people who may use Veviad. For People Directory SCIM, assign the workforce population required for inventory and organizational records.
-
-## Lifecycle outcomes
-
-| Event | Person status | Access status |
-|---|---|---|
-| People Directory creates a person | Active | Unchanged, normally None |
-| People Directory deprovisions a person | Inactive | Unchanged |
-| Access SCIM grants entitlement | Unchanged | Active with SSO, otherwise Pending until activation |
-| Access SCIM deprovisions entitlement | Unchanged | Suspended |
-| Administrator deactivates a local person | Inactive | Unchanged |
-| Administrator reactivates a local person | Active | Unchanged |
-
-A person-status change or access suspension immediately blocks effective login and revokes active sessions and API tokens.
+- Use separate enterprise applications, tokens, and groups for the two SCIM purposes.
+- Regenerating a token invalidates the previous token.
+- Pilot create, update, deactivate, and reactivation.
+- Keep one authority per field.
 
 ## Troubleshooting
 
-### Both integrations show the same endpoint
+A synchronized person who cannot sign in may be correctly provisioned only to the People directory. Check purpose, access state, role mapping, and credential authority.
 
-This is expected. Confirm that each Entra application uses the token generated from the matching Veviad integration.
+## Related topics
 
-### A directory person received no role
-
-This is expected. People Directory SCIM never assigns roles. Grant application access manually or include the person in Access SCIM.
-
-### Access or roles cannot be edited in Veviad
-
-Check the **Management authority** shown for the person. Access-SCIM-owned entitlements and roles must be changed in the identity provider.
-
-### A person can authenticate with the identity provider but Veviad blocks login
-
-Confirm both person status and access status are Active. A role alone is not sufficient.
-
-### The same employee was created twice
-
-Stop provisioning and inspect normalized email and external identifiers. Veviad returns deterministic conflicts for ambiguous matches; do not manually merge identity-provider-owned records without resolving the source data.
-
-### A token was lost or exposed
-
-Rotate only the affected provisioning-purpose token and update the matching Entra Secret Token. The other SCIM integration remains independent.
+- [People and application access](/organization/user-access)
+- [Integrations](/organization/integrations)
+- [People](/main/people)

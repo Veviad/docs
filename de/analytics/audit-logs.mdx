@@ -1,56 +1,48 @@
 ---
 title: "Audit-Logs"
 sidebarTitle: "Audit-Logs"
-description: "Zeitlich geordnete Aufzeichnung von Benutzer-, Sicherheits- und Systemereignissen im gesamten Workspace."
-icon: "clipboard-list"
+description: "Änderungen nachvollziehen und Berechtigungs- oder Prozessfragen untersuchen."
+icon:
+  name: "clipboard-list"
+  library: "lucide"
 ---
 
-Die Audit-Logs (`/audit-logs`) sind die maßgebliche Quelle für die operative Historie. Jede relevante Aktion an einem Datensatz wird mit Akteur, Ziel und Zeitstempel aufgezeichnet.
+## Zweck
 
-![Die Audit-Log-Tabelle mit Zeitstempel, Akteur, Entität und Ereignis](/images/screenshots/de/audit-logs.webp)
+Audit-Logs zeigen, wer wann welchen Datensatz geändert hat. Sie ersetzen weder Quelldaten noch Infrastruktur-Logs.
 
-## Die Audit-Log-Tabelle
+![Audit-Logs für Maschinenbau-Vorgänge](/images/screenshots/de/audit-logs.webp)
 
-Spalten:
+## Voraussetzungen
 
-- **Zeitstempel** — Format `DD.MM.YYYY HH:MM`
-- **Akteur** — der Benutzer (oder `System`), der das Ereignis ausgelöst hat
-- **Entität** — der Datensatztyp (User, Asset, OrganizationSettings, …)
-- **Ziel** — verlinkter Verweis auf den konkreten Datensatz
-- **Ereignis** — farbiges Badge (Login, Logout, Update, Failed, …)
+Sie benötigen Audit-Log-Rechte. Quelllinks funktionieren nur mit Berechtigung für den Datensatz.
 
-Über Filtersymbole pro Spalte können Sie die Anzeige nach jedem Feld eingrenzen.
+## Änderung untersuchen
 
-## Standardansichten
+1. Öffnen Sie **Audit-Logs**.
+2. Filtern Sie Zeit, Benutzer, Aktion, Modell oder Datensatz.
+3. Öffnen Sie das Ereignis.
+4. Vergleichen Sie alte und neue Werte.
+5. Folgen Sie dem Quelllink.
+6. Korrelieren Sie bei Bedarf Action, Berichtslauf, Übergabe oder Operator-Log.
 
-- **Alle Logs** — jedes Audit-Ereignis
-- **Benutzeraktionen** — von Benutzern ausgeführte Aktionen (Anmeldungen, Datensatzänderungen, Exporte)
-- **Sicherheitsereignisse** — Authentifizierungs- und Autorisierungsereignisse (einschließlich fehlgeschlagener Anmeldungen)
-- **Systemereignisse** — von der Plattform selbst ausgeführte Aktionen
+## Erwartetes Ergebnis
 
-**Eigene Ansichten** — speichern Sie Ihre eigenen Filterkombinationen für wiederkehrende Prüfungen.
+Akteur, Datensatz, Ereignistyp, Zeit und erfasste Änderungen sind erkennbar.
 
-## Ereignis-Vokabular
+## Bewährte Vorgehensweisen
 
-Häufige Badges sind unter anderem:
+- Beginnen Sie mit engem Zeitfenster.
+- Deaktivieren Sie referenzierte Konfiguration statt zu löschen.
+- Verwenden Sie Audit als Nachweis und Logs für Stacktraces.
+- Schwärzen Sie sensible Werte vor Weitergabe.
 
-- **Login** — erfolgreiche Anmeldung
-- **Logout** — Abmeldung
-- **Update** — Datensatz geändert
-- **Failed** — fehlgeschlagener Vorgang (in der Regel eine fehlgeschlagene Anmeldung)
-- fachspezifische Ereignisse für die Entitäten Asset, License, User und Organization Settings
+## Fehlerbehebung
 
-## Praktische Anwendungsfälle
+Ein fehlender Quelllink bedeutet meist entfernten Datensatz oder fehlende Berechtigung. Prüfen Sie bei fehlendem Ereignis, ob die Änderung tatsächlich gespeichert wurde.
 
-- Lifecycle-Übergänge nach einem Prozesslauf überprüfen
-- Konfigurationsänderungen nachvollziehen, wenn Einstellungen vom Sollzustand abweichen
-- interne oder externe Audit-Anfragen mit einem gefilterten Export unterstützen
-- die Historie hinter einem unerwarteten Datensatzzustand zurückverfolgen
+## Verwandte Themen
 
-## Exportieren
-
-Verwenden Sie das Export-Symbol (oben rechts in der Tabelle), um die aktuell gefilterte Ansicht herunterzuladen. Für regelmäßige Audit-Berichte erstellen Sie unter `Analysen → Berichte` eine gespeicherte Ansicht mit den Vorlagen für Aktivität oder Benutzer.
-
-## Bewährte Praxis
-
-Behandeln Sie Audit-Logs als die einzige maßgebliche Quelle für die operative Historie. Wenn ein Workflow wichtig genug ist, um später besprochen zu werden, ist er auch wichtig genug, um hier erfasst zu werden — verlassen Sie sich nicht auf Chat-Verläufe oder E-Mail-Threads.
+- [Actions](/de/main/workflows)
+- [Berichte](/de/analytics/reports)
+- [Fehlerbehebung](/de/faq/troubleshooting)

@@ -1,52 +1,37 @@
 ---
-title: "Einstellungen"
-sidebarTitle: "Einstellungen"
-description: "Konfigurationsbereiche, die das Verhalten des Workspace für alle Benutzer bestimmen."
-icon: "sliders-horizontal"
+title: "Einstellungsüberblick"
+sidebarTitle: "Einstellungsüberblick"
+description: "Die gruppierten Einstellungsbereiche finden und sicher verwenden."
+icon:
+  name: "sliders-horizontal"
+  library: "lucide"
 ---
 
-Die Einstellungen (`/settings`) sind ein Kachelraster gemeinsamer Konfigurationsbereiche. Jede Kachel öffnet eine eigene Seite. Nutzen Sie die Einstellungen für gemeinsame Strukturen und systemweite Regeln – nicht für einmalige Änderungen an einzelnen Datensätzen.
+![Gruppierte Veviad-Einstellungen](/images/screenshots/de/settings.webp)
 
-![Das Kachelraster der Einstellungen mit gemeinsamen Konfigurationsbereichen](/images/screenshots/de/settings.webp)
+## Richtigen Bereich wählen
 
-## Einstellungsbereiche
-
-| Kachel | Was hier konfiguriert wird |
+| Verantwortung | Konfiguration |
 | --- | --- |
-| **Allgemein** | Währung der Organisation und Anzeigeeinstellungen |
-| **Kostenstellen** | Kostenstellen und Budgetzuordnungen |
-| **Abschreibungen** | Abschreibungspläne, die auf Assets angewendet werden |
-| **Abteilungen** | Abteilungen der Organisation (verwendet von Personen, Assets und Berichten) |
-| **Standorte** | Physische Standorte und Niederlassungen |
-| **Status-Labels** | Status-Labels und Statustypen für Assets (steuert die Ansichten Aktiv / Eingelagert / Veraltet / Entsorgt) |
-| **Kategorien** | Asset-Kategorien (steuert die KPI „Kategorien“ im Dashboard) |
-| **Wartungstypen** | Typoptionen beim Anlegen von Asset-Wartungseinträgen |
-| **Lieferanten & Hersteller** | Lieferantenverzeichnis für Kauf- und Garantieeinträge |
-| **Asset-Tag-Konfiguration** | Wie neue Asset-Tags generiert werden |
-| **Asset-Tag-Label** | Druckbares QR-Code-Layout für physische Etiketten |
-| **Feldsichtbarkeit & Pflichtfelder** | Welche Datensatzfelder sichtbar und welche verpflichtend sind |
-| **Übergabe** | Bestätigungsmodus, externe Links und PDF-Zugriff für Asset-Übergaben |
-| **Aktionen** | Ereignisgesteuerte und geplante Automatisierungs-Trigger (siehe Workflows) |
-| **Checklisten** | Wiederverwendbare Checklisten-Vorlagen (siehe Workflows) |
-| **Benachrichtigungen** | Benachrichtigungseinstellungen und Schwellenwerte für Warnungen |
+| Gemeinsame Organisationsdaten | Allgemein, Standorte, Abteilungen, Kostenstellen, Lieferanten, Hersteller |
+| Asset-Lebenszyklus | Status, Kategorien, Abschreibung, Tags, Etiketten, Zusatzfelder, Feldregeln |
+| Arbeitsausführung | Checklisten, Wartungstypen, Actions, Benachrichtigungen, Übergaben |
+| Benutzerpräferenzen | Profilsprache, Zeitzone und Benachrichtigungen |
+| Anmeldung und Provisionierung | Benutzer, Einladungen, Rollen, Integrationen, SSO und SCIM |
 
-## Faustregeln
+## Berechtigungsverhalten
 
-- Wenn es das Verhalten **vieler** Datensätze bestimmt → gehört es hierhin.
-- Wenn es nur **einen** Datensatz ändert → gehört es zu diesem Datensatz.
+Einstellungen verwendet granulare Rechte. Ein Benutzer kann einen Bereich verwalten, ohne alle Einstellungsseiten zu sehen.
 
-## Empfohlene Einrichtungsreihenfolge für einen neuen Workspace
+## Bewährte Vorgehensweisen
 
-1. **Allgemein** – Währung der Organisation festlegen
-2. **Abteilungen** und **Standorte** – die Taxonomie, auf die Personen und Assets verweisen
-3. **Kategorien**, **Status-Labels** und **Wartungstypen** – die Taxonomie, auf die Assets und Wartungseinträge verweisen
-4. **Lieferanten & Hersteller** – wird aus den Kaufinformationen referenziert
-5. **Asset-Tag-Konfiguration** und **Asset-Tag-Label** – vor dem Massenimport
-6. **Abschreibungen** – vor der Auswertung finanzieller KPIs
-7. **Benachrichtigungen**, **Aktionen**, **Checklisten** – sobald operative Daten fließen
+- Richten Sie gemeinsame Werte vor Importen ein.
+- Deaktivieren Sie referenzierte Werte.
+- Testen Sie mit einem repräsentativen Datensatz.
+- Prüfen Sie Audit-Logs nach wesentlichen Änderungen.
 
-Die richtige Reihenfolge reduziert spätere Nacharbeit: Assets, die importiert werden, bevor Kategorien existieren, müssen nachträglich gepflegt werden.
+## Verwandte Themen
 
-## Regeln für Wartungstypen
-
-Wartungstypen sind globale Optionen für Asset-Wartungseinträge. Aktive Typen stehen für neue Wartungseinträge und geplante Wartungsaktionen zur Verfügung. Wenn ein Typ bereits in Datensätzen verwendet wird, deaktivieren Sie ihn, statt ihn zu löschen, damit historische Servicedaten lesbar bleiben.
+- [Organisationseinstellungen](/de/organization/settings-organization)
+- [Asset-Konfiguration](/de/organization/settings-assets)
+- [Workflow-Einstellungen](/de/organization/settings-workflows)

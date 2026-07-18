@@ -1,60 +1,60 @@
 ---
-title: "Reports"
+title: "Reports, charts, and AI summaries"
 sidebarTitle: "Reports"
-description: "Templates, scheduling, and execution history for workspace reports."
-icon: "file-chart-column"
+description: "Build reusable reports with filters, charts, schedules, runs, and grounded AI summaries."
+icon:
+  name: "file-chart-column"
+  library: "lucide"
 ---
 
-Reports (`/reports`) is where structured views of the workspace are built, saved, and scheduled.
+## Purpose
 
-![The reports area with KPI tiles and report templates](/images/screenshots/reports.webp)
+Reports turn Veviad data into repeatable operational views. A report definition stores its domain, selected fields, filters, sorting, chart configuration, AI-summary configuration, visibility, schedule, and recipients.
 
-## Reports dashboard KPIs
+![Machinery report definitions and recent runs](/images/screenshots/reports.webp)
 
-Four tiles at the top of the Reports landing:
+## Before you begin
 
-- **Total Reports** — count of saved report definitions
-- **Executions (7d)** — runs in the last seven days
-- **Active Schedules** — how many reports are scheduled
-- **Failed Runs (7d)** — failures in the last seven days
+You need Report view permission; managing, running, scheduling, and administering reports have separate permissions. AI summaries also require an active Veviad AI provider.
 
-Below them, a **Recent Reports** table shows Name, Domain, Started timestamp, Status, and Rows.
+## Build a report
 
-## Report templates
+1. Open **Reports** and choose **Create report**.
+2. Select the supported domain: assets or people.
+3. Choose only the fields needed by readers.
+4. Add filters and sorting.
+5. Add up to two configurable charts with grouping, metric, limit, and ordering.
+6. Enable an AI summary only when a concise interpretation is useful; set locale and optional prompt.
+7. Choose visibility.
+8. Optionally configure a timezone-aware schedule and recipients.
+9. Save and run the report.
 
-Six built-in templates are exposed under "Report Templates" in the second pane:
+![Report builder with chart configuration](/images/screenshots/report-builder.webp)
 
-1. **Asset Reports** — inventory, assignments, status, lifecycle
-2. **Depreciation Reports** — depreciated value over time
-3. **License Reports** — seats, expiry, utilization
-4. **User Reports** — active / inactive, role, department
-5. **Activity Reports** — usage and event summaries
-6. **Maintenance Reports** — upcoming and completed maintenance
+## Review a run
 
-Pick a template to get a pre-configured domain and starting fields, then tune filters before saving.
+Open the run to inspect status, row count, chart snapshot, AI-summary status, output, and delivery state.
 
-## Report definition fields
+![Completed report chart and AI summary](/images/screenshots/report-result.webp)
 
-A saved report can include:
+## Expected result
 
-- **Domain / dataset** — which entity to report on
-- **Fields** — which columns appear in the output
-- **Filters** — slice criteria (status, department, date range, …)
-- **Sort order**
-- **Visibility** — private (yours only) or public (shared)
-- **Schedule** — run automatically (daily, weekly, monthly)
-- **Recipients** — email distribution list for scheduled runs
+Each run is an auditable snapshot using the execution user's permitted scope. Charts and AI summaries remain attached to that run even if the definition changes later.
 
-## Typical workflow
+## Best practices
 
-1. **Create** from a template (`+ Create Report`, top-right).
-2. **Tune** fields, filters, and sort order for the question you want answered.
-3. **Save** as private (for yourself) or public (for the team).
-4. **Schedule** if the same view is needed on a cadence.
-5. **Review** execution history; re-run or open failed runs from the Recent Reports table.
+- Keep selected fields minimal and filters explicit.
+- Use charts for a small number of decisions, not decoration.
+- Treat AI summaries as grounded assistance; validate against rows and chart values.
+- Use a schedule timezone that matches the business process.
+- Avoid sending sensitive exports to broad recipient lists.
 
-## Views in the second pane
+## Troubleshooting
 
-- **All Reports** — every saved report visible to you
-- **My Reports** — reports you created
-- **Scheduled** — the subset with an active schedule
+A run can complete while its AI summary fails. Check run status, AI-summary status, provider health, permission scope, and recipient delivery separately.
+
+## Related topics
+
+- [Dashboard](/main/dashboard)
+- [Veviad AI](/veviad-ai)
+- [Audit logs](/analytics/audit-logs)

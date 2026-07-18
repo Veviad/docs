@@ -1,49 +1,53 @@
 ---
-title: "Dashboard"
-sidebarTitle: "Dashboard"
-description: "Die Workspace-Übersicht — Asset-Bestand, Auslastung, Abschreibung und Compliance auf einen Blick."
-icon: "gauge"
+title: "Anpassbares Dashboard"
+sidebarTitle: "Anpassbares Dashboard"
+description: "Modulare Widgets anordnen und die wichtigsten Arbeitsdaten auf einen Blick verfolgen."
+icon:
+  name: "gauge"
+  library: "lucide"
 ---
 
-Das Dashboard (`/dashboard`) ist die operative Startseite. Öffnen Sie es zu Beginn des Tages für einen Überblick über den gesamten Workspace und wechseln Sie anschließend in das Modul, das Aufmerksamkeit benötigt.
+## Zweck
 
-![Das Veviad-Dashboard mit KPI-Kacheln, Jahresübersicht und Compliance-Kacheln](/images/screenshots/de/dashboard.webp)
+Das Dashboard ist ein persönlicher Arbeitsbereich und keine starre Unternehmenskennzahlenseite.
 
-## Obere KPI-Kacheln
+![Maschinenbau-Dashboard mit Widgets](/images/screenshots/de/dashboard.webp)
 
-Vier KPIs auf Asset-Ebene befinden sich im oberen Bereich des Dashboards:
+## Voraussetzungen
 
-| Kachel | Was sie zeigt |
-| --- | --- |
-| **Assets gesamt** | Anzahl der Assets im Workspace, mit einem Badge „X verfügbar“ für nicht zugewiesenen Bestand |
-| **Auslastungsquote** | Prozentsatz der Assets im Einsatz (zugewiesen oder ausgegeben) |
-| **Abschreibung** | Abgeschriebener Wert (Währung) mit einem Prozentanteil der Anschaffungskosten |
-| **Gesamtwert der Assets** | Aktueller Asset-Wert mit einem Prozentvergleich zur Anschaffung |
+Sie benötigen Dashboard-Zugriff und für analytische Widgets zusätzlich Zugriff auf die verwendete Datendomäne.
 
-„Berichte anzeigen“ (oben rechts) führt zu `Analysen → Berichte`.
+## Dashboard anpassen
 
-## Jahresübersicht
+1. Öffnen Sie **Dashboard**.
+2. Wählen Sie **Dashboard bearbeiten**.
+3. Fügen Sie ein Standard-Widget hinzu oder öffnen Sie den Widget-Builder.
+4. Wählen Sie Domäne, Visualisierung, Kennzahl, Gruppierung, Filter und Titel.
+5. Prüfen Sie die Vorschau.
+6. Ordnen und skalieren Sie unterstützte Widgets.
+7. Speichern Sie das Layout.
 
-Unterhalb der KPIs zeigt ein Balkendiagramm mit dem Titel „Jahresübersicht — Hinzugefügte Assets“ die neu hinzugekommenen Assets pro Monat für das laufende Jahr.
+![Bearbeitungsmodus des Dashboards](/images/screenshots/de/dashboard-edit.webp)
 
-## Kacheln der zweiten Reihe (Compliance \+ Nutzung)
+![Konfigurierbarer Widget-Builder](/images/screenshots/de/dashboard-widget-builder.webp)
 
-Acht kleinere Kacheln bündeln Signale zu Compliance, Lizenzen und Organisation:
+## Erwartetes Ergebnis
 
-- **Unvollständige Checklisten** — erfordert Aufmerksamkeit
-- **Abgeschlossene Checklisten** — Compliance-Nachweise
-- **Lizenzauslastung (%)** — zugewiesene Plätze / Gesamtzahl
-- **Wartungsquote (%)** — Assets, die sich aktuell in Wartung befinden
-- **Aktive Benutzer** — aktive Benutzer im Verhältnis zur Gesamtzahl der Plätze
-- **Lizenzauslastung (absolut)** — zugewiesene / gesamte Plätze (absolute Anzahl)
-- **Kategorien** — Anzahl der aktiven Asset-Kategorien
-- **Standorte** — Anzahl der konfigurierten physischen Standorte
+Das Layout ist persönlich. Widgets laden unabhängig, sodass ein fehlerhaftes Widget den restlichen Arbeitsbereich nicht blockiert.
 
-## Typischer Dashboard-Ablauf
+## Bewährte Vorgehensweisen
 
-1. Prüfen Sie die oberen KPIs auf Abweichungen (Auslastung gesunken? Abschreibung sprunghaft gestiegen?)
-2. Kontrollieren Sie die Checklisten- und Wartungskacheln auf unerledigte Arbeit
-3. Klicken Sie auf **Berichte anzeigen** für eine strukturierte Detailanalyse
-4. Wechseln Sie je nach Signal in `Assets`, `Personen` oder `Audit-Logs`
+- Begrenzen Sie die erste Reihe auf täglich entscheidungsrelevante Werte.
+- Nutzen Sie Berichte für Detailanalyse.
+- Benennen Sie Widgets als Frage, etwa „Maschinen mit fälligem Service“.
+- Setzen Sie das Layout bei Bedarf auf Standard zurück.
 
-Nutzen Sie das Dashboard zur Orientierung. Wenn Sie den gesuchten Datensatz bereits genau kennen, ist die globale Suche (`Cmd+K` auf macOS, `Strg+K` auf Windows/Linux) oder die direkte Modulnavigation schneller.
+## Fehlerbehebung
+
+Ein leeres Widget kann keine Treffer, ein entferntes Feld oder eine fehlende Domänenberechtigung bedeuten.
+
+## Verwandte Themen
+
+- [Assets](/de/main/assets)
+- [Berichte](/de/analytics/reports)
+- [Audit-Logs](/de/analytics/audit-logs)

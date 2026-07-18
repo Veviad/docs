@@ -1,56 +1,48 @@
 ---
-title: "Audit Logs"
-sidebarTitle: "Audit Logs"
-description: "Time-ordered record of user, security, and system events across the workspace."
-icon: "clipboard-list"
+title: "Audit logs"
+sidebarTitle: "Audit logs"
+description: "Trace record, permission, integration, and workflow changes."
+icon:
+  name: "clipboard-list"
+  library: "lucide"
 ---
 
-Audit Logs (`/audit-logs`) are the source of truth for operational history. Every meaningful action against an entity is recorded with actor, target, and timestamp.
+## Purpose
 
-![The audit log table with timestamp, actor, entity, and event](/images/screenshots/audit-logs.webp)
+Audit logs answer who changed what, when, and on which record. They support investigation and accountability but do not replace source data or infrastructure logs.
 
-## The audit log table
+![Audit log listing for machinery operations](/images/screenshots/audit-logs.webp)
 
-Columns:
+## Before you begin
 
-- **Timestamp** — `DD.MM.YYYY HH:MM` format
-- **Actor** — the user (or `System`) that triggered the event
-- **Entity** — the record type (User, Asset, OrganizationSettings, …)
-- **Target** — hyperlinked reference to the specific record
-- **Event** — colored badge (Login, Logout, Update, Failed, …)
+You need Audit Log permission. Some events link to a source record only when you also have permission for that record.
 
-Per-column filter funnels let you narrow on any field.
+## Investigate a change
 
-## Default views
+1. Open **Audit Logs**.
+2. Filter by time, user, action, model, or record.
+3. Open the event.
+4. Compare old and new values.
+5. Follow the source link when available.
+6. Correlate the timestamp with Action, report run, handover, or operator logs when needed.
 
-- **All Logs** — every audit event
-- **User Actions** — actions performed by users (logins, record edits, exports)
-- **Security Events** — authentication and authorization events (including failed logins)
-- **System Events** — actions performed by the platform itself
+## Expected result
 
-**Custom views** — save your own filter combinations for recurring audits.
+You can identify the actor, affected record, event type, timestamp, and captured field changes.
 
-## Event vocabulary
+## Best practices
 
-Common badges include:
+- Start with a narrow time window.
+- Preserve audit history by deactivating referenced configuration instead of deleting it.
+- Use audit data for evidence; use application logs for stack traces and service failures.
+- Redact personal or secret values before sharing findings.
 
-- **Login** — successful sign-in
-- **Logout** — sign-out
-- **Update** — record modified
-- **Failed** — failed operation (typically a failed login)
-- domain-specific events for Asset, License, User, and Organization Settings entities
+## Troubleshooting
 
-## Practical uses
+A missing source link normally means the record was removed or your role cannot view it. If an expected event is absent, confirm the operation actually committed.
 
-- validate lifecycle transitions after a process runs
-- review configuration changes when settings drift
-- support internal or external audit requests with a filtered export
-- trace the history behind an unexpected record state
+## Related topics
 
-## Exporting
-
-Use the export icon (top-right of the table) to download the current filtered view. For scheduled audit reporting, build a saved view under `Analytics → Reports` with Activity or User templates.
-
-## Best practice
-
-Treat audit logs as the single source of truth for operational history. If a workflow matters enough to discuss later, it matters enough to be captured here — don't rely on chat history or email threads.
+- [Actions](/main/workflows)
+- [Reports](/analytics/reports)
+- [Troubleshooting](/faq/troubleshooting)

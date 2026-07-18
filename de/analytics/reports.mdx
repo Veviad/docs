@@ -1,60 +1,60 @@
 ---
-title: "Berichte"
-sidebarTitle: "Berichte"
-description: "Vorlagen, Zeitpläne und Ausführungshistorie für Workspace-Berichte."
-icon: "file-chart-column"
+title: "Berichte, Diagramme und AI-Zusammenfassungen"
+sidebarTitle: "Berichte, Diagramme und AI-Zusammenfassungen"
+description: "Berichte erstellen, visualisieren, planen und mit AI zusammenfassen."
+icon:
+  name: "file-chart-column"
+  library: "lucide"
 ---
 
-Unter Berichte (`/reports`) werden strukturierte Sichten auf den Workspace erstellt, gespeichert und zeitlich geplant.
+## Zweck
 
-![Der Berichtsbereich mit KPI-Kacheln und Berichtsvorlagen](/images/screenshots/de/reports.webp)
+Eine Berichtsdefinition speichert Domäne, Felder, Filter, Sortierung, Diagramme, AI-Konfiguration, Sichtbarkeit, Zeitplan und Empfänger.
 
-## KPIs im Berichte-Dashboard
+![Maschinenbau-Berichte und Läufe](/images/screenshots/de/reports.webp)
 
-Vier Kacheln am oberen Rand der Berichte-Startseite:
+## Voraussetzungen
 
-- **Berichte gesamt** — Anzahl der gespeicherten Berichtsdefinitionen
-- **Ausführungen (7 Tage)** — Läufe in den letzten sieben Tagen
-- **Aktive Zeitpläne** — Anzahl der Berichte mit Zeitplan
-- **Fehlgeschlagene Läufe (7 Tage)** — Fehlschläge in den letzten sieben Tagen
+Sie benötigen Bericht-Anzeigerechte; Verwalten, Ausführen, Planen und Administration besitzen getrennte Berechtigungen. AI-Zusammenfassungen benötigen einen aktiven Provider.
 
-Darunter zeigt die Tabelle **Zuletzt ausgeführte Berichte** Name, Domäne, Startzeitpunkt, Status und Zeilen.
+## Bericht erstellen
 
-## Berichtsvorlagen
+1. Öffnen Sie **Berichte → Bericht erstellen**.
+2. Wählen Sie die unterstützte Domäne: Assets oder Personen.
+3. Wählen Sie nur benötigte Felder.
+4. Setzen Sie Filter und Sortierung.
+5. Fügen Sie bis zu zwei Diagramme mit Gruppierung, Kennzahl, Limit und Reihenfolge hinzu.
+6. Aktivieren Sie bei Bedarf AI-Zusammenfassung mit Sprache und optionalem Prompt.
+7. Wählen Sie Sichtbarkeit.
+8. Konfigurieren Sie optional Zeitzone, Zeitplan und Empfänger.
+9. Speichern und starten Sie den Bericht.
 
-Sechs integrierte Vorlagen stehen unter „Berichtsvorlagen“ im zweiten Bereich zur Verfügung:
+![Berichts-Builder mit Diagramm](/images/screenshots/de/report-builder.webp)
 
-1. **Asset-Berichte** — Inventar, Zuweisungen, Status, Lifecycle
-2. **Abschreibungsberichte** — Abschreibungswert im Zeitverlauf
-3. **Lizenzberichte** — Plätze, Ablaufdaten, Auslastung
-4. **Benutzerberichte** — aktiv / inaktiv, Rolle, Abteilung
-5. **Aktivitätsberichte** — Nutzungs- und Ereignisübersichten
-6. **Wartungsberichte** — anstehende und abgeschlossene Wartungen
+## Lauf prüfen
 
-Wählen Sie eine Vorlage, um eine vorkonfigurierte Domäne und Ausgangsfelder zu erhalten, und passen Sie anschließend die Filter an, bevor Sie speichern.
+Prüfen Sie Status, Zeilen, Diagramm-Snapshot, AI-Status, Ausgabe und Zustellung.
 
-## Felder einer Berichtsdefinition
+![Abgeschlossener Bericht mit Diagramm und AI](/images/screenshots/de/report-result.webp)
 
-Ein gespeicherter Bericht kann enthalten:
+## Erwartetes Ergebnis
 
-- **Domäne / Datenbestand** — die Entität, über die berichtet wird
-- **Felder** — die Spalten, die in der Ausgabe erscheinen
-- **Filter** — Eingrenzungskriterien (Status, Abteilung, Datumsbereich, …)
-- **Sortierreihenfolge**
-- **Sichtbarkeit** — privat (nur für Sie) oder öffentlich (geteilt)
-- **Zeitplan** — automatische Ausführung (täglich, wöchentlich, monatlich)
-- **Empfänger** — E-Mail-Verteiler für geplante Läufe
+Jeder Lauf ist ein auditierbarer Snapshot im Berechtigungsumfang des ausführenden Benutzers.
 
-## Typischer Workflow
+## Bewährte Vorgehensweisen
 
-1. **Erstellen** Sie einen Bericht aus einer Vorlage (`+ Bericht erstellen`, oben rechts).
-2. **Passen Sie** Felder, Filter und Sortierreihenfolge an die Frage an, die der Bericht beantworten soll.
-3. **Speichern** Sie ihn privat (für sich selbst) oder öffentlich (für das Team).
-4. **Planen** Sie den Bericht, wenn dieselbe Sicht regelmäßig benötigt wird.
-5. **Prüfen** Sie die Ausführungshistorie; starten Sie fehlgeschlagene Läufe aus der Tabelle „Zuletzt ausgeführte Berichte“ erneut oder öffnen Sie sie dort.
+- Begrenzen Sie Felder und formulieren Sie Filter eindeutig.
+- Nutzen Sie Diagramme für wenige Entscheidungen.
+- Prüfen Sie AI-Aussagen gegen Zeilen und Diagrammwerte.
+- Verwenden Sie eine geschäftlich passende Zeitzone.
+- Verteilen Sie sensible Exporte nicht breit.
 
-## Ansichten im zweiten Bereich
+## Fehlerbehebung
 
-- **Alle Berichte** — alle gespeicherten Berichte, die für Sie sichtbar sind
-- **Meine Berichte** — von Ihnen erstellte Berichte
-- **Geplant** — die Teilmenge mit aktivem Zeitplan
+Ein Lauf kann erfolgreich sein, während AI fehlschlägt. Prüfen Sie Laufstatus, AI-Status, Provider, Berechtigung und Zustellung getrennt.
+
+## Verwandte Themen
+
+- [Dashboard](/de/main/dashboard)
+- [Veviad AI](/de/veviad-ai)
+- [Audit-Logs](/de/analytics/audit-logs)

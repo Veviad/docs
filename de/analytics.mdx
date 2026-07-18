@@ -1,21 +1,30 @@
 ---
-title: "Analysen"
-sidebarTitle: "Überblick"
-description: "Berichte und Audit-Logs für operative Transparenz."
-icon: "chart-no-axes-column"
+title: "Automatisierung und Erkenntnisse"
+sidebarTitle: "Automatisierung und Erkenntnisse"
+description: "Actions, Berichte, Diagramme, AI-Zusammenfassungen und Audit-Logs sinnvoll einsetzen."
+icon:
+  name: "chart-no-axes-column"
+  library: "lucide"
 ---
 
-Analysen sind die schreibgeschützte Sicht auf den Workspace. Berichte liefern konfigurierbare Ansichten zu Assets, Lizenzen, Benutzern und Aktivitäten. Audit-Logs halten fest, wer was wann und an welcher Entität ausgeführt hat.
+<CardGroup cols={2}>
+  <Card title="Actions" icon="workflow" href="/de/main/workflows">
+    Arbeit aus Ereignissen oder Zeitplänen erzeugen.
+  </Card>
 
-![Der Berichtsbereich mit KPI-Kacheln und Berichtsvorlagen](/images/screenshots/de/reports.webp)
+  <Card title="Berichte" icon="file-chart-column" href="/de/analytics/reports">
+    Datensätze mit Filtern, Diagrammen, Zeitplänen und AI-Zusammenfassungen bauen.
+  </Card>
 
-## Highlights
+  <Card title="Audit-Logs" icon="clipboard-list" href="/de/analytics/audit-logs">
+    Änderungen und Verantwortliche nachvollziehen.
+  </Card>
 
-- Sechs integrierte Berichtsvorlagen plus geplante eigene Berichte
-- Audit-Logs gefiltert nach Benutzeraktion, Sicherheitsereignis oder Systemereignis
-- KPI-Kacheln für Ausführungen, fehlgeschlagene Läufe und aktive Zeitpläne
+  <Card title="Veviad AI" icon="sparkles" href="/de/veviad-ai">
+    Fragen stellen und Asset-Daten aus PDFs extrahieren.
+  </Card>
+</CardGroup>
 
-## In diesem Abschnitt
+## Betriebsprinzip
 
-- [Berichte](/de/analytics/reports)
-- [Audit-Logs](/de/analytics/audit-logs)
+Automatisierung muss beobachtbar bleiben: enge Trigger, explizite Zeitzonen, gezielte Empfänger und auditierbare Quelldaten. AI-Ergebnisse sind vor Entscheidungen oder Datensatzerstellung zu prüfen.

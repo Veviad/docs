@@ -1,25 +1,38 @@
 ---
-title: "Organisation"
-sidebarTitle: "Organisation"
-description: "Tenant-Einstellungen, Authentifizierung, Zugang und Integrationen."
-icon: "building-2"
+title: "Administration"
+sidebarTitle: "Administration"
+description: "Organisation, Asset-Konfiguration, Zugriffe, Integrationen und Identitätsverwaltung einrichten."
+icon:
+  name: "building-2"
+  library: "lucide"
 ---
 
-Der Bereich Organisation bündelt alles, was den Workspace prägt: fachliche Taxonomie, Authentifizierung, Berechtigungen und Integrationen. Aufgeteilt in Einstellungen (operative Konfiguration) und Admin (Zugang und Identität).
+<CardGroup cols={2}>
+  <Card title="Organisationseinstellungen" icon="building-cog" href="/de/organization/settings-organization">
+    Währung, Standorte, Abteilungen, Kostenstellen und Geschäftspartner.
+  </Card>
 
-## Highlights
+  <Card title="Asset-Konfiguration" icon="package-cog" href="/de/organization/settings-assets">
+    Kategorien, Status, Abschreibung, Tags, Zusatzfelder und Feldregeln.
+  </Card>
 
-- Sechzehn Einstellungsbereiche für Währung, Abschreibung, Taxonomie und mehr
-- Rollen, Benutzer, Einladungen, SSO und SCIM unter Admin
-- Konfiguration des Veviad AI-Anbieters über Admin → Integrationen
+  <Card title="Workflow-Einstellungen" icon="workflow" href="/de/organization/settings-workflows">
+    Checklisten, Actions, Wartung, Benachrichtigungen und Übergaben.
+  </Card>
 
-## In diesem Abschnitt
+  <Card title="Personen und Zugriff" icon="users-round" href="/de/organization/user-access">
+    Personen, Benutzer, Einladungen, Rollen und Identitätsautorität.
+  </Card>
 
-- [Einstellungen](/de/organization/settings)
-- [Admin](/de/organization/admin)
-- [SSO und SCIM](/de/organization/sso-scim)
-- [Betrieb](/de/operations)
-- [Startup-Tasks und Seeding](/de/operations/startup-tasks)
-- [Suchbetrieb](/de/operations/search)
-- [Versionshinweise](/de/release-notes)
-- [Aktueller Release-Snapshot](/de/release-notes/current)
+  <Card title="Integrationen" icon="plug" href="/de/organization/integrations">
+    AI, OCR, E-Mail, SSO und SCIM.
+  </Card>
+
+  <Card title="SSO und SCIM" icon="key-round" href="/de/organization/sso-scim">
+    Authentifizierung, Rollen und getrennte Provisionierungszwecke.
+  </Card>
+</CardGroup>
+
+<Warning>
+  Administrative Änderungen können alle Benutzer betreffen. Testen Sie Berechtigungs-, Identitäts- und Automatisierungsänderungen vor breitem Rollout.
+</Warning>

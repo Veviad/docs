@@ -1,0 +1,43 @@
+---
+title: "Personen und Anwendungszugriff"
+sidebarTitle: "Personen vs. Benutzer"
+description: "Personenverzeichnis, Anmeldezugriff, Einladungen und Rollen verstehen."
+icon:
+  name: "users-round"
+  library: "lucide"
+---
+
+Veviad trennt das Personenverzeichnis vom Anwendungszugriff. Jede zuweisbare Person ist ein Personendatensatz; nur ausgewählte Personen können sich anmelden.
+
+## Voraussetzungen
+
+Für Personen gilt eine Verzeichnisberechtigung. Zugriff, Einladungen und Rollen erfordern Admin-Berechtigungen.
+
+## Person und Zugriff verwalten
+
+1. Legen Sie die Person unter **Personen** an oder synchronisieren Sie sie.
+2. Verwenden Sie die Person für Zuweisungen, ohne Anmeldezugriff zu erteilen.
+3. Erteilen Sie unter **Admin → Benutzer** nur bei Bedarf Anwendungszugriff.
+4. Senden Sie bei lokaler Aktivierung eine Einladung.
+5. Weisen Sie die Rolle mit den geringsten nötigen Rechten zu.
+6. Entziehen Sie den Zugriff, wenn keine Anmeldung mehr nötig ist; der Personendatensatz bleibt erhalten.
+
+## Erwartetes Ergebnis
+
+Das Verzeichnis bleibt vollständig, während die Benutzerliste nur anmeldeberechtigte Personen enthält.
+
+## Bewährte Vorgehensweisen
+
+- Rollen sind Berechtigungspakete, keine Stellenbezeichnungen.
+- Lassen Sie SSO oder SCIM autoritativ, wenn konfiguriert.
+- Prüfen Sie ausstehende und abgelaufene Einladungen.
+
+## Fehlerbehebung
+
+Eine Person ohne Anmeldung kann keinen Anwendungszugriff, eine ausstehende Einladung oder IdP-verwaltete Zugangsdaten haben.
+
+## Verwandte Themen
+
+- [Personen](/de/main/people)
+- [Admin](/de/organization/admin)
+- [SSO und SCIM](/de/organization/sso-scim)

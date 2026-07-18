@@ -1,71 +1,60 @@
 ---
-title: "Assets"
+title: "Assets and saved views"
 sidebarTitle: "Assets"
-description: "Track hardware and equipment with full lifecycle, warranty, depreciation, and assignment history."
-icon: "package"
+description: "Find, import, update, and analyze assets in the lazy-loaded asset grid."
+icon:
+  name: "package"
+  library: "lucide"
 ---
 
-Assets are the core record type. Each asset carries its identity (tag, serial, model), its assignment state, purchase and warranty context, depreciation, and a full history trail.
+## Purpose
 
-![The assets list with default views, asset tags, names, and assignments](/images/screenshots/assets.webp)
+Assets are the primary lifecycle records in Veviad. The grid is designed to work with large inventories—such as 10,000 assets—by loading rows as needed instead of rendering the full dataset at once.
 
-## The assets list (`/assets`)
+![Lazy-loaded machinery asset grid](/images/screenshots/assets.webp)
 
-A second-level pane on the left organizes filtered views:
+## Before you begin
 
-**Default views**
+You need Asset view permission. Create, edit, delete, import, maintenance, handover, and checklist operations have separate permissions.
 
-- **All** — every asset in the workspace
-- **Active** — deployed assets currently in use
-- **Unassigned** — assets not yet handed out
-- **In Storage** — warehouse / spare stock
-- **Deprecated** — flagged as end-of-life but still on record
-- **Disposed** — written off
-- **Archived** — retired, kept for history
+## Work with the asset grid
 
-**Custom views** — save your own filter combinations for reuse.
+1. Open **Assets**.
+2. Search or filter by status, category, assignment, location, department, cost center, or custom field.
+3. Sort and arrange columns.
+4. Save the current grid state as a personal view.
+5. Open an asset to review identity, finance, assignment, custom data, maintenance, handover, checklist, invoice, and audit history.
 
-## Toolbar actions
+![Machinery asset detail](/images/screenshots/asset-detail.webp)
 
-From the table header (top-right):
+## Import assets
 
-| Icon | Action |
-| --- | --- |
-| `+` | Add a new asset |
-| ✨ | AI-assisted actions (e.g. Veviad AI Import) |
-| Bookmark | Save the current filter as a custom view |
-| Trash | Bulk delete selected rows |
-| Download | Export the current view |
-| Upload | Import assets from file |
+1. Select **Import** and download or follow the current template guidance.
+2. Map or validate required fields, categories, statuses, and custom fields.
+3. Review validation errors before confirming.
+4. Import a small sample first, then the remaining batch.
+5. Search for representative asset tags after indexing completes.
 
-Per-column filter funnels let you narrow by ID, Tag, Name, Assignee, Department, or Category.
+![Asset import workflow](/images/screenshots/asset-import.webp)
 
-## Asset detail panel
+## Expected result
 
-Clicking a row opens a seven-tab panel:
+The grid keeps server-side filters and sorting while lazily loading rows. Saved views restore your grid configuration without changing other users.
 
-- **Details** — General Information (Asset Name, Tag, Serial, Model, Manufacturer, Category, Status), Assignment (Assigned To, Location, Department, Last Checkout, Expected Checkin), Purchase Information (Date, Cost, Order Number, Invoice Number, Supplier), Warranty Information (Expires, Period, Status badge), and Timestamps (Created, Created By, Last Updated, Last Updated By).
-- **Checklists** — per-asset compliance templates and their status.
-- **History** — time-ordered audit of actions against this asset.
-- **Handover** — receipt and return confirmations, PDF handover records, and pending follow-up for assigned or returned equipment.
-- **Maintenance** — open and completed maintenance records, scheduled dates, optional notes, cost and warranty extension details, plus PDF report / invoice attachments.
-- **Visual Analyzer** — AI-assisted visual inspection for the asset.
-- **Asset Tag Label** — printable QR code label for the physical asset.
+## Best practices
 
-## Common tasks
+- Use the asset tag as the stable operational identifier.
+- Keep one source of truth for category, location, and ownership.
+- Record maintenance and handover on the asset rather than in free-text notes.
+- Avoid exporting the whole inventory when a saved view or report answers the question.
 
-- **Add an asset** — `+` toolbar action or `✨` for PDF-based bulk intake
-- **Assign / unassign** — from the asset detail or the row menu
-- **Confirm handover** — use the Handover tab to review employee receipt and return records, including PDF previews and downloads
-- **Document maintenance** — open the asset's Maintenance tab to add performed work, schedule upcoming work, or mark records as completed
-- **Attach reports / invoices** — upload service reports and invoices directly on saved maintenance records
-- **Archive / dispose** — use Status Labels (configured in Settings → Status Labels) and let the default views pick them up
-- **Track warranty** — fill Warranty Expires \+ Period; the Warranty Status badge flags expired items
+## Troubleshooting
 
-## Practical notes
+If a row count or search result appears stale, reload the view and verify search indexing. If a field is missing, check category-specific custom-field configuration and permission.
 
-- the **Category** field drives the dashboard "Categories" KPI — keep categories meaningful and few
-- **Asset Tags** are generated according to your tag configuration (`Settings → Asset Tag Configuration`)
-- printable QR labels use `Settings → Asset Tag Label` formatting
-- maintenance type options are configured globally in `Settings → Maintenance Types`
-- everything that happens to an asset is recorded in `Analytics → Audit Logs` with Entity = "Asset"
+## Related topics
+
+- [People](/main/people)
+- [Maintenance](/main/maintenance)
+- [Asset checklists](/main/checklists)
+- [Reports](/analytics/reports)

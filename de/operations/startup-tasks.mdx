@@ -61,6 +61,12 @@ Keine zufälligen Schlüssel für normale Deployments verwenden. Ein geänderter
 
 Frische Datenbank-Resets sind destruktiv. `fresh-db-seed:<key>` nur in Wegwerf-Umgebungen verwenden und nur, wenn `ALLOW_DESTRUCTIVE_STARTUP_TASKS=true` gesetzt ist.
 
+## Blockierendes Verhalten und Fehler
+
+Referenz-Seeder, Sucheinstellungen und frische Datenbank-Seeds blockieren den Container-Start, wenn sie fehlschlagen. Besitzt ein anderer Container einen dieser Tasks, wartet der aktuelle Container auf dessen Abschluss.
+
+`search-reindex` ist auf Ebene des Container-Starts bewusst nicht blockierend. Der Reindex-Befehl selbst verwendet weiterhin den Strict-Modus und wartet auf Meilisearch-Tasks. Ein Fehler wird jedoch im Startup-Task-Protokoll gespeichert, ohne den Anwendungsstart fehlschlagen zu lassen. Besitzt ein anderer Container bereits denselben Reindex-Schlüssel, setzt der aktuelle Container den Start fort, ohne darauf zu warten.
+
 ## Demo-Datensatzprofile
 
 Branchendatensätze nur für lokale, Demo-, Test- oder andere wegwerfbare Umgebungen verwenden. Jedes Profil erzeugt genau 10.000 Assets, fünf Standorte und 20 branchenspezifische Abteilungen. Personen ohne Anwendungszugriff erhalten weder Passwort noch Rolle oder Login-Berechtigung.
@@ -125,7 +131,7 @@ Zuerst die Veviad-App-Version veröffentlichen, welche alle vier Profil-Schlüss
 Wenn mehrere Container gleichzeitig starten:
 
 - ein Container beansprucht einen offenen, fehlgeschlagenen oder veralteten Task;
-- andere Container warten auf Abschluss;
+- andere Container warten auf blockierende Tasks, setzen den Start aber sofort fort, wenn derselbe `search-reindex`-Task bereits läuft;
 - abgeschlossene Tasks werden übersprungen;
 - fehlgeschlagene Tasks werden bei späteren Starts erneut versucht;
 - veraltete laufende Tasks werden nach `STARTUP_TASK_TIMEOUT_MINUTES` übernommen.
@@ -170,3 +176,8 @@ Manuelle Läufe verwenden dasselbe Task-Schlüssel-Format wie `STARTUP_TASKS`:
 ```txt
 search-ensure-settings:manual-check
 ```
+
+## Verwandte Runbooks
+
+- [Suchbetrieb](/de/operations/search)
+- [Deployment-Gesundheit](/de/operations/deployment-health)

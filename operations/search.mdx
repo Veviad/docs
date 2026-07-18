@@ -5,111 +5,48 @@ description: "How Veviad configures, rebuilds, verifies, and upgrades global sea
 icon: "search-check"
 ---
 
-Veviad uses a dedicated search service for fast global search. Primary application data remains authoritative. Search indexes can be rebuilt from application data, so operators should treat the search service as rebuildable rather than as the primary data store.
+For the supported handbook scope, verify the prefixed asset and People indexes. Additional internal indexes may exist, but they are outside the current user handbook.
 
-## What is indexed
+## Ensure settings
 
-The application maintains search indexes for:
+Run:
 
-- assets
-- users
-- licenses
-- accessories
-
-Index names may be prefixed through search configuration. Settings such as searchable attributes, filterable attributes, and ranking rules are managed by the application.
-
-## Enable search
-
-Search operations require search to be enabled in the deployment configuration:
-
-- search is enabled for the environment;
-- the search service URL and access key are configured;
-- production search containers use a pinned, approved image tag.
-
-Do not use `latest` in production. Upgrade only to a version approved for the environment.
-
-## Settings vs. reindexing
-
-Use settings synchronization when index configuration changes:
-
-```txt
-search-ensure-settings --strict --wait
+```bash
+php artisan search:ensure-settings --strict --wait
 ```
 
-Use reindexing when documents must be rebuilt from the database:
+Index creation is idempotent. An expected “already exists” Meilisearch task is accepted, then filterable, sortable, and searchable settings are updated.
 
-```txt
-search-reindex --strict --wait
+## Reindex
+
+Run:
+
+```bash
+php artisan search:reindex --strict --wait
 ```
 
-Reindex one index when only one data type is affected:
+The command ensures each index, applies settings, clears it, and imports current records. In startup tasks, <code>search-reindex</code> is deliberately non-blocking so a large import cannot hold application readiness.
 
-```txt
-search-reindex --index=assets --strict --wait
-```
+## When to run
 
-`--wait` makes the operation wait for search service tasks. `--strict` returns a non-zero exit code when settings, deletion, ingestion, or search tasks fail. Startup tasks use both options.
+- after first installation or a fresh dataset
+- after search schema/settings changes
+- after changing the index prefix
+- when database and index counts diverge
 
-## Startup task usage
+## Verify
 
-Use startup tasks for work that must run once during deployment:
+1. Confirm Meilisearch health.
+2. Confirm expected document counts for all four indexes.
+3. Search a known asset tag and person.
+4. Verify the result opens the correct permitted route.
+5. Check task failures and application logs.
 
-```txt
-STARTUP_TASKS=search-ensure-settings:search-settings-v1,search-reindex:search-rebuild-YYYY-MM-DD
-```
+## Troubleshooting
 
-Use a new `search-reindex` key when:
+A missing index should be created automatically. Repeated failures usually indicate connectivity, API key, prefix, resource, or incompatible Meilisearch-version problems.
 
-- the search service was started with a fresh data volume;
-- the index document format changed;
-- a search engine upgrade requires rebuilding documents;
-- search results are known to be incomplete and a full rebuild is safer than targeted repair.
+## Related runbooks
 
-Leave completed keys in place or remove them from `STARTUP_TASKS` after verification. They will not run again unless the key changes.
-
-## Search service upgrades
-
-Before upgrading:
-
-1. Confirm all search documents can be rebuilt from primary application data.
-2. Back up the primary database and preserve the current search data volume.
-3. Pin the target search service image tag.
-4. Plan a maintenance window for large indexes.
-5. Prepare startup task keys for settings and reindexing.
-
-If the new search engine can boot with the existing volume, run settings synchronization and reindex if required.
-
-If the engine refuses the old on-disk database because the stored data version is incompatible, do not keep restarting the new engine against the old volume. Preserve the old volume for rollback, start the target version with a new empty search volume, and rebuild search from the application:
-
-```txt
-STARTUP_TASKS=search-ensure-settings:<upgrade-key>,search-reindex:<upgrade-key>
-```
-
-Use a dump/import only when the search service contains data that cannot be rebuilt from primary application data. Snapshots are same-version backups; dumps are the portable path for cross-version search migrations.
-
-## Verification
-
-Check the search service:
-
-```txt
-health endpoint
-version endpoint
-```
-
-Check startup task completion:
-
-Review the startup task ledger for task key, status, attempt count, and latest error message.
-
-Check search behavior in the application with sample assets, users, licenses, and accessories.
-
-## Rollback
-
-If the target search service version or reindex fails:
-
-1. Stop the target search service container.
-2. Reattach the preserved previous search data volume.
-3. Pin the previous working image tag.
-4. Restore the previous app/search environment values.
-5. Investigate failed startup task rows and container logs before retrying.
-
-Do not delete the preserved volume until the new version has been verified.
+- [Startup tasks](/operations/startup-tasks)
+- [Deployment health](/operations/deployment-health)

@@ -61,6 +61,12 @@ Do not use random keys for routine deploys. A changed key means "run this task a
 
 Fresh database resets are destructive. Use `fresh-db-seed:<key>` only in disposable environments and only when `ALLOW_DESTRUCTIVE_STARTUP_TASKS=true`.
 
+## Blocking and failure behavior
+
+Essential seeders, search settings, and fresh database seeds block container startup when they fail. If another container owns one of these tasks, the current container waits for it to finish.
+
+`search-reindex` is deliberately non-blocking at the container-start level. The reindex command itself still uses strict mode and waits for Meilisearch tasks, but a failure is recorded in the startup-task ledger without failing application startup. If another container already owns the same reindex key, the current container continues startup without waiting for it.
+
 ## Demo dataset profiles
 
 Use sector datasets only for local, demo, test, or other disposable environments. Every profile creates exactly 10,000 assets, five sites, and 20 sector-specific departments. Assignment-only people have no password, role, or application access.
@@ -125,7 +131,7 @@ Release the Veviad App version that understands all four profile keys before pub
 When several containers start at the same time:
 
 - one container claims a pending, failed, or stale task;
-- other containers wait for completion;
+- other containers wait for blocking tasks, but continue immediately when the same `search-reindex` task is already running;
 - completed tasks are skipped;
 - failed tasks are retried on later startups;
 - stale running tasks are reclaimed after `STARTUP_TASK_TIMEOUT_MINUTES`.
@@ -170,3 +176,8 @@ Manual runs should use the same task key format as `STARTUP_TASKS`:
 ```txt
 search-ensure-settings:manual-check
 ```
+
+## Related runbooks
+
+- [Search operations](/operations/search)
+- [Deployment health](/operations/deployment-health)
