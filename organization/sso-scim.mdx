@@ -1,237 +1,160 @@
 ---
 title: "SSO and SCIM"
 sidebarTitle: "SSO and SCIM"
-description: "Configure Microsoft Entra ID single sign-on, SCIM provisioning, and group-to-role synchronization."
+description: "Configure SSO and independent SCIM feeds for application access and the workforce directory."
 icon: "key-round"
 ---
 
-Veviad can integrate with Microsoft Entra ID for two related identity workflows:
+Veviad separates a person's workforce record from the entitlement to use the application.
 
-- **Single Sign-On (SSO):** users authenticate with Microsoft Entra ID.
-- **SCIM provisioning:** Microsoft Entra ID creates, updates, and deactivates Veviad users automatically.
+- **Single Sign-On (SSO)** authenticates a person who already has application access.
+- **SCIM Provisioning** manages application access and role mappings.
+- **SCIM People Directory** synchronizes the wider workforce directory without granting login access.
 
-Role mapping connects those workflows to Veviad permissions. When Entra sends group memberships that match a configured role mapping, Veviad can assign the corresponding local role, such as `admin`, `asset-manager`, `department-manager`, or `user`.
+## Recommended Microsoft Entra layout
 
-## Before you start
+Use two provisioning assignments:
 
-You need:
+| Enterprise application | People assigned | Veviad purpose |
+|---|---|---|
+| Veviad application access | Only users and groups that may use Veviad | SSO plus Access SCIM |
+| Veviad people directory | The broader workforce required for assignments | People Directory SCIM |
 
-- administrator access in Veviad with permission to edit settings;
-- administrator access in Microsoft Entra ID for app registration and enterprise application configuration;
-- the public Veviad application URL, for example `https://app.example.com`;
-- the Microsoft Entra tenant ID;
-- the Microsoft Entra application client ID and client secret;
-- the Entra group Object IDs that should map to Veviad roles.
+The SSO application and Access SCIM configuration can be the same Microsoft Entra enterprise application. The full People Directory should use a separate provisioning assignment and Veviad token.
 
-Use Entra group **Object IDs** for role mappings whenever possible. Display names can change; Object IDs are stable and are the default value Microsoft Entra emits in group claims.
+A person can appear in both feeds. Veviad links both immutable external identities to one person record, regardless of which feed arrives first.
 
-## How Veviad uses groups
+## Why both SCIM integrations use the same endpoint
 
-Veviad stores one identity-provider group value per local role. The value can be an Entra group Object ID or a group name, but it must match the value Entra sends to Veviad exactly.
+Both integrations intentionally use the same SCIM base URL:
 
-| Veviad area | Trigger | Group source | What happens |
-|---|---|---|---|
-| SSO login | User signs in through Microsoft Entra ID | OIDC token `groups` claim | Veviad can sync roles during login when **Sync Roles on Login** is enabled. |
-| SCIM provisioning | Microsoft Entra creates or updates a user | SCIM `groups` attribute | Veviad considers the SCIM group memberships and applies matching role mappings. |
+**https://your-veviad-host/scim/v2**
 
-SSO and SCIM are independent triggers. A user can be provisioned by SCIM before they ever sign in, and a user's roles can also be refreshed during a later SSO login.
+The bearer token identifies the provisioning purpose:
 
-## Configure SSO in Veviad
+- an **app_access** token routes the request to Access SCIM;
+- a **people_directory** token routes it to People Directory SCIM.
 
-![The SSO configuration modal with the SSO / OIDC tab open](/images/screenshots/sso-oidc.webp)
+Generate and rotate each token independently. Never reuse one token for both enterprise applications.
 
-_View shown: `demo.veviad.cloud/admin/integrations`_
+## Access SCIM
 
-Open `Organization → Admin → Integrations`, then edit **Single-Sign-On**.
+Open **Admin → Integrations → SCIM Provisioning**.
 
-On the **SSO / OIDC** tab:
+Access SCIM controls the application-account facet:
 
-1. Enable **Enable SSO**.
-2. Set **Provider** to `Azure Entra ID`.
-3. Select the appropriate **Cloud Instance**.
-4. Enter a **Login Button Label** that users will recognize, such as `Microsoft Azure`.
-5. Decide whether to enable **Force SSO**.
-6. Copy the **Redirect URI / Reply URL** shown by Veviad.
-7. Enter the Microsoft Entra **Tenant ID**.
-8. Enter the Microsoft Entra application **Client ID**.
-9. Enter the Microsoft Entra application **Client Secret**.
-10. Use **Test Connection**.
-11. Save the configuration.
+- SCIM active grants or maintains the application-access entitlement;
+- SCIM deprovisioning changes access to **Suspended** but preserves the person and assignments;
+- Access SCIM groups can map to Veviad roles;
+- an unmapped access user receives the configured safe default role, normally **Employee**;
+- access status and managed roles are read-only in Veviad while this feed is authoritative.
 
-When **Force SSO** is enabled, the standard email and password form is hidden for normal users. Keep a documented break-glass administrator account and confirm the administrator bypass works before enforcing SSO for the whole tenant.
+If SSO is enabled, an entitled person can authenticate through SSO. If Access SCIM is used without SSO, Veviad sends an activation invitation and keeps effective login pending until credentials are established.
 
-## Configure Microsoft Entra ID for SSO
+## People Directory SCIM
 
-In Microsoft Entra ID:
+Open **Admin → Integrations → SCIM People Directory**.
 
-1. Create or open the application registration used for Veviad.
-2. Add the Veviad **Redirect URI / Reply URL** as a Web redirect URI.
-3. Create a client secret and copy it into Veviad.
-4. Assign the users or groups that should access Veviad to the enterprise application.
-5. Configure group claims so Entra sends group membership information to Veviad.
+People Directory SCIM controls the workforce facet:
 
-Recommended group-claim configuration:
+- SCIM active keeps person status **Active**;
+- deprovisioning changes person status to **Inactive**;
+- it creates no password, invitation, application role, or login entitlement;
+- directory groups never grant roles or application access;
+- directory-managed profile and lifecycle fields are read-only in Veviad.
 
-- Emit groups in the OIDC token used by the application.
-- Prefer `ApplicationGroup` when possible so only groups assigned to the application are emitted.
-- Use the default group Object ID value and enter the same Object ID in Veviad role mappings.
+Inactive people remain in history and keep existing assignments, but they are excluded from new assignment pickers and cannot sign in.
 
-Microsoft Entra limits how many groups can be emitted in tokens. If a user belongs to too many groups, Entra may omit the group claim and send an overage indicator instead. Keeping the application scope tight, and using application-assigned groups, reduces that risk.
+## Profile and access authority
 
-## Configure role mappings
+When the same person is in both feeds:
 
-![The Role Mapping tab with a group input per Veviad role](/images/screenshots/sso-role-mapping.webp)
+- People Directory profile data takes precedence over Access SCIM profile data;
+- Access SCIM manages access and mapped roles;
+- local notes and fields that are not identity-provider-owned remain editable;
+- ambiguous or duplicate normalized emails return a conflict instead of being merged automatically.
 
-_View shown: `demo.veviad.cloud/admin/integrations`_
+After the first unique normalized-email match, Veviad uses the scoped immutable external identity rather than repeatedly matching by email.
 
-Open the **Role Mapping** tab in the SSO configuration modal.
+## Role mappings
 
-For each Veviad role that should be controlled by Entra:
+Role mappings belong to Access SCIM and SSO, never to People Directory SCIM.
 
-1. Enter the Entra group Object ID in the role's input.
-2. Leave roles blank when they should not be managed by Entra.
-3. Select **Save Role Mappings**.
-4. Close and reopen the modal to confirm the saved values are still present.
+1. Open **SCIM Provisioning** or **Single-Sign-On**.
+2. Open **Role Mapping**.
+3. Map an identity-provider group ID or attribute value to each Veviad role.
+4. Configure a safe default role.
+5. Save and verify the mapping.
 
-Example:
+Roles answer what an authenticated person may do. They do not enable authentication by themselves.
 
-| Veviad role | Entra group value |
+## SSO and controlled JIT
+
+SSO sign-in still passes Veviad's central eligibility gate. The person must be **Active** and application access must be **Active**.
+
+Controlled just-in-time creation is off by default. When enabled, it uses the configured default role. JIT cannot create or activate access while Access SCIM is enabled because the SCIM feed is authoritative for that entitlement.
+
+Recommended patterns:
+
+| Pattern | Behavior |
 |---|---|
-| `admin` | Object ID of the Entra administrators group |
-| `asset-manager` | Object ID of the Entra asset managers group |
-| `department-manager` | Object ID of the Entra department managers group |
-| `user` | Object ID of the baseline access group |
+| Access SCIM plus SSO | Recommended for managed application accounts and passwordless authentication |
+| People Directory SCIM plus Access SCIM plus SSO | Recommended when Veviad also needs the wider workforce for assignments |
+| People Directory SCIM plus local invitations | Directory records are synchronized; administrators grant access to selected people |
+| SSO with controlled JIT | Suitable only when no Access SCIM feed governs access |
+| Local only | Add/import people, then grant access and invite only those who use Veviad |
 
-Unmapped Entra groups do not block login or provisioning. They are ignored for role assignment.
+## Provisioning steps
 
-## Role Sync Settings
+For each Microsoft Entra enterprise application:
 
-The **Role Sync Settings** section controls fallback and SSO login synchronization.
-
-| Setting | Effect |
-|---|---|
-| **Default Role** | Assigned on SSO login when no group mapping matches, and on SCIM user creation when no group mapping matches. Use this for a safe baseline role such as `user`. |
-| **Sync Roles on Login** | When enabled, Veviad re-evaluates Entra group memberships every time the user signs in with SSO. |
-
-Select **Save Sync Settings** after changing either setting.
-
-## SSO login behavior
-
-When a user signs in with SSO, Veviad finds or creates the user by Entra identity and email address.
-
-If **Sync Roles on Login** is disabled:
-
-- Veviad does not change the user's roles from Entra groups during login.
-- Existing manual role assignments remain unchanged.
-
-If **Sync Roles on Login** is enabled:
-
-- Veviad reads group values from the Entra token.
-- Each matching group mapping resolves to a Veviad role.
-- Users in multiple mapped groups receive the union of all matching roles.
-- Roles that are not managed by Entra mappings are preserved.
-- If no group mapping matches, Veviad assigns the configured **Default Role** when one is set.
-- If no group mapping matches and no default role is set, existing roles are left unchanged.
-
-Role sync happens at login time. If a user's Entra group membership changes, the user must sign in again for SSO login sync to run.
-
-## Configure SCIM provisioning
-
-![The SCIM Provisioning tab with endpoint URL and bearer token](/images/screenshots/sso-scim.webp)
-
-_View shown: `demo.veviad.cloud/admin/integrations`_
-
-SCIM provisioning is configured after SSO is enabled.
-
-In Veviad, open `Organization → Admin → Integrations`, edit **Single-Sign-On**, then open **SCIM Provisioning**:
-
-1. Copy the **SCIM Endpoint URL**. It ends with `/scim/v2`.
-2. Generate a **SCIM Bearer Token**.
-3. Copy the token immediately. It is shown only once.
-
-In Microsoft Entra ID:
-
-1. Open the Veviad enterprise application.
-2. Go to **Provisioning**.
-3. Set provisioning mode to **Automatic**.
-4. Enter the Veviad SCIM Endpoint URL as the **Tenant URL**.
-5. Enter the Veviad SCIM Bearer Token as the **Secret Token**.
+1. Open the corresponding integration in Veviad.
+2. Copy the SCIM endpoint ending in /scim/v2.
+3. Generate the bearer token for that integration.
+4. In Entra, set Provisioning mode to **Automatic**.
+5. Use the endpoint as **Tenant URL** and the token as **Secret Token**.
 6. Run **Test Connection**.
 7. Review user and group attribute mappings.
-8. Assign the users or groups that should be provisioned.
-9. Start provisioning.
+8. Assign the intended users or groups.
+9. Start provisioning and review Entra provisioning logs.
 
-If provisioning scope is set to sync only assigned users and groups, no users are provisioned until users or groups are assigned to the enterprise application.
+For Access SCIM, assign only people who may use Veviad. For People Directory SCIM, assign the workforce population required for inventory and organizational records.
 
-## SCIM role behavior
+## Lifecycle outcomes
 
-When Microsoft Entra provisions or updates a user through SCIM, Veviad looks for group memberships in the SCIM payload.
-
-On user creation:
-
-- matching SCIM groups assign the corresponding Veviad roles;
-- users in multiple mapped groups receive all matching roles;
-- if no mapped group matches and a **Default Role** is configured, Veviad assigns the default role.
-
-On user update:
-
-- when the update contains group memberships that match role mappings, Veviad syncs the mapped roles from those groups;
-- manually assigned roles that are not controlled by Entra mappings are preserved;
-- if the update contains no matching group membership, existing roles are left unchanged.
-
-SCIM provisioning does not require **Sync Roles on Login**. That toggle only controls role synchronization during SSO login.
-
-## Operational guidance
-
-Use one of these patterns:
-
-| Pattern | Recommended when | Required configuration |
+| Event | Person status | Access status |
 |---|---|---|
-| SSO only | Users are created on first login and roles should update at login. | SSO enabled, group claims configured, role mappings saved, **Sync Roles on Login** enabled. |
-| SCIM plus SSO | Users should exist before first login and lifecycle should follow Entra assignments. | SSO enabled, SCIM token configured, provisioning running, role mappings saved. Enable **Sync Roles on Login** if login should also refresh roles. |
-| SCIM only for lifecycle, manual roles | Identity lifecycle is automated but Veviad roles are managed manually. | SCIM configured, role mappings left blank, **Sync Roles on Login** disabled. |
+| People Directory creates a person | Active | Unchanged, normally None |
+| People Directory deprovisions a person | Inactive | Unchanged |
+| Access SCIM grants entitlement | Unchanged | Active with SSO, otherwise Pending until activation |
+| Access SCIM deprovisions entitlement | Unchanged | Suspended |
+| Administrator deactivates a local person | Inactive | Unchanged |
+| Administrator reactivates a local person | Active | Unchanged |
 
-For most production rollouts, use **SCIM plus SSO**. SCIM handles user lifecycle, while SSO provides authentication. Enabling login role sync is useful when you want group changes to take effect on the next login as well as during provisioning cycles.
+A person-status change or access suspension immediately blocks effective login and revokes active sessions and API tokens.
 
 ## Troubleshooting
 
-### The user can sign in but did not receive the expected role
+### Both integrations show the same endpoint
 
-Check:
+This is expected. Confirm that each Entra application uses the token generated from the matching Veviad integration.
 
-- the role mapping is saved in Veviad and still appears after reopening the modal;
-- **Sync Roles on Login** is enabled if you expect SSO login to update roles;
-- the Entra token includes a `groups` claim;
-- the value in the token exactly matches the value entered in Veviad;
-- the user is assigned to the enterprise application;
-- the user is a member of the mapped Entra group.
+### A directory person received no role
 
-### SCIM created the user but no role was assigned
+This is expected. People Directory SCIM never assigns roles. Grant application access manually or include the person in Access SCIM.
 
-Check:
+### Access or roles cannot be edited in Veviad
 
-- the SCIM provisioning payload includes `groups`;
-- group provisioning or group membership synchronization is enabled in Entra provisioning mappings;
-- the SCIM group value matches the Veviad role mapping;
-- a **Default Role** is configured if users without mapped groups should receive baseline access;
-- the Entra provisioning logs show the user and group membership update as successful.
+Check the **Management authority** shown for the person. Access-SCIM-owned entitlements and roles must be changed in the identity provider.
 
-### A group membership changed in Entra but Veviad still shows the old role
+### A person can authenticate with the identity provider but Veviad blocks login
 
-The update depends on the workflow:
+Confirm both person status and access status are Active. A role alone is not sufficient.
 
-- SSO role sync runs the next time the user signs in.
-- SCIM role sync runs when Entra sends a provisioning update. You can use on-demand provisioning in Entra to test immediately.
+### The same employee was created twice
 
-If the user no longer has any mapped groups, Veviad preserves existing roles unless a default-role fallback or another provisioning action changes them. Review the user manually when removing the final mapped group from an account.
+Stop provisioning and inspect normalized email and external identifiers. Veviad returns deterministic conflicts for ambiguous matches; do not manually merge identity-provider-owned records without resolving the source data.
 
-### The SCIM token was lost or exposed
+### A token was lost or exposed
 
-Regenerate the token in Veviad and update the **Secret Token** in Microsoft Entra ID. Regenerating invalidates the previous token.
-
-## Microsoft Entra references
-
-- [Configure group claims for applications by using Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims)
-- [Develop a SCIM endpoint for user provisioning from Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/use-scim-to-provision-users-and-groups)
-- [SCIM support in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/scim-support-in-entra-id)
-- [Scoping users or groups to be provisioned with scoping filters](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/define-conditional-rules-for-provisioning-user-accounts)
+Rotate only the affected provisioning-purpose token and update the matching Entra Secret Token. The other SCIM integration remains independent.
