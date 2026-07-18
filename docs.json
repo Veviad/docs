@@ -39,8 +39,6 @@
                   "main/dashboard",
                   "main/assets",
                   "main/people",
-                  "main/licenses",
-                  "main/accessories",
                   "main/maintenance",
                   "main/asset-handover",
                   "main/checklists"
@@ -157,8 +155,6 @@
                   "de/main/assets",
                   "de/main/checklists",
                   "de/main/people",
-                  "de/main/licenses",
-                  "de/main/accessories",
                   "de/main/maintenance",
                   "de/main/asset-handover"
                 ]
