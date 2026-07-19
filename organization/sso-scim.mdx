@@ -17,11 +17,19 @@ You need identity integration permission and an administrator in the identity pr
 
 ## Configure SSO
 
-1. Open the SSO integration.
-2. Configure OIDC or SAML values.
-3. Save secrets in protected fields.
-4. Test with a non-admin account.
-5. Configure external-group-to-Veviad-role mappings and the role-sync policy.
+1. Open **Admin → Integrations**, then open the **Identity Provider** integration.
+2. Select **Azure Entra ID**, **Generic OIDC**, or **Generic SAML2**.
+3. Enter the required provider values on the **SSO** tab.
+4. Open **Role Mapping** to map IdP groups or SAML attributes to Veviad roles and choose the safe default role.
+5. When enabling a new or changed connection, select **Test connection** before saving.
+6. Select **Save configuration** from either tab. Veviad saves the SSO settings, activation state, mappings for the selected provider, and default role together.
+7. Verify sign-in with a non-admin test account.
+
+### Provider changes and activation
+
+Role mappings are provider-specific. In the form, switching providers loads that provider's mappings and resets the activation switch. Complete and save the selected provider before enabling it.
+
+A complete saved configuration can be activated or deactivated from the integrations table. Reactivating an unchanged saved configuration does not require another connection test. After connection-critical provider fields change, test the connection successfully before saving SSO as enabled. If table activation finds incomplete settings, Veviad leaves SSO inactive and opens the configuration dialog.
 
 ![SSO role mappings](/images/screenshots/sso-role-mapping.webp)
 
