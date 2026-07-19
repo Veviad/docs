@@ -1,17 +1,49 @@
 ---
 title: "Häufige Fragen"
 sidebarTitle: "Häufige Fragen"
-description: "Praktische Antworten zu Zugriff, Daten, Suche, Actions und KI."
+description: "Praktische Antworten zu Veviad, Zugriff, SCIM, SSO und Berechtigungen."
 icon: "message-question"
 ---
 
 ## Warum fehlt ein Modul oder Button?
 
-Die Rolle besitzt die Berechtigung nicht oder die erforderliche Integration ist inaktiv.
+Die Rolle besitzt die erforderliche Berechtigung nicht oder die Integration ist inaktiv. Lassen Sie die vorgesehene Zuständigkeit administrativ prüfen.
 
 ## Warum kann ich ein Asset einer Person ohne Anmeldung zuweisen?
 
-Personen und Anwendungszugriff sind getrennt. Zuweisbare Personen benötigen nicht automatisch ein Benutzerkonto.
+Personen und Anwendungszugriff sind getrennt. Workforce-Datensätze nur für Zuweisungen sind beabsichtigt. Das SCIM-Personenverzeichnis gewährt niemals Zugriff, Rollen, Zugangsdaten oder Einladungen.
+
+## Warum ist eine Person unter Personen, aber nicht unter Admin → Benutzer?
+
+Es besteht keine Anwendungsberechtigung. Gewähren Sie bewusst lokalen Zugriff oder nehmen Sie die Person bei erforderlicher Anmeldung in den Zugriffs-SCIM-Umfang auf.
+
+## Welche SCIM-Integration ist richtig?
+
+Verwenden Sie das **SCIM-Personenverzeichnis** für Workforce-Profile und Personenlebenszyklus. Verwenden Sie **Zugriffs-SCIM** für Anwendungsberechtigung und gruppenbasierte Rollen. Beide nutzen denselben Endpunkt, aber getrennte Token und Zielgruppen.
+
+## Gewähren Entra-App-Rollen Veviad-Rollen?
+
+Nein. Veviad verwendet ausschließlich direkte Entra-Gruppenmitgliedschaften und unveränderliche Gruppenobjekt-IDs. App-Rollen, Gruppennamen, SCIM-User-`roles`, Token-`roles` und `wids` autorisieren keine Benutzer.
+
+## Warum zeigt die Authentifizierung Lokal — Aktivierung ausstehend?
+
+Zugriffs-SCIM hat Anwendungszugriff gewährt, während SSO nicht verfügbar ist. Die Person muss die Aktivierungseinladung annehmen und ein Passwort erstellen. Veviad erzeugt kein Passwort.
+
+## Können wir bei aktivem Zugriffs-SCIM einen lokalen Benutzer einladen?
+
+Ja, als ausdrückliche lokale Ausnahme. Das Konto liegt außerhalb von SCIM-Lebenszyklus und -Rollenzuständigkeit und muss lokal geprüft und entzogen werden.
+
+## Warum sind JIT und SSO-Rollensynchronisierung nicht verfügbar?
+
+Zugriffs-SCIM ist aktiv und alleinige externe Quelle für Zugriff und Rollen. SSO authentifiziert weiterhin. Das Deaktivieren von Zugriffs-SCIM reaktiviert JIT oder Rollensynchronisierung nicht automatisch.
+
+## Wann wirken sich Gruppenänderungen auf Rollen aus?
+
+Mitgliedschafts- und Zuordnungsänderungen in Zugriffs-SCIM gleichen Rollen sofort ab. SSO-Mitgliedschaften werden bei der nächsten erfolgreichen Anmeldung wirksam; SSO-Zuordnungen können aus einem gültigen gespeicherten Snapshot sofort abgeglichen werden.
+
+## Warum ist der Rolleneditor deaktiviert?
+
+Die Rollen werden durch SCIM- oder SSO-Gruppen gesteuert. Ändern Sie stattdessen die Mitgliedschaft beim Identitätsanbieter oder die Veviad-Zuordnung.
 
 ## Wo sind Workflows?
 
@@ -23,24 +55,22 @@ Nein. Aktuelle Checklisten gehören ausschließlich zu Assets.
 
 ## Ist das Dashboard für alle gleich?
 
-Nein. Layout und konfigurierbare Widgets sind für jeden Benutzer individuell.
+Nein. Layout und konfigurierbare Widgets sind pro Benutzer persönlich.
 
-## Kann die Asset-Tabelle 10.000 Datensätze verarbeiten?
+## Kann das Asset-Grid 10.000 Datensätze verarbeiten?
 
-Ja. Filterung, Sortierung und Nachladen erfolgen serverseitig. Verwenden Sie gespeicherte Ansichten oder Berichte.
+Ja. Filterung, Sortierung und Nachladen erfolgen serverseitig. Nutzen Sie Ansichten oder Berichte.
 
-## Sind KI-Zusammenfassungen verbindlich?
+## Sind KI-Zusammenfassungen maßgeblich?
 
-Nein. Prüfen Sie die Zusammenfassung anhand der Zeilen und Diagrammwerte des Berichtslaufs.
-
-## Welcher SCIM-Endpunkt ist richtig?
-
-Access-SCIM ist für Personen mit Anmeldung bestimmt; People-SCIM synchronisiert die breitere, zuweisbare Belegschaft.
-
-## Warum ist ein Profilfeld deaktiviert?
-
-Das Feld kann zentral durch SSO oder SCIM verwaltet werden.
+Nein. Prüfen Sie sie gegen Zeilen und Diagrammwerte des Berichtslaufs.
 
 ## Wo melde ich ein Problem?
 
 Folgen Sie [Fehlerbehebung und Support](/de/faq/troubleshooting) und dem Supportweg Ihrer Organisation.
+
+## Verwandte Themen
+
+- [Identitäten, Zugriff und Bereitstellung](/de/organization/sso-scim)
+- [SCIM: Personenverzeichnis und Anwendungszugriff](/de/organization/scim-provisioning)
+- [SSO, Rollensynchronisierung und JIT](/de/organization/sso-jit)

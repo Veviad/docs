@@ -1,0 +1,126 @@
+---
+title: "SSO, Rollensynchronisierung und JIT"
+sidebarTitle: "SSO und JIT"
+description: "SSO-Authentifizierung, maßgebliche gruppenbasierte Rollensynchronisierung und kontrolliertes JIT konfigurieren."
+icon: "user-plus"
+---
+
+SSO authentifiziert Benutzer. Eine optionale Gruppensynchronisierung kann Providergruppen zusätzlich zur maßgeblichen Rollenquelle machen; JIT kann einen Benutzer bei der ersten erfolgreichen Anmeldung erstellen oder erweitern.
+
+<Info>
+  Die SSO-Rollensynchronisierung ist nur wirksam, wenn SSO aktiviert, **Rollen bei Anmeldung synchronisieren** aktiviert und Zugriffs-SCIM deaktiviert ist.
+</Info>
+
+## SSO-Modus wählen
+
+| Modus | Wer kann sich anmelden | Zugriff | Rollenzuständigkeit |
+| --- | --- | --- | --- |
+| Nur Authentifizierung | Vorhandene aktive Benutzer | Bereits vorhanden | Lokal |
+| Rollensynchronisierung ohne JIT | Vorhandene aktive Benutzer | Bereits vorhanden | Vollständiger Satz zugeordneter SSO-Gruppen |
+| Kontrolliertes JIT | Erfolgreich aufgelöste Providerbenutzer | Im erfolgreichen Anmeldevorgang erstellt oder erweitert | Vollständiger Satz zugeordneter SSO-Gruppen |
+| SSO mit Zugriffs-SCIM | Aktive Zugriffs-SCIM-Benutzer und zulässige lokale Benutzer | SCIM oder lokal | Zugriffs-SCIM-Gruppen für SCIM-Benutzer, lokal für lokale Benutzer |
+
+Bei aktivem Zugriffs-SCIM authentifiziert SSO nur. Veviad deaktiviert JIT und die SSO-Rollensynchronisierung bei Anmeldung, damit nicht zwei externe Systeme um Zugriff oder Rollen konkurrieren.
+
+![Gekoppelte Einstellungen für SSO-Rollensynchronisierung und JIT](/images/screenshots/de/sso-jit.webp)
+
+## Nur Authentifizierung
+
+Aktivieren Sie SSO und lassen Sie die Rollensynchronisierung deaktiviert. Veviad verknüpft einen vorhandenen aktiven Benutzer mit dem Provider und lässt dessen vollständigen Rollensatz lokal verwaltet.
+
+Dieser Modus erstellt keine Anwendungsbenutzer. Gewähren Sie den Anwendungszugriff vor der ersten SSO-Anmeldung.
+
+## Maßgebliche Rollensynchronisierung
+
+Aktivieren Sie **Rollen bei Anmeldung synchronisieren**, damit zugeordnete Providergruppen den vollständigen Rollensatz jedes Nicht-SCIM-SSO-Benutzers bestimmen.
+
+Bei einer erfolgreichen Anmeldung:
+
+1. löst Veviad die vollständige Gruppenmitgliedschaft aus einer vertrauenswürdigen Quelle auf;
+2. ordnet Gruppen anhand der konfigurierten Providerkennung zu;
+3. bildet die eindeutige Vereinigung der zugeordneten Veviad-Rollen;
+4. wendet die Standardrolle nur an, wenn keine Gruppe eine Rolle liefert; und
+5. ersetzt den vollständigen Rollensatz atomar.
+
+Die sichere Vorgabe ist **Keine**. Sie weist keine Rolle zu, wenn die aufgelöste Mitgliedschaft keine Zuordnung liefert. Frühere und manuell zugewiesene Rollen werden entfernt, wenn sie nicht im Zielsatz enthalten sind.
+
+Mitgliedschaftsänderungen werden bei der nächsten SSO-Authentifizierung wirksam. Zuordnungsänderungen können Benutzer mit gültigem gespeichertem Mitgliedschaftssnapshot sofort abgleichen.
+
+## Kontrollierte JIT-Bereitstellung
+
+Aktivieren Sie **Just-in-Time-Bereitstellung**, wenn freigegebene Providerbenutzer bei ihrer ersten Anmeldung Anwendungszugriff erhalten dürfen. JIT aktiviert und sperrt die Rollensynchronisierung automatisch.
+
+Veviad löst Gruppen auf, bevor ein Benutzer erstellt oder erweitert wird. Benutzererstellung, Identitätsverknüpfung, Zugriffsaktivierung, Snapshot-Ersetzung, Rollenabgleich und Sitzungserstellung erfolgen in einer Transaktion. Ein fehlgeschlagener Schritt setzt die gesamte Anmeldung zurück.
+
+<Warning>
+  JIT ist allein keine umfassende Freigabeliste. Begrenzen Sie den Providerzugriff auf genehmigte Benutzer und Gruppen, konfigurieren Sie Zuordnungen vor der Aktivierung und verwenden Sie die Standardrolle **Keine**.
+</Warning>
+
+## Vertrauenswürdige Gruppenauflösung
+
+### Microsoft Entra ID
+
+Veviad verwendet das delegierte Anmeldetoken und Microsoft Graph **User.Read**, um die direkten `memberOf`-Beziehungen des angemeldeten Benutzers abzufragen. Nur validierte HTTPS-Seitenlinks für die konfigurierte Microsoft-Cloud werden mit begrenzten Wiederholungen und Zeitüberschreitungen verfolgt. Entra kann Gruppen-Claims bei Gruppen-Overage auslassen; deshalb ermittelt Graph den vollständigen Mitgliedschaftssatz. Siehe [Direkte Mitgliedschaften in Microsoft Graph](https://learn.microsoft.com/en-us/graph/api/user-list-memberof?view=graph-rest-1.0) und [Entra-Verhalten bei Gruppen-Overage](https://learn.microsoft.com/en-us/security/zero-trust/develop/configure-tokens-group-claims-app-roles).
+
+Ausschließlich unveränderliche Entra-Gruppenobjekt-ID-UUIDs autorisieren einen Benutzer. Anzeigenamen dienen der Diagnose. Verschachtelte Mitgliedschaft, App-Rollen, `roles` und Verzeichnisrollen aus `wids` werden ignoriert.
+
+### Generisches OIDC
+
+Veviad liest den konfigurierten Gruppen-Claim nur aus verifizierten ID-Token- oder UserInfo-Daten. Der Claim muss eine vollständige, gültige Gruppenliste enthalten.
+
+### Generisches SAML
+
+Veviad liest das konfigurierte Gruppenattribut nur aus der validierten SAML-Assertion. Das Attribut muss die vollständige Mitgliedschaftsliste enthalten.
+
+Eine ausdrücklich leere Gruppenliste ist vollständig und führt zum konfigurierten Fallback. Eine fehlende, fehlerhafte, abgeschnittene, unsichere oder fehlgeschlagene Antwort ist nicht verfügbar.
+
+## Geschlossenes Fehlerverhalten
+
+Kann die vollständige Mitgliedschaft nicht zuverlässig ermittelt werden, blockiert Veviad die Anmeldung und:
+
+- erstellt oder erweitert keinen Benutzer;
+- ändert keinen Anwendungszugriff;
+- ersetzt weder Mitgliedschaftssnapshot noch Rollen; und
+- erstellt keine authentifizierte Sitzung.
+
+Die Anmeldeseite zeigt einen lokalisierten, nicht sensiblen Fehler. Sicherheitsdiagnosen erfassen Provider, Auflösungsquelle, Fehlerkategorie und betroffene Identität, jedoch keine Token oder Roh-Assertions.
+
+## Abhängigkeiten der Einstellungen
+
+- JIT aktiviert und sperrt automatisch die Rollensynchronisierung.
+- Zugriffs-SCIM deaktiviert JIT und die SSO-Rollensynchronisierung.
+- Das Deaktivieren von Zugriffs-SCIM aktiviert keine der beiden Optionen automatisch erneut.
+- Ein Providerwechsel oder das Deaktivieren der Rollensynchronisierung entfernt gespeicherte SSO-Mitgliedschaftssnapshots.
+- Nach dem Entfernen eines Snapshots bleiben aktuelle Rollen als lokaler Stand erhalten, bis bewusst eine neue Zuständigkeit aktiviert wird.
+- **SSO erzwingen** blendet die lokale Passwortanmeldung aus. Eine lokale Ausnahme ist nur sinnvoll, wenn ein zulässiger lokaler Authentifizierungsweg bestehen bleibt.
+
+## Provider- und Zuordnungsänderungen
+
+Rollenzuordnungen sind providerspezifisch. Beim Providerwechsel lädt Veviad dessen Konfiguration und verlangt vor der Aktivierung eine Verbindungsprüfung. Gespeicherte Mitgliedschaftssnapshots des vorherigen Providers werden entfernt.
+
+Verwenden Sie unveränderliche Kennungen:
+
+- Entra: UUID der Gruppenobjekt-ID.
+- Generisches OIDC: exakter Wert im konfigurierten verifizierten Gruppen-Claim.
+- SAML: exakter Wert im konfigurierten validierten Gruppenattribut.
+
+Gruppennamen dürfen zur Anzeige gespeichert werden, aber nicht als Entra-Autorisierungsfallback dienen.
+
+## Prüfliste
+
+1. Lassen Sie SSO und JIT während der Providerkonfiguration deaktiviert.
+2. Ordnen Sie jede genehmigte Gruppe zu und wählen Sie **Keine** als Standard.
+3. Testen Sie die Verbindung.
+4. Melden Sie je einen vorhandenen Nicht-Admin-Benutzer aus jeder zugeordneten Gruppe an.
+5. Prüfen Sie exakten Rollenabgleich, Vereinigung mehrerer Gruppen und eine ausdrücklich leere Mitgliedschaft.
+6. Testen Sie eine fehlende oder fehlgeschlagene Gruppenantwort und bestätigen Sie, dass weder Benutzer, Rollen noch Sitzung verändert werden.
+7. Aktivieren Sie JIT erst nach erfolgreichen Tests mit vorab bereitgestellten Benutzern.
+8. Prüfen Sie einen neuen JIT-Benutzer und erweitern Sie erst danach den Providerumfang.
+9. Bestätigen Sie Audit-Ereignisse mit Mitgliedschaftsquelle, zugeordneten und nicht zugeordneten Gruppen, vorherigen und neuen Rollen sowie Zeitpunkt der Rollensynchronisierung.
+
+## Verwandte Themen
+
+- [Identitäten, Zugriff und Bereitstellung](/de/organization/sso-scim)
+- [SCIM: Personenverzeichnis und Anwendungszugriff](/de/organization/scim-provisioning)
+- [Integrationen](/de/organization/integrations)
+- [Runbook für Personen- und Zugriffsbereitstellung](/de/operations/people-access-provisioning)

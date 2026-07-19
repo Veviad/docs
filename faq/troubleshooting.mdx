@@ -1,37 +1,64 @@
 ---
 title: "Troubleshooting and support"
 sidebarTitle: "Troubleshooting"
-description: "Resolve common access, search, workflow, import, and integration problems."
+description: "Resolve common access, SCIM, SSO, search, workflow, import, and integration problems."
 icon: "hands-helping"
 ---
 
-Use this page to separate permission, data, browser, and service problems before contacting support.
+Use this page to separate permission, authority, data, browser, and service problems before contacting support.
 
 ## Quick checks
 
-1. Reload the page once and confirm you are in the intended workspace.
-2. Check whether the feature is permission-dependent.
-3. Repeat the action with one known record and note the time.
-4. Check the in-app result or error reference; do not copy secrets.
-5. Ask an administrator to confirm configuration and service health.
+1. Reload once and confirm the intended workspace and language.
+2. Check whether the feature is permission- or authority-dependent.
+3. Repeat with one known representative record and note the exact time.
+4. Record the safe error reference and affected identity; never copy tokens or assertions.
+5. Ask an administrator to inspect integration state and audit diagnostics.
 
-## Common symptoms
+## Identity and access symptoms
 
 | Symptom | Likely cause | Next step |
 | --- | --- | --- |
-| Menu item is missing | Permission not granted | Ask an administrator to review your role |
+| Every SCIM user gets the default role | Groups or memberships were not provisioned, or object IDs do not match | Provision Access SCIM Groups; compare `externalId` with the mapped Entra object ID |
+| A provisioned group grants no role | The group is intentionally unmapped, or default is None | Add a mapping by immutable group ID if access is intended |
+| Local — activation pending | Access SCIM entitlement exists but local activation is incomplete | Accept the invitation and create a password |
+| JIT or role sync is disabled | Access SCIM is authoritative | Keep SSO authentication-only or deliberately change authority |
+| SSO login reports group verification failure | Membership is missing, malformed, partial, unsafe, or unavailable | Check Graph **User.Read**, cloud/pagination safety, or verified claim/attribute completeness |
+| Role editor is locked | Roles are controlled by SSO or SCIM groups | Change IdP membership or Veviad mapping |
+| Person is in People but not Admin → Users | No application entitlement | Grant local access or include the person in Access SCIM scope |
+| SSO error appears in the wrong language | Guest locale or translation payload mismatch | Reproduce with the selected locale and include route, time, and error reference |
+
+<Warning>
+  Do not treat an unavailable SSO membership response as an empty group list. Veviad intentionally blocks login without changing the user, access, roles, snapshot, or session.
+</Warning>
+
+## Other common symptoms
+
+| Symptom | Likely cause | Next step |
+| --- | --- | --- |
+| Menu item is missing | Permission not granted | Ask an administrator to review the role |
 | Search misses a recent record | Indexing delay or disabled search | Use direct navigation, then ask an operator to check search |
 | Action did not run | Inactive rule, trigger mismatch, or queue issue | Review the Action and queue health |
 | Import cannot create an asset | Missing required field or category rule | Correct the reviewed values before confirming |
-| Profile field is disabled | SSO or SCIM authority | Change it in the identity provider |
-| SSO cannot be activated | Provider configuration is incomplete, or connection-critical fields changed | Complete the required fields, test the changed connection, and save the configuration |
+| Profile field is disabled | SCIM or SSO authority | Change it in the authoritative system |
 
-## Contact support
+## Evidence for support
 
-Provide the workspace, route, timestamp, steps, expected result, actual result, and any safe error reference. Redact credentials, tokens, personal data, and customer records.
+Provide:
+
+- workspace, route, selected language, and timestamp;
+- expected and actual result;
+- integration purpose and provider;
+- safe group object IDs, matched/unmatched result, and role-management source;
+- previous and new role names when available;
+- roles-last-synchronized timestamp and audit correlation; and
+- screenshots with secrets and personal data redacted.
+
+Never provide passwords, bearer tokens, access or ID tokens, SAML assertions, API keys, or unrelated tenant memberships.
 
 ## Related topics
 
 - [Common questions](/faq/common-questions)
-- [Access and navigation](/getting-started/access-and-navigation)
-- [Integrations](/organization/integrations)
+- [SCIM: Workforce and application access](/organization/scim-provisioning)
+- [SSO, role synchronization, and JIT](/organization/sso-jit)
+- [People and Access Provisioning runbook](/operations/people-access-provisioning)

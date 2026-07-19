@@ -1,42 +1,181 @@
 ---
 title: "People and Access Provisioning"
 sidebarTitle: "People and Access"
-description: "Operational model for workforce records, login entitlements, SSO, and purpose-scoped SCIM."
+description: "Operational authority, rollout, rollback, and diagnostics for workforce records, Access SCIM, SSO role synchronization, and JIT."
 icon: "users-gear"
 ---
 
-## Model
+This internal runbook defines the safe operating model for Veviad identity lifecycle. Use it for rollout, change review, incident response, and rollback.
 
-The users table contains people, while access lifecycle fields determine who can sign in. Assignment-only people have an active person status and no application access.
+<Warning>
+  Never use Entra app roles, group names, SCIM User `roles`, token `roles`, or directory-role `wids` as authorization sources. Entra authorization uses direct group membership and immutable group object IDs.
+</Warning>
 
-## Provisioning paths
+## Authority matrix
 
-| Path | Creates or updates | Grants sign-in |
+| Flow | Profile and person status | Access | Authentication | Roles | Role change timing |
+| --- | --- | --- | --- | --- | --- |
+| Fully local | Local | Local | Local and optionally SSO | Local | Immediate local edit |
+| SCIM People Directory only | Workforce SCIM | None | None | None | Not applicable |
+| Workforce SCIM plus local access | Workforce SCIM | Local | Local or SSO | Local | Immediate local edit |
+| Access SCIM, SSO off | Workforce SCIM if present, otherwise Access SCIM profile | Access SCIM | Pending local activation, then Local | Access SCIM groups | Immediate membership or mapping reconciliation |
+| Access SCIM, SSO on | Workforce SCIM if present | Access SCIM | SSO | Access SCIM groups | Immediate membership or mapping reconciliation |
+| Both SCIM feeds | Workforce SCIM | Access SCIM | Local activation or SSO | Access SCIM groups | Immediate |
+| SSO authentication only | Local or Workforce SCIM | Existing | SSO | Local | Immediate local edit |
+| SSO group synchronization | Local or Workforce SCIM | Existing | SSO | SSO groups | Membership at next login; mapping immediately from valid snapshots |
+| Controlled JIT | Provider data | Created or promoted atomically | SSO | SSO groups | First login and later successful logins |
+| Local exception with Access SCIM | Local | Local | Permitted local path or SSO | Local | Immediate local edit |
+
+## Precedence and invariants
+
+1. SCIM People Directory wins for profile and person status.
+2. Access SCIM wins for SCIM application entitlement and SCIM-group roles.
+3. SSO-group authority is effective only when Access SCIM is disabled.
+4. Local roles apply only when neither SCIM groups nor effective SSO group synchronization controls them.
+5. Authentication is independent: local password and SSO can coexist.
+6. Complete authoritative role sets replace previous roles; they never merge with manual grants.
+7. The default role applies only when complete membership resolves to no mapped role. **None** means no role.
+8. A missing or partial SSO group result is a login failure, not an empty group list.
+
+## Safe rollout order
+
+### 1. Select the authority model
+
+Document the owner of profile, person status, application access, authentication, and roles. Record any local exception, business owner, and review date.
+
+### 2. Configure integrations without broad activation
+
+- Create separate Entra applications and bearer tokens for SCIM People Directory and Access SCIM.
+- Scope the People Directory feed to workforce records.
+- Scope Access SCIM to direct members of application-entitlement groups.
+- For Access SCIM, provision Group `objectId → externalId`, `displayName`, and direct `members`.
+- Configure SSO provider values and test the connection while JIT remains off.
+
+### 3. Configure role mappings
+
+Use immutable Entra group object-ID UUIDs. Map every approved group, retain names only for display, and set the default to **None** unless the fallback is explicitly approved.
+
+### 4. Pilot on demand
+
+Provision one representative user and group from each mapped group. For SSO synchronization, test existing users before enabling JIT.
+
+Verify:
+
+- correct person and access ownership;
+- exact union of roles across multiple groups;
+- no implicit Employee role;
+- unmapped and explicitly empty memberships;
+- activation state with SSO off;
+- role-editor locking;
+- deactivation and reactivation; and
+- localized, fail-closed SSO errors.
+
+### 5. Expand gradually
+
+Start full SCIM provisioning only after every representative passes. Enable JIT only after existing-user SSO role synchronization is proven. Reconcile the remaining population without resending valid invitations or generating passwords.
+
+## Lifecycle behavior
+
+### Workforce deactivation and reactivation
+
+SCIM People Directory **active = false** deactivates the person, revokes sessions and tokens, and blocks authentication. Preserve application entitlement, assignments, and history. Reactivation restores the person; it does not invent access or roles.
+
+### Access SCIM deactivation and reactivation
+
+Deactivation blocks the SCIM entitlement and revokes sessions. Reactivation restores entitlement and recomputes the current exact group-derived role set. With SSO off, a usable local account still requires completed activation.
+
+### Local activation
+
+Before invitation acceptance, display **Local — activation pending**. Acceptance creates a password and changes the state to **Local**. Resolve live SCIM group roles at acceptance rather than restoring invitation-snapshot roles.
+
+### SSO group lifecycle
+
+Complete membership replaces the stored snapshot only after trusted resolution succeeds. Entra membership changes apply at the next login. Mapping changes reconcile immediately from valid snapshots.
+
+## Change procedures
+
+| Change | Required action | Expected result |
 | --- | --- | --- |
-| Local People UI | Person profile | No |
-| Admin grant access/invitation | Existing person access | Yes |
-| SSO just-in-time behavior | Authenticated identity according to policy | According to policy |
-| Application-access SCIM | Profile and access lifecycle | Yes |
-| People-directory SCIM | Workforce profile and organization data | No |
+| Rotate a SCIM token | Generate once, update the IdP immediately, verify on-demand provisioning | Previous token is invalid immediately |
+| Remove or remap a group | Review affected users, change mapping, inspect audit result | Stale roles are revoked immediately for SCIM and snapshotted SSO users |
+| Change default role | Confirm intended unmapped population first | Applied only where no mapped group produces a role |
+| Disable SSO role sync | Confirm role owners, disable, review preserved roles | SSO snapshots removed; current roles become local |
+| Change SSO provider | Disable rollout, configure and test new provider, rebuild mappings | Old snapshots removed; no cross-provider mappings |
+| Enable Access SCIM | Confirm SCIM mappings and local exceptions | JIT and SSO role sync disabled; SCIM becomes role authority |
+| Disable Access SCIM | Assign a new authority explicitly | JIT and role sync remain off until deliberately enabled |
+| Roll back a configuration | Restore last reviewed settings and mappings, then reconcile pilot users | Never restore an unsafe or partial membership snapshot |
 
-## Authority
+## Diagnostics
 
-Track profile, access, and credential authority separately. Identity-provider-managed password and profile fields must remain read-only in Veviad.
+Use audit records and the Admin user payload rather than tokens or raw assertions. Collect:
 
-## Operational checks
+- integration and provider identifier;
+- Entra group object IDs and display names;
+- matched and unmatched groups;
+- previous and new roles;
+- whether the default was applied;
+- membership source and completeness;
+- affected users;
+- **role management source**: local, SSO groups, or SCIM groups;
+- **roles last synchronized at**; and
+- localized SSO error category and correlation time.
 
-1. Provision one person through the intended path.
-2. Verify department, location, status, and external identity.
-3. For assignment-only scope, confirm the person appears in People but cannot sign in.
-4. For access scope, confirm active access, role mapping, and SSO or invitation.
-5. Deactivate and reactivate the test identity.
-6. Confirm asset assignments and audit history remain intact.
+Never log bearer tokens, access tokens, ID tokens, raw SAML assertions, or full unrelated tenant membership.
 
-## Safety
+## Failure handling
 
-Use separate SCIM applications, tokens, and groups for access and People purposes. Token regeneration invalidates the previous token.
+### SCIM request failure
 
-## Related runbooks
+Keep the last committed state. Correct token, endpoint, scope, or payload and retry the representative object. Do not manually edit a SCIM-managed role to hide a provisioning fault.
 
-- [Deployment health](/operations/deployment-health)
-- [SSO and SCIM user guide](/organization/sso-scim)
+### SSO membership resolution failure
+
+Block login without creating or promoting a user, changing access, replacing roles or snapshots, or creating a session. Existing roles remain unchanged. Investigate Graph/claim availability, safe pagination, provider configuration, and audit reason.
+
+### Partial rollout
+
+Pause broad provisioning or JIT. Keep known-good users unchanged, correct the configuration, rerun the pilot matrix, then resume. If authority changes, revoke affected sessions so the next access passes through the selected authority.
+
+## Troubleshooting
+
+### Every user receives the default role
+
+- Confirm Access SCIM Groups are provisioned, not only Users.
+- Compare Group `externalId` with the mapped Entra object ID UUID.
+- Confirm direct `members` updates arrive.
+- Inspect matched and unmatched group diagnostics.
+- Do not map by display name.
+
+### Groups exist but no role is granted
+
+This is expected for unmapped groups and for default **None**. Add a mapping by immutable group ID, then verify immediate reconciliation.
+
+### Authentication shows Local — activation pending
+
+Access SCIM granted entitlement while SSO is unavailable. The user must accept the invitation and create a password. Do not generate or communicate a password administratively.
+
+### JIT or role synchronization is disabled
+
+Access SCIM is authoritative. SSO can authenticate but cannot create users or overwrite SCIM roles. Disabling Access SCIM will not reactivate JIT or sync automatically.
+
+### Group membership verification failed
+
+Treat it as unavailable, not empty. Check Graph **User.Read**, cloud endpoint, pagination allowlist, provider claim/attribute configuration, response completeness, and upstream availability.
+
+### Role editor is locked
+
+The user's **role management source** is SSO groups or SCIM groups. Change the IdP membership or Veviad mapping. Manual editing is allowed only after returning authority to local management.
+
+### Person appears in People but not Admin → Users
+
+The person has no application entitlement. This is normal for SCIM People Directory. Grant deliberately local access or include the person in Access SCIM scope; do not assume workforce presence permits sign-in.
+
+## Post-change evidence
+
+Record the change owner, timestamp, application build, mapping export or reviewed list, representative identities, expected and actual roles, authentication state, audit correlation, and rollback decision.
+
+## Related topics
+
+- [Identity, access, and provisioning](/organization/sso-scim)
+- [SCIM: Workforce and application access](/organization/scim-provisioning)
+- [SSO, role synchronization, and JIT](/organization/sso-jit)

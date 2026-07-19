@@ -1,67 +1,66 @@
 ---
-title: "SSO and purpose-scoped SCIM"
+title: "Identity, access, and provisioning"
 sidebarTitle: "SSO and SCIM"
-description: "Configure authentication, role mapping, and two independent SCIM provisioning purposes."
+description: "Choose the authority for workforce profiles, application access, authentication, and roles."
 icon: "key"
 ---
 
-## Purpose
+Veviad separates **profile data**, **person status**, **application access**, **authentication**, and **roles**. Choose an owner for each concern before enabling SCIM, SSO, or JIT.
 
-SSO authenticates users. SCIM provisions identities. Veviad supports two separate SCIM purposes so workforce records do not automatically become application users.
+<Info>
+  **Entra groups are the only external role source.** Veviad does not use Entra app roles, SCIM User `roles`, the `roles` claim, or directory-role `wids` for authorization.
+</Info>
 
-![SSO and SCIM settings](/images/screenshots/scim-access.webp)
+## Choose a flow
 
-## Before you begin
+| Flow | Profile and person status | Application access | Authentication | Roles |
+| --- | --- | --- | --- | --- |
+| Local person and invitation | Local | Local invitation | Local after activation | Local |
+| SCIM People Directory only | Workforce SCIM | None | None | None |
+| SCIM People Directory plus local access | Workforce SCIM | Local | Local password or permitted SSO | Local |
+| Access SCIM, SSO off | Local or Workforce SCIM | Access SCIM | **Local — activation pending**, then **Local** after invitation acceptance | Access SCIM groups |
+| Access SCIM, SSO on | Local or Workforce SCIM | Access SCIM | SSO | Access SCIM groups |
+| Both SCIM feeds | Workforce SCIM | Access SCIM | Local activation or SSO | Access SCIM groups |
+| SSO for existing users | Local or Workforce SCIM | Already present | SSO | Local when sync is off; SSO groups when sync is on |
+| SSO with controlled JIT | Provider data at first login | Created or promoted at login | SSO | SSO groups; synchronization is mandatory |
+| Local exception while Access SCIM is active | Local | Local invitation or grant | Local password or permitted SSO | Local |
 
-You need identity integration permission and an administrator in the identity provider. Decide which system is authoritative for profiles, access, credentials, and roles.
+<Note>
+  A local exception remains outside Access SCIM scope. Removing the person from the IdP does not revoke that local access; manage it explicitly in Veviad.
+</Note>
 
-## Configure SSO
+## Authority precedence
 
-1. Open **Admin → Integrations**, then open the **Identity Provider** integration.
-2. Select **Azure Entra ID**, **Generic OIDC**, or **Generic SAML2**.
-3. Enter the required provider values on the **SSO** tab.
-4. Open **Role Mapping** to map IdP groups or SAML attributes to Veviad roles and choose the safe default role.
-5. When enabling a new or changed connection, select **Test connection** before saving.
-6. Select **Save configuration** from either tab. Veviad saves the SSO settings, activation state, mappings for the selected provider, and default role together.
-7. Verify sign-in with a non-admin test account.
+| Concern | Effective authority |
+| --- | --- |
+| Profile and person status | SCIM People Directory, when the person is managed by that feed |
+| Application entitlement | Access SCIM for SCIM-managed access; otherwise local administration |
+| External roles | Access SCIM groups first. SSO groups are authoritative only while Access SCIM is disabled |
+| Local roles | Used only when neither Access SCIM groups nor effective SSO group synchronization controls roles |
+| Authentication | Local password and SSO can coexist independently of role authority |
 
-### Provider changes and activation
+## What to configure next
 
-Role mappings are provider-specific. In the form, switching providers loads that provider's mappings and resets the activation switch. Complete and save the selected provider before enabling it.
+<CardGroup cols={2}>
+  <Card title="SCIM: Workforce and application access" icon="users-gear" href="/organization/scim-provisioning">
+    Configure the two feeds, Entra group resources, activation, and reconciliation.
+  </Card>
 
-A complete saved configuration can be activated or deactivated from the integrations table. Reactivating an unchanged saved configuration does not require another connection test. After connection-critical provider fields change, test the connection successfully before saving SSO as enabled. If table activation finds incomplete settings, Veviad leaves SSO inactive and opens the configuration dialog.
+  <Card title="SSO, role synchronization, and JIT" icon="user-plus" href="/organization/sso-jit">
+    Configure authentication-only SSO, authoritative group roles, or controlled JIT.
+  </Card>
+</CardGroup>
 
-![SSO role mappings](/images/screenshots/sso-role-mapping.webp)
+## Recommended baseline
 
-## Configure SCIM by purpose
-
-### Application access
-
-Use the application-access endpoint and token for people who should sign in. Provisioning controls access lifecycle and can synchronize role mappings.
-
-### People directory
-
-Use the workforce-directory endpoint and token for assignable people who may never sign in. This feed maintains profile and organization data without granting application access.
-
-![People-directory SCIM configuration](/images/screenshots/scim-people-directory.webp)
-
-## Expected result
-
-SSO handles authentication, application SCIM controls login entitlement, and People SCIM maintains assignment-ready workforce records.
-
-## Best practices
-
-- Use separate enterprise applications, tokens, and groups for the two SCIM purposes.
-- Regenerating a token invalidates the previous token.
-- Pilot create, update, deactivate, and reactivation.
-- Keep one authority per field.
-
-## Troubleshooting
-
-A synchronized person who cannot sign in may be correctly provisioned only to the People directory. Check purpose, access state, role mapping, and credential authority.
+- Keep the two SCIM purposes in separate enterprise applications with separate bearer tokens and scoped populations.
+- Use immutable Entra group object IDs and direct membership.
+- Set the default role to **None** unless a deliberate fallback is required.
+- Pilot one representative user from every mapped group before full provisioning.
+- Keep a tested local administrator recovery path unless **Force SSO** is an intentional policy.
 
 ## Related topics
 
 - [People and application access](/organization/user-access)
 - [Integrations](/organization/integrations)
-- [People](/main/people)
+- [People and Access Provisioning runbook](/operations/people-access-provisioning)

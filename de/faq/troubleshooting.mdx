@@ -1,37 +1,64 @@
 ---
 title: "Fehlerbehebung und Support"
 sidebarTitle: "Fehlerbehebung"
-description: "Häufige Zugriffs-, Such-, Workflow-, Import- und Integrationsprobleme lösen."
+description: "Häufige Zugriffs-, SCIM-, SSO-, Such-, Workflow-, Import- und Integrationsprobleme lösen."
 icon: "hands-helping"
 ---
 
-Grenzen Sie Berechtigungs-, Daten-, Browser- und Dienstprobleme ein, bevor Sie den Support kontaktieren.
+Grenzen Sie Berechtigungs-, Zuständigkeits-, Daten-, Browser- und Dienstprobleme ein, bevor Sie Support anfordern.
 
 ## Schnellprüfung
 
-1. Laden Sie die Seite einmal neu und prüfen Sie den Arbeitsbereich.
-2. Prüfen Sie, ob die Funktion von einer Berechtigung abhängt.
-3. Wiederholen Sie den Vorgang mit einem bekannten Datensatz und notieren Sie die Uhrzeit.
-4. Notieren Sie das Ergebnis oder eine sichere Fehlerreferenz ohne vertrauliche Zugangsdaten.
-5. Lassen Sie Konfiguration und Dienstzustand durch einen Administrator prüfen.
+1. Laden Sie die Seite einmal neu und prüfen Sie Workspace und Sprache.
+2. Prüfen Sie, ob die Funktion von Berechtigung oder Zuständigkeit abhängt.
+3. Wiederholen Sie den Vorgang mit einem bekannten repräsentativen Datensatz und notieren Sie die genaue Uhrzeit.
+4. Erfassen Sie sichere Fehlerreferenz und betroffene Identität; kopieren Sie niemals Token oder Assertions.
+5. Lassen Sie Integrationsstatus und Audit-Diagnosen administrativ prüfen.
 
-## Häufige Symptome
+## Symptome bei Identität und Zugriff
+
+| Symptom | Wahrscheinliche Ursache | Nächster Schritt |
+| --- | --- | --- |
+| Jeder SCIM-Benutzer erhält die Standardrolle | Gruppen oder Mitgliedschaften fehlen, oder Objekt-IDs stimmen nicht überein | Zugriffs-SCIM-Gruppen bereitstellen; `externalId` mit der Entra-Objekt-ID vergleichen |
+| Eine bereitgestellte Gruppe gewährt keine Rolle | Gruppe ist bewusst nicht zugeordnet oder Standard ist Keine | Bei vorgesehenem Zugriff anhand der unveränderlichen Gruppen-ID zuordnen |
+| Lokal — Aktivierung ausstehend | Zugriffs-SCIM-Berechtigung vorhanden, lokale Aktivierung unvollständig | Einladung annehmen und Passwort erstellen |
+| JIT oder Rollensynchronisierung deaktiviert | Zugriffs-SCIM ist maßgeblich | SSO nur zur Authentifizierung verwenden oder Zuständigkeit bewusst ändern |
+| SSO meldet Fehler bei Gruppenprüfung | Mitgliedschaft fehlt, ist fehlerhaft, unvollständig, unsicher oder nicht verfügbar | Graph **User.Read**, Cloud-/Seitensicherheit oder Vollständigkeit von verifiziertem Claim/Attribut prüfen |
+| Rolleneditor gesperrt | SSO- oder SCIM-Gruppen steuern Rollen | IdP-Mitgliedschaft oder Veviad-Zuordnung ändern |
+| Person unter Personen, aber nicht Admin → Benutzer | Keine Anwendungsberechtigung | Lokalen Zugriff gewähren oder Person in Zugriffs-SCIM aufnehmen |
+| SSO-Fehler in falscher Sprache | Gast-Locale oder Übersetzungspayload stimmt nicht | Mit gewählter Sprache reproduzieren und Route, Zeit sowie Fehlerreferenz angeben |
+
+<Warning>
+  Behandeln Sie eine nicht verfügbare SSO-Mitgliedschaft niemals als leere Gruppenliste. Veviad blockiert die Anmeldung absichtlich, ohne Benutzer, Zugriff, Rollen, Snapshot oder Sitzung zu verändern.
+</Warning>
+
+## Weitere häufige Symptome
 
 | Symptom | Wahrscheinliche Ursache | Nächster Schritt |
 | --- | --- | --- |
 | Menüpunkt fehlt | Berechtigung fehlt | Rolle prüfen lassen |
-| Suche findet neuen Datensatz nicht | Indexierungsverzögerung | Direkte Navigation verwenden und Suchstatus prüfen lassen |
-| Action läuft nicht | Inaktive Regel, Auslöser oder Hintergrundverarbeitung | Action und Hintergrundverarbeitung prüfen lassen |
-| Import kann Asset nicht anlegen | Pflichtfeld oder Kategorieregel | Vorgeschlagene Daten korrigieren |
-| Profilfeld ist deaktiviert | SSO oder SCIM verwaltet das Feld | Wert im Identitätsanbieter ändern |
-| SSO kann nicht aktiviert werden | Anbieterkonfiguration ist unvollständig oder verbindungskritische Felder wurden geändert | Pflichtfelder ausfüllen, geänderte Verbindung testen und Konfiguration speichern |
+| Suche findet neuen Datensatz nicht | Indexierungsverzögerung oder deaktivierte Suche | Direktnavigation nutzen, Suche operativ prüfen |
+| Action läuft nicht | Inaktive Regel, Trigger oder Queue | Action und Queue prüfen |
+| Import kann Asset nicht anlegen | Pflichtfeld oder Kategorieregel | Prüfdaten korrigieren |
+| Profilfeld ist deaktiviert | SCIM- oder SSO-Zuständigkeit | Im maßgeblichen System ändern |
 
-## Support kontaktieren
+## Nachweise für den Support
 
-Nennen Sie Arbeitsbereich, Seite, Zeitpunkt, Schritte, erwartetes und tatsächliches Ergebnis sowie eine sichere Fehlerreferenz. Schwärzen Sie Zugangsdaten, Token, API-Schlüssel, personenbezogene Daten und Kundendaten.
+Nennen Sie:
+
+- Workspace, Route, ausgewählte Sprache und Zeitpunkt;
+- erwartetes und tatsächliches Ergebnis;
+- Integrationszweck und Provider;
+- sichere Gruppenobjekt-IDs, Zuordnungsstatus und Quelle der Rollenverwaltung;
+- vorherige und neue Rollennamen, soweit verfügbar;
+- Zeitpunkt der letzten Rollensynchronisierung und Audit-Korrelation; sowie
+- Screenshots mit geschwärzten Secrets und personenbezogenen Daten.
+
+Übermitteln Sie niemals Passwörter, Bearer-, Zugriffs- oder ID-Token, SAML-Assertions, API-Schlüssel oder nicht relevante Tenant-Mitgliedschaften.
 
 ## Verwandte Themen
 
 - [Häufige Fragen](/de/faq/common-questions)
-- [Zugang und Navigation](/de/getting-started/access-and-navigation)
-- [Integrationen](/de/organization/integrations)
+- [SCIM: Personenverzeichnis und Anwendungszugriff](/de/organization/scim-provisioning)
+- [SSO, Rollensynchronisierung und JIT](/de/organization/sso-jit)
+- [Runbook für Personen- und Zugriffsbereitstellung](/de/operations/people-access-provisioning)
