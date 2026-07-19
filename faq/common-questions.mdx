@@ -1,7 +1,7 @@
 ---
 title: "Common questions"
 sidebarTitle: "Common questions"
-description: "Concise answers to common Veviad behavior and permission questions."
+description: "Concise answers to common Veviad behavior, access, SCIM, SSO, and permission questions."
 icon: "message-question"
 ---
 
@@ -11,7 +11,39 @@ Your role does not include the required permission, or the feature integration i
 
 ## Why can I assign an asset to someone who cannot sign in?
 
-People and application access are separate. Assignment-only workforce records are intentional.
+People and application access are separate. Assignment-only workforce records are intentional. SCIM People Directory never grants access, roles, credentials, or invitations.
+
+## Why is a person in People but not Admin → Users?
+
+The person has no application entitlement. Grant deliberately local access or include the person in Access SCIM scope if sign-in is required.
+
+## Which SCIM integration should we use?
+
+Use **SCIM People Directory** for workforce profiles and person lifecycle. Use **Access SCIM** for application entitlement and group-derived roles. They share an endpoint but require separate tokens and target populations.
+
+## Do Entra app roles grant Veviad roles?
+
+No. Veviad uses direct Entra group membership and immutable group object IDs only. App roles, group names, SCIM User `roles`, token `roles`, and `wids` do not authorize users.
+
+## Why does authentication show Local — activation pending?
+
+Access SCIM granted application entitlement while SSO is unavailable. The user must accept the activation invitation and create a password. Veviad does not generate a password.
+
+## Can we invite a local user while Access SCIM is active?
+
+Yes, as an explicit local exception. The account remains outside SCIM lifecycle and role authority, so administrators must review and revoke it locally.
+
+## Why are JIT and SSO role synchronization unavailable?
+
+Access SCIM is active and is the sole external authority for access and roles. SSO continues to authenticate. Disabling Access SCIM does not re-enable JIT or role synchronization automatically.
+
+## When do group changes affect roles?
+
+Access SCIM membership and mapping changes reconcile immediately. SSO membership changes apply at the next successful login; SSO mapping changes can reconcile immediately from a valid stored snapshot.
+
+## Why is the role editor disabled?
+
+The user's roles are controlled by SCIM groups or SSO groups. Change the identity-provider membership or Veviad mapping instead.
 
 ## Where are Workflows?
 
@@ -33,14 +65,12 @@ Yes. It uses server-side filtering, sorting, and lazy row loading. Use saved vie
 
 No. They are grounded assistance attached to a report run. Validate them against rows and chart values.
 
-## Which SCIM endpoint should we use?
-
-Use application-access SCIM for people who should sign in. Use People-directory SCIM for the broader assignable workforce.
-
-## Why is my profile field disabled?
-
-SSO or SCIM may be authoritative for that field. Change it in the identity provider.
-
 ## Where should I report a problem?
 
 Follow [Troubleshooting and support](/faq/troubleshooting) and use your organization's configured support path.
+
+## Related topics
+
+- [Identity, access, and provisioning](/organization/sso-scim)
+- [SCIM: Workforce and application access](/organization/scim-provisioning)
+- [SSO, role synchronization, and JIT](/organization/sso-jit)

@@ -1,0 +1,125 @@
+---
+title: "SCIM: Personenverzeichnis und Anwendungszugriff"
+sidebarTitle: "SCIM-Provisionierung"
+description: "SCIM-Personenverzeichnis und Zugriffs-SCIM mit gruppenbasierter Rollenzuständigkeit konfigurieren."
+icon: "users-gear"
+---
+
+Veviad stellt einen gemeinsamen SCIM-Basisendpunkt, aber zwei unabhängige Bereitstellungszwecke bereit. Jeder Zweck besitzt eine eigene Integration, ein eigenes Bearer-Token und eine eigene Zielgruppe.
+
+<Warning>
+  Verwenden Sie nicht dieselbe Unternehmensanwendung für beide Feeds. Ein Personaldatensatz darf nicht allein deshalb zum Anwendungsbenutzer werden, weil er für Asset-Zuweisungen verfügbar ist.
+</Warning>
+
+## Feeds vergleichen
+
+| Funktion | SCIM-Personenverzeichnis | Zugriffs-SCIM |
+| --- | --- | --- |
+| Profil- und Personenlebenszyklus | Ja | Nur wenn kein Workforce-Datensatz das Profil verwaltet |
+| Anwendungszugriff | Nie | Ja |
+| Gruppenressourcen | Nein; `/Groups` ist nicht verfügbar | Ja; externe IdP-Gruppen |
+| Rollenzuständigkeit | Keine | Vollständiger Rollensatz aus zugeordneten Gruppen |
+| Einladung oder Zugangsdaten | Nie | Lokale Aktivierungseinladung, wenn SSO nicht verfügbar ist |
+| Bearer-Token | Eigenes Token | Eigenes Token |
+| Basisendpunkt | Gemeinsamer Tenant-SCIM-Endpunkt | Gemeinsamer Tenant-SCIM-Endpunkt |
+
+## SCIM-Personenverzeichnis
+
+Verwenden Sie das **SCIM-Personenverzeichnis** für Personen, die unter **Personen** für Zuweisungen, Verantwortlichkeiten, Abteilungen und Lebenszyklusauswertungen vorhanden sein müssen – unabhängig davon, ob sie Veviad verwenden.
+
+Der Feed synchronisiert Profil- und Organisationsfelder sowie den Personenstatus. Er gewährt niemals Anwendungszugriff, weist keine Rolle zu, erzeugt keine Zugangsdaten und versendet keine Einladung. Gruppenbereitstellung wird für diesen Feed nicht unterstützt.
+
+Sendet der IdP **active = false**, deaktiviert Veviad die Person, widerruft Sitzungen und persönliche Zugriffstoken und verhindert die Authentifizierung. Bestehende Anwendungsberechtigungen, Zuweisungen und Historien bleiben erhalten. Eine Reaktivierung stellt den Personenstatus wieder her, ohne neuen Zugriff zu erfinden.
+
+Eine Workforce-verwaltete Person kann später eine ausdrücklich lokale Anwendungseinladung erhalten. Das Profil bleibt durch das SCIM-Personenverzeichnis verwaltet; Zugriff, Authentifizierung und Rollen bleiben lokal.
+
+![Konfiguration des SCIM-Personenverzeichnisses](/images/screenshots/de/scim-people-directory.webp)
+
+## Zugriffs-SCIM
+
+Verwenden Sie **Zugriffs-SCIM** für Personen, deren Anwendungsberechtigung und Rollen dem Umfang des Identitätsanbieters folgen müssen. Der Feed unterstützt SCIM Users und externe Group-Ressourcen.
+
+### Vertrag für Entra-Gruppen
+
+Konfigurieren Sie die Entra-Bereitstellung mit folgenden Werten:
+
+| SCIM-Feld | Entra-Quelle | Zweck |
+| --- | --- | --- |
+| Gruppen-`externalId` | Gruppen-`objectId` | Unveränderlicher Autorisierungsschlüssel |
+| Gruppen-`displayName` | Anzeigename | Nur Anzeige und Diagnose für Administratoren |
+| Gruppen-`members` | Direkte Gruppenmitglieder | Vollständige Mitgliedschaft für die Rollenberechnung |
+
+Der Wert unter **IdP-Gruppen-ID** muss die UUID der Entra-Gruppenobjekt-ID sein. Gruppennamen sind keine Autorisierungsschlüssel. Verschachtelte Gruppenmitgliedschaften gewähren keine Rolle.
+
+<Info>
+  SCIM-User-`roles`, Entra-App-Rollen, der `roles`-Claim und Verzeichnisrollen aus `wids` werden ignoriert.
+</Info>
+
+### Rollenberechnung
+
+1. Veviad ermittelt die aktuellen direkten Zugriffs-SCIM-Gruppenmitgliedschaften.
+2. Jede Gruppe wird anhand der unveränderlichen Gruppenobjekt-ID zugeordnet.
+3. Ziel ist die eindeutige Vereinigung aller zugeordneten Veviad-Rollen.
+4. Die konfigurierte Standardrolle gilt nur, wenn keine zugeordnete Gruppe eine Rolle liefert.
+5. Bei der Standardrolle **Keine** erhält der Benutzer keine Rolle.
+
+Dieser Zielwert ersetzt den vollständigen Rollensatz. Manuelle Rollen bleiben bei maßgeblicher Synchronisierung nicht erhalten. Nicht zugeordnete Gruppen werden akzeptiert und protokolliert, gewähren aber keine Rolle. Sie können später ohne erneute Gruppenbereitstellung zugeordnet werden.
+
+Mitgliedschaftsänderungen, Gruppenlöschung, Zuordnungsänderungen und Änderungen der Standardrolle gleichen betroffene SCIM-Benutzer sofort ab. Der Rolleneditor ist gesperrt; ändern Sie Mitgliedschaft oder Zuordnung an der führenden Quelle.
+
+![Konfiguration und Rollenzuordnung für Zugriffs-SCIM](/images/screenshots/de/scim-access.webp)
+
+## Lokale Aktivierung und SSO
+
+### SSO deaktiviert
+
+Eine aktive Zugriffs-SCIM-Berechtigung erzeugt eine Aktivierungseinladung. Bis zur Annahme lautet der Authentifizierungsstatus **Lokal — Aktivierung ausstehend**. Danach erstellt die Person ein Passwort; der Status lautet anschließend **Lokal**.
+
+Die bei der Aktivierung angezeigten Rollen werden live aus der aktuellen SCIM-Gruppenmitgliedschaft ermittelt. Ein älterer Einladungssnapshot kann keine veraltete Rolle wiederherstellen.
+
+### SSO aktiviert
+
+Zugriffs-SCIM steuert weiterhin Anwendungszugriff und Rollen. SSO authentifiziert nur. Für den SSO-Weg versendet Veviad keine lokale Aktivierungseinladung.
+
+### Deaktivierung und Reaktivierung
+
+Die Deaktivierung über Zugriffs-SCIM sperrt die Berechtigung und widerruft aktive Sitzungen, ohne Historie zu löschen. Die Reaktivierung stellt die SCIM-Berechtigung mit dem aktuellen gruppenbasierten Rollensatz wieder her.
+
+### Lokale Ausnahme
+
+Administratoren können bei aktivem Zugriffs-SCIM weiterhin bewusst einen lokalen Benutzer einladen. Dieser Benutzer bleibt lokal verwaltet und liegt außerhalb von SCIM-Lebenszyklus und -Rollenzuständigkeit. Dokumentieren Sie Ausnahme, verantwortliche Person und Prüftermin.
+
+## Microsoft Entra ID konfigurieren
+
+1. Erstellen Sie getrennte Unternehmensanwendungen für SCIM-Personenverzeichnis und Zugriffs-SCIM.
+2. Kopieren Sie in jeder Veviad-Integration den gemeinsamen SCIM-Endpunkt und erzeugen Sie das zugehörige Bearer-Token.
+3. Begrenzen Sie die Anwendung des Personenverzeichnisses auf die Workforce-Zielgruppe.
+4. Begrenzen Sie Zugriffs-SCIM auf Gruppen, die die Anwendungsberechtigung definieren.
+5. Konfigurieren Sie Benutzerzuordnungen ohne SCIM-User-`roles`-Attribut.
+6. Aktivieren Sie für Zugriffs-SCIM die Gruppenobjekt-Bereitstellung mit `objectId → externalId`, `displayName` und direkten `members`.
+7. Tragen Sie jede Gruppenobjekt-ID in die Veviad-Rollenzuordnung ein und wählen Sie die Veviad-Rolle.
+8. Lassen Sie die Standardrolle auf **Keine**, sofern kein geprüfter Fallback erforderlich ist.
+9. Stellen Sie vor der vollständigen Synchronisierung einen Benutzer und eine Gruppe bedarfsgesteuert bereit.
+
+## Vor der Vollbereitstellung prüfen
+
+- Die Person erscheint über den vorgesehenen Feed unter **Personen**.
+- Nur Zugriffs-SCIM erzeugt einen Eintrag für Anwendungszugriff.
+- Die bereitgestellte Gruppen-ID entspricht der Entra-Objekt-ID.
+- Je ein repräsentativer Benutzer jeder zugeordneten Gruppe erhält die erwartete Rollenvereinigung.
+- Eine Person in einer nicht zugeordneten Gruppe erhält bei Standard **Keine** keine Rolle.
+- Das Entfernen einer Mitgliedschaft erhält Rollen aus anderen Mitgliedschaften.
+- Das Entfernen der letzten zugeordneten Mitgliedschaft wendet nur den konfigurierten Fallback an.
+- Bei deaktiviertem SSO wechselt die Authentifizierung nach der Aktivierung von **Lokal — Aktivierung ausstehend** zu **Lokal**.
+- Audit-Diagnosen zeigen zugeordnete und nicht zugeordnete Gruppen, vorherige und neue Rollen sowie betroffene Benutzer.
+
+<Warning>
+  Beim Rotieren eines Bearer-Tokens wird das vorherige Token sofort ungültig. Aktualisieren Sie Entra vor dem nächsten Bereitstellungszyklus.
+</Warning>
+
+## Verwandte Themen
+
+- [Identitäten, Zugriff und Bereitstellung](/de/organization/sso-scim)
+- [SSO, Rollensynchronisierung und JIT](/de/organization/sso-jit)
+- [Personen und Anwendungszugriff](/de/organization/user-access)
+- [Runbook für Personen- und Zugriffsbereitstellung](/de/operations/people-access-provisioning)

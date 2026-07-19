@@ -1,0 +1,126 @@
+---
+title: "SSO, role synchronization, and JIT"
+sidebarTitle: "SSO and JIT"
+description: "Configure authentication-only SSO, authoritative group role synchronization, and controlled JIT."
+icon: "user-plus"
+---
+
+SSO authenticates users. Optional group synchronization can also make provider groups authoritative for roles, and JIT can create or promote a user at first successful login.
+
+<Info>
+  SSO role synchronization is effective only when SSO is enabled, **Synchronize roles on login** is enabled, and Access SCIM is disabled.
+</Info>
+
+## Choose an SSO mode
+
+| Mode | Who can sign in | Access | Role authority |
+| --- | --- | --- | --- |
+| Authentication only | Existing active users | Already present | Local |
+| Role synchronization without JIT | Existing active users | Already present | Complete mapped SSO group set |
+| Controlled JIT | Resolved provider users | Created or promoted during the successful login transaction | Complete mapped SSO group set |
+| SSO with Access SCIM | Active Access SCIM users and permitted local users | SCIM or local | Access SCIM groups for SCIM users; local for local users |
+
+When Access SCIM is active, SSO only authenticates. Veviad disables JIT and login-time SSO role synchronization so two external systems cannot compete for access or roles.
+
+![Coupled SSO role synchronization and JIT controls](/images/screenshots/sso-jit.webp)
+
+## Authentication only
+
+Enable SSO and leave role synchronization disabled. Veviad links an existing active user to the provider and leaves the user's complete role set locally managed.
+
+This mode does not create application users. Grant application access before the first SSO login.
+
+## Authoritative role synchronization
+
+Enable **Synchronize roles on login** to make mapped provider groups authoritative for every non-SCIM SSO user's complete role set.
+
+At a successful login Veviad:
+
+1. resolves complete group membership from a trusted source;
+2. matches groups using the configured provider identifier;
+3. creates the unique union of mapped Veviad roles;
+4. applies the default role only when no group produces a role; and
+5. replaces the complete role set atomically.
+
+The secure default is **None**, which assigns no role when the resolved membership produces no mapping. Previous and manually assigned roles are removed if they are not in the target set.
+
+Membership changes take effect at the next SSO authentication. Mapping changes can reconcile immediately for users with a valid stored membership snapshot.
+
+## Controlled JIT provisioning
+
+Enable **Just-in-time provisioning** when approved provider users may receive application access at their first login. JIT automatically enables and locks role synchronization.
+
+Veviad resolves groups before creating or promoting a user. User creation, identity linking, access activation, snapshot replacement, role replacement, and session creation occur as one transaction. A failed step rolls back the entire login.
+
+<Warning>
+  JIT is not a broad allow-list by itself. Scope provider access to approved users and groups, configure mappings before activation, and keep the default role at **None**.
+</Warning>
+
+## Trusted group resolution
+
+### Microsoft Entra ID
+
+Veviad uses the delegated sign-in token and Microsoft Graph **User.Read** to query the signed-in user's direct `memberOf` relationships. It follows only validated HTTPS pagination links for the configured Microsoft cloud, with bounded retries and timeouts.
+
+Only immutable Entra group object-ID UUIDs authorize a user. Display names are diagnostic metadata. Nested membership, app roles, `roles`, and directory-role `wids` are ignored.
+
+### Generic OIDC
+
+Veviad reads the configured group claim only from verified ID-token or UserInfo data. The claim must be a complete, valid group list.
+
+### Generic SAML
+
+Veviad reads the configured group attribute only from the validated SAML assertion. The attribute must contain the complete membership list.
+
+An explicit empty group list is complete and produces the configured fallback. A missing, malformed, truncated, unsafe, or failed response is unavailable.
+
+## Fail-closed behavior
+
+If complete membership cannot be established, Veviad blocks login and does not:
+
+- create or promote a user;
+- change application access;
+- replace the membership snapshot or roles; or
+- create an authenticated session.
+
+The login page shows a localized, non-sensitive error. Security diagnostics record the provider, resolution source, failure category, and affected identity without tokens or raw assertions.
+
+## Settings dependencies
+
+- Enabling JIT automatically enables and locks role synchronization.
+- Enabling Access SCIM disables JIT and SSO role synchronization.
+- Disabling Access SCIM does not silently re-enable either option.
+- Changing provider or disabling role synchronization removes stored SSO membership snapshots.
+- When a snapshot is removed, the current roles remain as a local snapshot until another authority is deliberately enabled.
+- **Force SSO** hides local password login. A local-account exception is useful only when a permitted local authentication path remains.
+
+## Provider and mapping changes
+
+Role mappings are provider-scoped. Switching providers loads that provider's configuration and requires connection validation before activation. Stored membership snapshots from the previous provider are removed.
+
+Use immutable identifiers:
+
+- Entra: group object-ID UUID.
+- Generic OIDC: exact value in the configured verified group claim.
+- SAML: exact value in the configured validated group attribute.
+
+Group names may be retained for display, but they must not be used as an Entra authorization fallback.
+
+## Verification checklist
+
+1. Keep SSO and JIT disabled while configuring the provider.
+2. Map every approved group and select **None** as the default.
+3. Test the connection.
+4. Sign in with one existing non-admin user from every mapped group.
+5. Verify exact role replacement, multiple-group union, and an explicit empty membership.
+6. Test a missing or failed group response and confirm no user, role, or session mutation.
+7. Enable JIT only after the pre-provisioned-user checks pass.
+8. Verify one new JIT user, then expand provider scope.
+9. Confirm audit events include membership source, matched and unmatched groups, previous and new roles, and the role synchronization timestamp.
+
+## Related topics
+
+- [Identity, access, and provisioning](/organization/sso-scim)
+- [SCIM: Workforce and application access](/organization/scim-provisioning)
+- [Integrations](/organization/integrations)
+- [People and Access Provisioning runbook](/operations/people-access-provisioning)

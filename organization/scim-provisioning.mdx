@@ -1,0 +1,125 @@
+---
+title: "SCIM: Workforce and application access"
+sidebarTitle: "SCIM provisioning"
+description: "Configure SCIM People Directory and Access SCIM with group-based role authority."
+icon: "users-gear"
+---
+
+Veviad exposes one SCIM base endpoint but two independent provisioning purposes. Each purpose has its own integration, bearer token, and target population.
+
+<Warning>
+  Do not reuse one enterprise application for both feeds. A workforce record must not become an application user merely because it is available for asset assignment.
+</Warning>
+
+## Compare the feeds
+
+| Capability | SCIM People Directory | Access SCIM |
+| --- | --- | --- |
+| Profile and person lifecycle | Yes | Only when no workforce record owns the profile |
+| Application access | Never | Yes |
+| Group resources | No; `/Groups` is unavailable | Yes; external IdP groups |
+| Role authority | None | Complete role set from mapped groups |
+| Invitation or credentials | Never | Local activation invitation when SSO is unavailable |
+| Bearer token | Dedicated token | Dedicated token |
+| Base endpoint | Shared tenant SCIM endpoint | Shared tenant SCIM endpoint |
+
+## SCIM People Directory
+
+Use **SCIM People Directory** for people who must exist in **People** for assignments, ownership, departments, and lifecycle reporting, whether or not they use Veviad.
+
+It synchronizes profile and organization fields plus person status. It never grants application access, assigns a role, creates credentials, or sends an invitation. Group provisioning is not supported for this feed.
+
+When the IdP sends **active = false**, Veviad deactivates the person, revokes sessions and personal access tokens, and prevents authentication. Existing application entitlement, assignments, and history remain intact. Reactivation restores the person state without inventing new access.
+
+A workforce-managed person can later receive an explicitly local application invitation. The profile remains controlled by SCIM People Directory while access, authentication, and roles remain local.
+
+![SCIM People Directory configuration](/images/screenshots/scim-people-directory.webp)
+
+## Access SCIM
+
+Use **Access SCIM** for people whose application entitlement and roles must follow an identity-provider scope. It supports SCIM Users and external Group resources.
+
+### Entra group contract
+
+Configure Entra provisioning to send:
+
+| SCIM field | Entra source | Purpose |
+| --- | --- | --- |
+| Group `externalId` | Group `objectId` | Immutable authorization key |
+| Group `displayName` | Display name | Administrator display and diagnostics only |
+| Group `members` | Direct group members | Complete group membership for role calculation |
+
+The value stored in **IdP group ID** must be the Entra group object ID UUID. Group names are not authorization keys. Nested group membership does not grant a role.
+
+<Info>
+  SCIM User `roles`, Entra app roles, the `roles` claim, and directory-role `wids` are ignored.
+</Info>
+
+### How roles are calculated
+
+1. Veviad collects the user's current direct Access SCIM group memberships.
+2. Every group is matched by immutable group object ID.
+3. The target is the unique union of all mapped Veviad roles.
+4. The configured default role applies only if no mapped group produces a role.
+5. If the default is **None**, the user receives no role.
+
+This target replaces the complete role set. Manual roles do not survive authoritative synchronization. Unmapped groups are accepted and audited but grant no role, so they can be mapped later without reprovisioning the group.
+
+Membership changes, group deletion, mapping changes, and default-role changes reconcile affected SCIM users immediately. The role editor is locked for these users; change membership or mapping at the authoritative source.
+
+![Access SCIM configuration and role mapping](/images/screenshots/scim-access.webp)
+
+## Local activation and SSO
+
+### SSO disabled
+
+An active Access SCIM entitlement creates an activation invitation. Until acceptance, the authentication state is **Local — activation pending**. The user accepts the invitation and creates a password; the state then becomes **Local**.
+
+Roles shown during activation are resolved live from current SCIM group membership. An older invitation snapshot cannot restore a stale role.
+
+### SSO enabled
+
+Access SCIM still controls application access and roles. SSO only authenticates. Veviad does not send a local activation invitation for the SSO path.
+
+### Deactivation and reactivation
+
+Deactivating Access SCIM access blocks the entitlement and revokes active sessions without deleting history. Reactivation restores the SCIM entitlement and uses the current group-derived role set.
+
+### Local exception
+
+Administrators may still invite a deliberately local user while Access SCIM is enabled. The user remains locally managed and is outside SCIM lifecycle and role authority. Record the exception, its owner, and its review date.
+
+## Configure Microsoft Entra ID
+
+1. Create separate enterprise applications for SCIM People Directory and Access SCIM.
+2. In each Veviad integration, copy the shared SCIM endpoint and generate its dedicated bearer token.
+3. Scope the People Directory application to the workforce population.
+4. Scope Access SCIM to the groups that define application entitlement.
+5. Configure user mappings without a SCIM User `roles` attribute.
+6. For Access SCIM, enable group-object provisioning with `objectId → externalId`, `displayName`, and direct `members`.
+7. Enter each group object ID in Veviad role mapping and select its Veviad role.
+8. Keep the default role at **None** unless a reviewed fallback is required.
+9. Provision one user and one group on demand before starting full synchronization.
+
+## Verify before full provisioning
+
+- The person appears in **People** from the intended feed.
+- Only Access SCIM creates an application-access row.
+- The provisioned group ID equals the Entra object ID.
+- One representative user from every mapped group receives the expected union of roles.
+- A user in an unmapped group receives no role when the default is **None**.
+- Removing one membership retains roles supplied by other memberships.
+- Removing the final mapped membership applies only the configured fallback.
+- With SSO off, the authentication state changes from **Local — activation pending** to **Local** after activation.
+- Audit diagnostics show matched and unmatched groups, previous and new roles, and affected users.
+
+<Warning>
+  Rotating a bearer token immediately invalidates the previous token. Update Entra before the next provisioning cycle.
+</Warning>
+
+## Related topics
+
+- [Identity, access, and provisioning](/organization/sso-scim)
+- [SSO, role synchronization, and JIT](/organization/sso-jit)
+- [People and application access](/organization/user-access)
+- [People and Access Provisioning runbook](/operations/people-access-provisioning)

@@ -1,7 +1,7 @@
 ---
 title: "Integrations"
 sidebarTitle: "Integrations"
-description: "Configure AI, OCR, email, SSO, and SCIM integrations without exposing secrets."
+description: "Configure identity, AI, document, and delivery integrations with clear authority and scoped secrets."
 icon: "grid-2-plus"
 ---
 
@@ -11,32 +11,44 @@ Integrations connect Veviad to identity, AI, document, and delivery services.
 
 ## Before you begin
 
-You need Admin integration permission and the provider values supplied by your organization. Never paste secrets into documentation or support screenshots.
+You need Admin integration permission and provider values supplied by your organization. Never paste secrets into documentation or support screenshots.
+
+## Identity integrations
+
+| Integration | Purpose | Important boundary |
+| --- | --- | --- |
+| Identity Provider / SSO | Authentication, optional group role synchronization, optional controlled JIT | Access SCIM disables JIT and SSO role sync |
+| SCIM People Directory | Workforce profile and person lifecycle | No application access, roles, groups, credentials, or invitations |
+| Access SCIM | Application entitlement and group-derived roles | Separate token and population; external Group objects required for roles |
+
+The two SCIM integrations share the tenant SCIM endpoint but use separate bearer tokens. Rotate and scope them independently.
+
+<Info>
+  For Entra authorization, use direct memberships and immutable group object IDs. Do not configure app roles or a SCIM User `roles` attribute.
+</Info>
 
 ## Configure an integration
 
 1. Open **Admin → Integrations**.
-2. Select the integration type.
+2. Select the integration purpose.
 3. Enter the required endpoint, identifier, and secret values.
-4. Use the built-in test when required, save the configuration, and activate the integration.
-5. Verify the dependent feature with a non-sensitive test record.
+4. Configure role mappings before enabling an authoritative identity flow.
+5. Save, activate, and use the built-in connection test where available.
+6. Verify the dependent feature with one non-sensitive representative identity or record.
+7. Expand scope only after audit results match the expected authority and roles.
 
-## Expected result
+## Operational safeguards
 
-The integration shows an active or healthy state and its dependent feature becomes available to authorized users.
-
-## Best practices
-
-- Use dedicated service accounts and scoped credentials.
-- Rotate secrets without changing stable identifiers unnecessarily.
-- Document ownership and renewal dates outside Veviad secrets fields.
-
-## Troubleshooting
-
-An integration can be configured but inactive, or active but unreachable. Check both state and connectivity, then review the related operator runbook.
+- Use dedicated service accounts, tokens, and least-privileged scopes.
+- Treat bearer-token rotation as immediate invalidation of the previous token.
+- Keep the default identity-provider role at **None** unless approved otherwise.
+- Changing SSO provider removes stored SSO membership snapshots; rebuild and retest mappings.
+- Disabling Access SCIM does not re-enable JIT or role synchronization automatically.
+- Document ownership and renewal dates outside Veviad secret fields.
 
 ## Related topics
 
-- [SSO and SCIM](/organization/sso-scim)
+- [Identity, access, and provisioning](/organization/sso-scim)
+- [SCIM: Workforce and application access](/organization/scim-provisioning)
+- [SSO, role synchronization, and JIT](/organization/sso-jit)
 - [Veviad AI](/veviad-ai)
-- [Create assets from PDFs with AI](/veviad-ai/pdf-asset-extraction)

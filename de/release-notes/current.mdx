@@ -1,11 +1,11 @@
 ---
 title: "Aktueller Release-Snapshot"
 sidebarTitle: "Aktueller Release-Snapshot"
-description: "Momentaufnahme des Stands der öffentlichen Veviad-Dokumentation."
+description: "Momentaufnahme des in diesem Handbuch dokumentierten Veviad-Anwendungsverhaltens."
 icon: "calendar-clock"
 ---
 
-Dieses Handbuch wurde am 18. Juli 2026 gegen <code>Veviad/veviad_app</code> <code>develop</code> mit Quell-SHA <code>48a68722d01898dfcb7c21f172d14246fe1d589b</code> neu aufgebaut.
+Dieses Handbuch wurde am 19. Juli 2026 gegen <code>Veviad/veviad_app</code> <code>develop</code> mit Quell-SHA <code>999c3223960b7999ec4d21394511fec3236a77b1</code> geprüft.
 
 ## Laufzeit
 
@@ -20,13 +20,19 @@ Dieses Handbuch wurde am 18. Juli 2026 gegen <code>Veviad/veviad_app</code> <cod
 - nachladendes 10.000-Zeilen-Asset-Grid und gespeicherte Ansichten
 - konsolidierte Navigation mit Berichten und Actions
 - Asset-only-Checklisten
-- Berichtsdiagramme, Snapshots, Zeitpläne und AI-Zusammenfassungen
+- Berichtsdiagramme, Snapshots, Zeitpläne und KI-Zusammenfassungen
 - Benutzerzeitzonen
 - getrenntes Personenverzeichnis und Anwendungszugriff
-- SSO-Rollenzuordnung und zwei zweckgebundene SCIM-Integrationen
+- getrennte Integrationen für SCIM-Personenverzeichnis und Zugriffs-SCIM
+- externe SCIM-Group-Bereitstellung mit Entra-Objekt-ID-Rollenzuordnung
+- ausstehender lokaler Authentifizierungslebenszyklus bei Zugriffs-SCIM ohne SSO
+- reine SSO-Authentifizierung, maßgebliche Gruppenrollensynchronisierung und kontrolliertes JIT
+- geschlossen fehlschlagende Gruppenauflösung und IdP-verwaltete Rollenbearbeitung
 
 ## Betriebsbasis
 
+- Diagnose von Identitätszuständigkeit und Mitgliedschaft ohne Protokollierung von Token oder Assertions
+- gespeicherte SSO-Mitgliedschaftssnapshots für sicheren Zuordnungsabgleich
 - idempotente Meilisearch-Indexerzeugung
 - nicht blockierender Such-Reindex als Startup-Task
 - Storage-Schreib-, Lese- und Löschprobe

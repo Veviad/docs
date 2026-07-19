@@ -1,42 +1,64 @@
 ---
 title: "People and application access"
-sidebarTitle: "People vs. Users"
-description: "Understand workforce records, login access, invitations, and roles."
+sidebarTitle: "People vs. users"
+description: "Understand workforce records, application entitlement, authentication states, invitations, and role authority."
 icon: "user-friends"
 ---
 
-Veviad separates the People directory from application access. Every assignee is a person; only selected people can sign in.
+Veviad separates the **People** directory from **Admin → Users**. Every assignee is a person; only people with application entitlement appear as application users.
 
-## Before you begin
+## Five separate concerns
 
-Viewing People requires directory permission. Granting or revoking access, inviting users, and assigning roles require Admin permissions.
+| Concern | Meaning |
+| --- | --- |
+| Profile | Name, email, organization fields, and other person data |
+| Person status | Whether the person is active for assignments and authentication |
+| Application access | Whether the person is entitled to use Veviad |
+| Authentication | Local password, pending local activation, SSO, or no usable path |
+| Roles | Permissions inside Veviad |
 
-## Manage a person and access
+A single identity can have different authorities for these concerns. For example, SCIM People Directory can manage the profile while an administrator grants local application access and roles.
+
+## Manage a local person and access
 
 1. Create or synchronize the person in **People**.
-2. Use the person for asset or custody assignments without granting login access.
-3. In **Admin → Users**, grant application access only when the person needs to sign in.
-4. Send or resend an invitation when local activation is used.
-5. Assign the least-privileged role needed.
-6. Revoke access when sign-in is no longer needed; keep the person record for assignments and history.
+2. Use the person for asset or custody assignments without granting sign-in.
+3. In **Admin → Users**, invite only people who need application access.
+4. Assign the least-privileged local role.
+5. The invited user accepts the invitation and creates a password.
+6. Revoke application access when it is no longer required; retain the person for assignments and history.
+
+## Understand managed users
+
+- **SCIM People Directory** manages workforce profile and person status only.
+- **Access SCIM** manages application entitlement and the complete role set from mapped external groups.
+- **SSO group synchronization** manages the complete role set only when Access SCIM is disabled.
+- **Local** users keep locally managed access and roles.
+
+When an identity provider controls roles, the role editor is locked. Change group membership or role mapping instead.
+
+## Authentication states
+
+| State | Meaning |
+| --- | --- |
+| Local — activation pending | A local password path is available after invitation acceptance |
+| Local | The user has completed local activation |
+| SSO | The user can authenticate through the configured provider |
+| None | No usable or pending authentication path exists |
+
+Access SCIM with SSO disabled creates a pending activation invitation; it does not generate a password. With SSO enabled, Access SCIM controls entitlement and roles while SSO authenticates.
+
+<Info>
+  Administrators can create a deliberate local-account exception while Access SCIM is active. That account remains outside SCIM lifecycle and must be reviewed and revoked locally.
+</Info>
 
 ## Expected result
 
-The directory remains complete while the application-user list contains only login-enabled people.
-
-## Best practices
-
-- Treat roles as authorization bundles, not job titles.
-- Let SSO or SCIM remain authoritative when configured.
-- Review pending and expired invitations regularly.
-
-## Troubleshooting
-
-A person who cannot sign in may have no application access, a pending invitation, an inactive access state, or identity-provider-managed credentials.
+**People** remains a complete workforce directory. **Admin → Users** contains only pending, active, or blocked application entitlements and shows the effective authentication and role-management source.
 
 ## Related topics
 
+- [SCIM: Workforce and application access](/organization/scim-provisioning)
+- [SSO, role synchronization, and JIT](/organization/sso-jit)
 - [People](/main/people)
-- [System roles and permissions](/organization/system-roles)
 - [Admin](/organization/admin)
-- [SSO and SCIM](/organization/sso-scim)

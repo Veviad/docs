@@ -1,42 +1,64 @@
 ---
 title: "Personen und Anwendungszugriff"
 sidebarTitle: "Personen vs. Benutzer"
-description: "Personenverzeichnis, Anmeldezugriff, Einladungen und Rollen verstehen."
+description: "Personenverzeichnis, Anwendungsberechtigung, Authentifizierungsstatus, Einladungen und Rollenzuständigkeit verstehen."
 icon: "user-friends"
 ---
 
-Veviad trennt das Personenverzeichnis vom Anwendungszugriff. Jede zuweisbare Person ist ein Personendatensatz; nur ausgewählte Personen können sich anmelden.
+Veviad trennt das Verzeichnis **Personen** von **Admin → Benutzer**. Jede zuweisbare Person ist ein Personendatensatz; nur Personen mit Anwendungsberechtigung erscheinen als Anwendungsbenutzer.
 
-## Voraussetzungen
+## Fünf getrennte Bereiche
 
-Für Personen gilt eine Verzeichnisberechtigung. Zugriff, Einladungen und Rollen erfordern Admin-Berechtigungen.
+| Bereich | Bedeutung |
+| --- | --- |
+| Profil | Name, E-Mail, Organisationsfelder und weitere Personendaten |
+| Personenstatus | Ob die Person für Zuweisungen und Authentifizierung aktiv ist |
+| Anwendungszugriff | Ob die Person Veviad verwenden darf |
+| Authentifizierung | Lokales Passwort, ausstehende lokale Aktivierung, SSO oder kein nutzbarer Weg |
+| Rollen | Berechtigungen innerhalb von Veviad |
 
-## Person und Zugriff verwalten
+Eine Identität kann für diese Bereiche unterschiedliche führende Quellen haben. Beispielsweise kann das SCIM-Personenverzeichnis das Profil verwalten, während ein Administrator lokalen Anwendungszugriff und Rollen gewährt.
+
+## Lokale Person und Zugriff verwalten
 
 1. Legen Sie die Person unter **Personen** an oder synchronisieren Sie sie.
-2. Verwenden Sie die Person für Zuweisungen, ohne Anmeldezugriff zu erteilen.
-3. Erteilen Sie unter **Admin → Benutzer** nur bei Bedarf Anwendungszugriff.
-4. Senden Sie bei lokaler Aktivierung eine Einladung.
-5. Weisen Sie die Rolle mit den geringsten nötigen Rechten zu.
-6. Entziehen Sie den Zugriff, wenn keine Anmeldung mehr nötig ist; der Personendatensatz bleibt erhalten.
+2. Verwenden Sie sie für Asset- oder Besitzzuweisungen ohne Anmeldung.
+3. Laden Sie unter **Admin → Benutzer** nur Personen ein, die Anwendungszugriff benötigen.
+4. Weisen Sie die lokale Rolle mit den geringsten nötigen Rechten zu.
+5. Die eingeladene Person nimmt die Einladung an und erstellt ein Passwort.
+6. Entziehen Sie den Anwendungszugriff bei Bedarf; Personendatensatz, Zuweisungen und Historie bleiben erhalten.
+
+## Verwaltete Benutzer verstehen
+
+- Das **SCIM-Personenverzeichnis** verwaltet nur Workforce-Profil und Personenstatus.
+- **Zugriffs-SCIM** verwaltet Anwendungsberechtigung und den vollständigen Rollensatz aus zugeordneten externen Gruppen.
+- **SSO-Gruppensynchronisierung** verwaltet den vollständigen Rollensatz nur bei deaktiviertem Zugriffs-SCIM.
+- **Lokale** Benutzer behalten lokal verwalteten Zugriff und Rollen.
+
+Wenn ein Identitätsanbieter Rollen steuert, ist der Rolleneditor gesperrt. Ändern Sie stattdessen Gruppenmitgliedschaft oder Rollenzuordnung.
+
+## Authentifizierungsstatus
+
+| Status | Bedeutung |
+| --- | --- |
+| Lokal — Aktivierung ausstehend | Ein lokaler Passwortweg wird nach Annahme der Einladung verfügbar |
+| Lokal | Die lokale Aktivierung ist abgeschlossen |
+| SSO | Die Person kann sich über den konfigurierten Provider authentifizieren |
+| Keine | Es gibt keinen nutzbaren oder ausstehenden Authentifizierungsweg |
+
+Zugriffs-SCIM mit deaktiviertem SSO erzeugt eine ausstehende Aktivierungseinladung, aber kein Passwort. Bei aktiviertem SSO steuert Zugriffs-SCIM Berechtigung und Rollen, während SSO authentifiziert.
+
+<Info>
+  Administratoren können bei aktivem Zugriffs-SCIM eine bewusste lokale Kontoausnahme erstellen. Dieses Konto bleibt außerhalb des SCIM-Lebenszyklus und muss lokal geprüft und entzogen werden.
+</Info>
 
 ## Erwartetes Ergebnis
 
-Das Verzeichnis bleibt vollständig, während die Benutzerliste nur anmeldeberechtigte Personen enthält.
-
-## Bewährte Vorgehensweisen
-
-- Rollen sind Berechtigungspakete, keine Stellenbezeichnungen.
-- Lassen Sie SSO oder SCIM autoritativ, wenn konfiguriert.
-- Prüfen Sie ausstehende und abgelaufene Einladungen.
-
-## Fehlerbehebung
-
-Eine Person ohne Anmeldung kann keinen Anwendungszugriff, eine ausstehende Einladung oder IdP-verwaltete Zugangsdaten haben.
+**Personen** bleibt ein vollständiges Workforce-Verzeichnis. **Admin → Benutzer** enthält nur ausstehende, aktive oder gesperrte Anwendungsberechtigungen und zeigt die wirksame Authentifizierung und Quelle der Rollenverwaltung.
 
 ## Verwandte Themen
 
+- [SCIM: Personenverzeichnis und Anwendungszugriff](/de/organization/scim-provisioning)
+- [SSO, Rollensynchronisierung und JIT](/de/organization/sso-jit)
 - [Personen](/de/main/people)
-- [Systemrollen und Berechtigungen](/de/organization/system-roles)
 - [Admin](/de/organization/admin)
-- [SSO und SCIM](/de/organization/sso-scim)

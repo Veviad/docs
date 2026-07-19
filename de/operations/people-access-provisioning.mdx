@@ -1,42 +1,181 @@
 ---
 title: "Personen- und Zugriffsbereitstellung"
 sidebarTitle: "Personen und Zugriff"
-description: "Betriebsmodell für Personenverzeichnis, Anmeldeberechtigungen, SSO und zweckgebundenes SCIM."
+description: "Betriebliche Zuständigkeit, Rollout, Rollback und Diagnose für Workforce-Datensätze, Zugriffs-SCIM, SSO-Rollensynchronisierung und JIT."
 icon: "users-gear"
 ---
 
-## Modell
+Dieses interne Runbook definiert das sichere Betriebsmodell für den Identitätslebenszyklus in Veviad. Verwenden Sie es für Rollout, Änderungsprüfung, Störungsbearbeitung und Rollback.
 
-Die Benutzertabelle enthält Personen; Zugriffslebenszyklusfelder bestimmen die Anmeldung. Zuweisungsprofile besitzen aktiven Personenstatus, aber keinen Anwendungszugriff.
+<Warning>
+  Verwenden Sie niemals Entra-App-Rollen, Gruppennamen, SCIM-User-`roles`, Token-`roles` oder Verzeichnisrollen aus `wids` als Autorisierungsquelle. Entra-Autorisierung basiert auf direkter Gruppenmitgliedschaft und unveränderlichen Gruppenobjekt-IDs.
+</Warning>
 
-## Provisionierungswege
+## Zuständigkeitsmatrix
 
-| Weg | Erstellt oder aktualisiert | Anmeldung |
+| Ablauf | Profil und Personenstatus | Zugriff | Authentifizierung | Rollen | Zeitpunkt der Rollenänderung |
+| --- | --- | --- | --- | --- | --- |
+| Vollständig lokal | Lokal | Lokal | Lokal und optional SSO | Lokal | Sofortige lokale Änderung |
+| Nur SCIM-Personenverzeichnis | Workforce SCIM | Keiner | Keine | Keine | Nicht zutreffend |
+| Workforce SCIM plus lokaler Zugriff | Workforce SCIM | Lokal | Lokal oder SSO | Lokal | Sofortige lokale Änderung |
+| Zugriffs-SCIM, SSO aus | Workforce SCIM, sofern vorhanden; sonst Profil aus Zugriffs-SCIM | Zugriffs-SCIM | Lokale Aktivierung ausstehend, danach Lokal | Zugriffs-SCIM-Gruppen | Sofortiger Abgleich bei Mitgliedschaft oder Zuordnung |
+| Zugriffs-SCIM, SSO an | Workforce SCIM, sofern vorhanden | Zugriffs-SCIM | SSO | Zugriffs-SCIM-Gruppen | Sofortiger Abgleich bei Mitgliedschaft oder Zuordnung |
+| Beide SCIM-Feeds | Workforce SCIM | Zugriffs-SCIM | Lokale Aktivierung oder SSO | Zugriffs-SCIM-Gruppen | Sofort |
+| Nur SSO-Authentifizierung | Lokal oder Workforce SCIM | Vorhanden | SSO | Lokal | Sofortige lokale Änderung |
+| SSO-Gruppensynchronisierung | Lokal oder Workforce SCIM | Vorhanden | SSO | SSO-Gruppen | Mitgliedschaft bei nächster Anmeldung; Zuordnung sofort aus gültigen Snapshots |
+| Kontrolliertes JIT | Providerdaten | Atomar erstellt oder erweitert | SSO | SSO-Gruppen | Erste und spätere erfolgreiche Anmeldungen |
+| Lokale Ausnahme bei Zugriffs-SCIM | Lokal | Lokal | Zulässiger lokaler Weg oder SSO | Lokal | Sofortige lokale Änderung |
+
+## Rangfolge und unveränderliche Regeln
+
+1. Das SCIM-Personenverzeichnis ist für Profil und Personenstatus maßgeblich.
+2. Zugriffs-SCIM ist für SCIM-Anwendungsberechtigung und SCIM-Gruppenrollen maßgeblich.
+3. SSO-Gruppen sind nur bei deaktiviertem Zugriffs-SCIM maßgeblich.
+4. Lokale Rollen gelten nur, wenn weder SCIM-Gruppen noch wirksame SSO-Gruppensynchronisierung zuständig sind.
+5. Authentifizierung ist unabhängig: lokales Passwort und SSO können nebeneinander bestehen.
+6. Vollständige maßgebliche Rollensätze ersetzen frühere Rollen; sie werden nie mit manuellen Zuweisungen vereinigt.
+7. Die Standardrolle gilt nur, wenn eine vollständige Mitgliedschaft keine zugeordnete Rolle liefert. **Keine** bedeutet keine Rolle.
+8. Ein fehlendes oder unvollständiges SSO-Gruppenergebnis ist ein Anmeldefehler und keine leere Gruppenliste.
+
+## Sichere Rollout-Reihenfolge
+
+### 1. Zuständigkeitsmodell festlegen
+
+Dokumentieren Sie die führende Quelle für Profil, Personenstatus, Anwendungszugriff, Authentifizierung und Rollen. Erfassen Sie jede lokale Ausnahme mit Fachverantwortung und Prüftermin.
+
+### 2. Integrationen ohne breite Aktivierung konfigurieren
+
+- Erstellen Sie getrennte Entra-Anwendungen und Bearer-Token für SCIM-Personenverzeichnis und Zugriffs-SCIM.
+- Begrenzen Sie das Personenverzeichnis auf Workforce-Datensätze.
+- Begrenzen Sie Zugriffs-SCIM auf direkte Mitglieder der Anwendungsberechtigungsgruppen.
+- Stellen Sie für Zugriffs-SCIM Group `objectId → externalId`, `displayName` und direkte `members` bereit.
+- Konfigurieren und testen Sie den SSO-Provider, während JIT deaktiviert bleibt.
+
+### 3. Rollenzuordnungen konfigurieren
+
+Verwenden Sie unveränderliche Entra-Gruppenobjekt-ID-UUIDs. Ordnen Sie jede genehmigte Gruppe zu, behalten Sie Namen nur zur Anzeige und setzen Sie den Standard auf **Keine**, sofern der Fallback nicht ausdrücklich freigegeben ist.
+
+### 4. Bedarfsgesteuert pilotieren
+
+Stellen Sie je einen repräsentativen Benutzer und eine Gruppe aus jeder zugeordneten Gruppe bereit. Testen Sie bei SSO-Synchronisierung vorhandene Benutzer, bevor Sie JIT aktivieren.
+
+Prüfen Sie:
+
+- korrekte Zuständigkeit für Person und Zugriff;
+- exakte Rollenvereinigung über mehrere Gruppen;
+- keine implizite Employee-Rolle;
+- nicht zugeordnete und ausdrücklich leere Mitgliedschaften;
+- Aktivierungsstatus bei deaktiviertem SSO;
+- gesperrten Rolleneditor;
+- Deaktivierung und Reaktivierung; sowie
+- lokalisierte, geschlossen fehlschlagende SSO-Fehler.
+
+### 5. Schrittweise erweitern
+
+Starten Sie die vollständige SCIM-Bereitstellung erst, wenn alle Repräsentanten erfolgreich sind. Aktivieren Sie JIT erst nach nachgewiesener SSO-Rollensynchronisierung vorhandener Benutzer. Gleichen Sie den Restbestand ab, ohne gültige Einladungen erneut zu senden oder Passwörter zu erzeugen.
+
+## Lebenszyklusverhalten
+
+### Workforce-Deaktivierung und -Reaktivierung
+
+**active = false** im SCIM-Personenverzeichnis deaktiviert die Person, widerruft Sitzungen und Token und blockiert die Authentifizierung. Anwendungsberechtigung, Zuweisungen und Historie bleiben erhalten. Eine Reaktivierung stellt die Person wieder her; sie erzeugt weder Zugriff noch Rollen.
+
+### Zugriffs-SCIM-Deaktivierung und -Reaktivierung
+
+Die Deaktivierung sperrt die SCIM-Berechtigung und widerruft Sitzungen. Die Reaktivierung stellt die Berechtigung wieder her und berechnet den aktuellen exakten gruppenbasierten Rollensatz. Bei deaktiviertem SSO benötigt ein lokales Konto weiterhin eine abgeschlossene Aktivierung.
+
+### Lokale Aktivierung
+
+Vor Annahme der Einladung lautet der Status **Lokal — Aktivierung ausstehend**. Die Annahme erzeugt ein Passwort und ändert den Status zu **Lokal**. Verwenden Sie bei der Annahme die aktuellen SCIM-Gruppenrollen statt Rollen aus dem Einladungssnapshot.
+
+### SSO-Gruppenlebenszyklus
+
+Eine vollständige Mitgliedschaft ersetzt den gespeicherten Snapshot erst nach erfolgreicher vertrauenswürdiger Auflösung. Entra-Mitgliedschaften werden bei der nächsten Anmeldung wirksam. Zuordnungsänderungen gleichen gültige Snapshots sofort ab.
+
+## Änderungsverfahren
+
+| Änderung | Erforderliche Maßnahme | Erwartetes Ergebnis |
 | --- | --- | --- |
-| Lokale Personen-UI | Personenprofil | Nein |
-| Admin-Zugriff/Einladung | Zugriff einer bestehenden Person | Ja |
-| SSO Just-in-time | Authentifizierte Identität gemäß Richtlinie | Gemäß Richtlinie |
-| Access-SCIM | Profil und Zugriffslebenszyklus | Ja |
-| People-SCIM | Belegschaftsprofil und Organisation | Nein |
+| SCIM-Token rotieren | Einmal erzeugen, IdP sofort aktualisieren, bedarfsgesteuert prüfen | Vorheriges Token sofort ungültig |
+| Gruppe entfernen oder neu zuordnen | Betroffene Benutzer prüfen, Zuordnung ändern, Audit-Ergebnis kontrollieren | Veraltete Rollen für SCIM- und gespeicherte SSO-Benutzer sofort entzogen |
+| Standardrolle ändern | Betroffene nicht zugeordnete Zielgruppe vorher bestätigen | Nur angewendet, wenn keine zugeordnete Gruppe eine Rolle liefert |
+| SSO-Rollensynchronisierung deaktivieren | Rollenverantwortung bestätigen, deaktivieren, erhaltene Rollen prüfen | SSO-Snapshots entfernt; aktuelle Rollen werden lokal |
+| SSO-Provider wechseln | Rollout deaktivieren, neuen Provider konfigurieren und testen, Zuordnungen neu aufbauen | Alte Snapshots entfernt; keine providerübergreifenden Zuordnungen |
+| Zugriffs-SCIM aktivieren | SCIM-Zuordnungen und lokale Ausnahmen prüfen | JIT und SSO-Rollensynchronisierung deaktiviert; SCIM wird maßgeblich |
+| Zugriffs-SCIM deaktivieren | Neue Zuständigkeit ausdrücklich festlegen | JIT und Rollensynchronisierung bleiben aus |
+| Konfiguration zurückrollen | Letzte geprüfte Einstellungen und Zuordnungen wiederherstellen, Pilotbenutzer abgleichen | Niemals unsicheren oder unvollständigen Snapshot wiederherstellen |
 
-## Autorität
+## Diagnose
 
-Verfolgen Sie Profil-, Zugriffs- und Zugangsdatenautorität getrennt. IdP-verwaltete Passwort- und Profilfelder bleiben in Veviad schreibgeschützt.
+Verwenden Sie Audit-Datensätze und die Admin-Benutzerdaten, nicht Token oder Roh-Assertions. Erfassen Sie:
 
-## Betriebsprüfung
+- Integration und Providerkennung;
+- Entra-Gruppenobjekt-IDs und Anzeigenamen;
+- zugeordnete und nicht zugeordnete Gruppen;
+- vorherige und neue Rollen;
+- Anwendung der Standardrolle;
+- Quelle und Vollständigkeit der Mitgliedschaft;
+- betroffene Benutzer;
+- **Quelle der Rollenverwaltung**: lokal, SSO-Gruppen oder SCIM-Gruppen;
+- **Rollen zuletzt synchronisiert am**; sowie
+- lokalisierte SSO-Fehlerkategorie und Korrelationszeit.
 
-1. Provisionieren Sie eine Person über den vorgesehenen Weg.
-2. Prüfen Sie Abteilung, Standort, Status und externe Identität.
-3. Bestätigen Sie für People-Scope Sichtbarkeit in Personen ohne Anmeldung.
-4. Bestätigen Sie für Access-Scope Zugriff, Rollenmapping und SSO oder Einladung.
-5. Deaktivieren und reaktivieren Sie die Testidentität.
-6. Prüfen Sie Zuweisungen und Audit-Historie.
+Protokollieren Sie niemals Bearer-, Zugriffs- oder ID-Token, rohe SAML-Assertions oder vollständige nicht relevante Tenant-Mitgliedschaften.
 
-## Sicherheit
+## Fehlerbehandlung
 
-Verwenden Sie getrennte SCIM-Anwendungen, Tokens und Gruppen. Token-Regeneration invalidiert den vorherigen Token.
+### SCIM-Anfrage fehlgeschlagen
 
-## Verwandte Runbooks
+Behalten Sie den letzten bestätigten Stand. Korrigieren Sie Token, Endpunkt, Umfang oder Payload und wiederholen Sie das repräsentative Objekt. Bearbeiten Sie keine SCIM-verwaltete Rolle manuell, um einen Bereitstellungsfehler zu verdecken.
 
-- [Deployment-Gesundheit](/de/operations/deployment-health)
-- [SSO und SCIM](/de/organization/sso-scim)
+### SSO-Mitgliedschaftsauflösung fehlgeschlagen
+
+Blockieren Sie die Anmeldung, ohne Benutzer zu erstellen oder zu erweitern, Zugriff zu ändern, Rollen oder Snapshots zu ersetzen oder eine Sitzung zu erstellen. Vorhandene Rollen bleiben unverändert. Prüfen Sie Graph-/Claim-Verfügbarkeit, sichere Seitennavigation, Providerkonfiguration und Audit-Grund.
+
+### Teilweiser Rollout
+
+Pausieren Sie breite Bereitstellung oder JIT. Lassen Sie bekannte korrekte Benutzer unverändert, korrigieren Sie die Konfiguration, wiederholen Sie die Pilotmatrix und setzen Sie danach fort. Widerrufen Sie bei einem Zuständigkeitswechsel betroffene Sitzungen, damit der nächste Zugriff die gewählte Quelle durchläuft.
+
+## Fehlerbehebung
+
+### Alle Benutzer erhalten die Standardrolle
+
+- Stellen Sie sicher, dass Zugriffs-SCIM Groups und nicht nur Users bereitstellt.
+- Vergleichen Sie Group `externalId` mit der zugeordneten Entra-Objekt-ID-UUID.
+- Bestätigen Sie eingehende direkte `members`-Änderungen.
+- Prüfen Sie zugeordnete und nicht zugeordnete Gruppen in der Diagnose.
+- Ordnen Sie niemals anhand des Anzeigenamens zu.
+
+### Gruppen sind vorhanden, gewähren aber keine Rolle
+
+Das ist für nicht zugeordnete Gruppen und den Standard **Keine** korrekt. Ergänzen Sie die Zuordnung anhand der unveränderlichen Gruppen-ID und prüfen Sie den sofortigen Abgleich.
+
+### Authentifizierung zeigt Lokal — Aktivierung ausstehend
+
+Zugriffs-SCIM hat die Berechtigung gewährt, während SSO nicht verfügbar ist. Die Person muss die Einladung annehmen und ein Passwort erstellen. Erzeugen oder versenden Sie kein administratives Passwort.
+
+### JIT oder Rollensynchronisierung ist deaktiviert
+
+Zugriffs-SCIM ist maßgeblich. SSO darf authentifizieren, aber weder Benutzer erstellen noch SCIM-Rollen überschreiben. Das Deaktivieren von Zugriffs-SCIM reaktiviert JIT oder Synchronisierung nicht automatisch.
+
+### Gruppenmitgliedschaft konnte nicht geprüft werden
+
+Behandeln Sie das Ergebnis als nicht verfügbar, nicht als leer. Prüfen Sie Graph **User.Read**, Cloud-Endpunkt, Seitenlink-Allowlist, Gruppen-Claim oder -Attribut, Antwortvollständigkeit und Providerverfügbarkeit.
+
+### Rolleneditor ist gesperrt
+
+Die **Quelle der Rollenverwaltung** ist SSO-Gruppen oder SCIM-Gruppen. Ändern Sie IdP-Mitgliedschaft oder Veviad-Zuordnung. Manuelle Bearbeitung ist erst nach Rückkehr zur lokalen Zuständigkeit erlaubt.
+
+### Person ist unter Personen, aber nicht unter Admin → Benutzer
+
+Es besteht keine Anwendungsberechtigung. Für das SCIM-Personenverzeichnis ist das normal. Gewähren Sie bewusst lokalen Zugriff oder nehmen Sie die Person in den Zugriffs-SCIM-Umfang auf; die Anwesenheit im Personenverzeichnis erlaubt keine Anmeldung.
+
+## Nachweise nach Änderungen
+
+Dokumentieren Sie Änderungsverantwortung, Zeitpunkt, Anwendungs-Build, Zuordnungsexport oder geprüfte Liste, repräsentative Identitäten, erwartete und tatsächliche Rollen, Authentifizierungsstatus, Audit-Korrelation und Rollback-Entscheidung.
+
+## Verwandte Themen
+
+- [Identitäten, Zugriff und Bereitstellung](/de/organization/sso-scim)
+- [SCIM: Personenverzeichnis und Anwendungszugriff](/de/organization/scim-provisioning)
+- [SSO, Rollensynchronisierung und JIT](/de/organization/sso-jit)

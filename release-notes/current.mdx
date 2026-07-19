@@ -1,11 +1,11 @@
 ---
 title: "Current Release Snapshot"
 sidebarTitle: "Current Release Snapshot"
-description: "Snapshot of the public Veviad docs launch baseline."
+description: "Snapshot of the Veviad application behavior documented by this handbook."
 icon: "calendar-clock"
 ---
 
-This handbook was rebuilt against <code>Veviad/veviad_app</code> <code>develop</code> at source SHA <code>48a68722d01898dfcb7c21f172d14246fe1d589b</code> on 18 July 2026.
+This handbook was verified against <code>Veviad/veviad_app</code> <code>develop</code> at source SHA <code>999c3223960b7999ec4d21394511fec3236a77b1</code> on 19 July 2026.
 
 ## Runtime
 
@@ -23,10 +23,16 @@ This handbook was rebuilt against <code>Veviad/veviad_app</code> <code>develop</
 - report charts, run snapshots, schedules, and AI summaries
 - user timezone preferences
 - People directory separated from application access
-- SSO role mapping and two purpose-scoped SCIM integrations
+- separate SCIM People Directory and Access SCIM integrations
+- external SCIM Group provisioning with Entra object-ID role mapping
+- pending-local authentication lifecycle for Access SCIM without SSO
+- SSO authentication-only mode, authoritative group-role synchronization, and controlled JIT
+- fail-closed group resolution and identity-provider-managed role editing
 
 ## Operator baseline
 
+- identity authority and membership diagnostics without token or assertion logging
+- stored SSO membership snapshots for safe mapping reconciliation
 - idempotent Meilisearch index creation
 - non-blocking search reindex startup task
 - persistent storage write/read/delete health probe

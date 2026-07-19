@@ -69,6 +69,8 @@
                   "organization/integrations",
                   "organization/admin",
                   "organization/sso-scim",
+                  "organization/scim-provisioning",
+                  "organization/sso-jit",
                   "analytics/audit-logs"
                 ]
               },
@@ -182,6 +184,8 @@
                   "de/organization/integrations",
                   "de/organization/admin",
                   "de/organization/sso-scim",
+                  "de/organization/scim-provisioning",
+                  "de/organization/sso-jit",
                   "de/analytics/audit-logs"
                 ]
               },

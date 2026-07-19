@@ -1,67 +1,66 @@
 ---
-title: "SSO und zweckgebundenes SCIM"
-sidebarTitle: "SSO und zweckgebundenes SCIM"
-description: "Anmeldung, Zugriffsprovisionierung und Personenverzeichnis getrennt konfigurieren."
+title: "Identitäten, Zugriff und Bereitstellung"
+sidebarTitle: "SSO und SCIM"
+description: "Die Zuständigkeit für Personenprofile, Anwendungszugriff, Authentifizierung und Rollen festlegen."
 icon: "key"
 ---
 
-## Zweck
+Veviad trennt **Profildaten**, **Personenstatus**, **Anwendungszugriff**, **Authentifizierung** und **Rollen**. Legen Sie vor der Aktivierung von SCIM, SSO oder JIT für jeden Bereich eine führende Quelle fest.
 
-SSO authentifiziert Benutzer. SCIM provisioniert Identitäten. Zwei getrennte SCIM-Zwecke verhindern, dass alle Personen automatisch Anwendungsbenutzer werden.
+<Info>
+  **Entra-Gruppen sind die einzige externe Rollenquelle.** Veviad verwendet weder Entra-App-Rollen noch SCIM-User-`roles`, den `roles`-Claim oder Verzeichnisrollen aus `wids` zur Autorisierung.
+</Info>
 
-![SSO- und SCIM-Einstellungen](/images/screenshots/de/scim-access.webp)
+## Passenden Ablauf wählen
 
-## Voraussetzungen
+| Ablauf | Profil und Personenstatus | Anwendungszugriff | Authentifizierung | Rollen |
+| --- | --- | --- | --- | --- |
+| Lokale Person und Einladung | Lokal | Lokale Einladung | Lokal nach Aktivierung | Lokal |
+| Nur SCIM-Personenverzeichnis | Workforce SCIM | Keiner | Keine | Keine |
+| SCIM-Personenverzeichnis plus lokaler Zugriff | Workforce SCIM | Lokal | Lokales Passwort oder zulässiges SSO | Lokal |
+| Zugriffs-SCIM, SSO aus | Lokal oder Workforce SCIM | Zugriffs-SCIM | **Lokal — Aktivierung ausstehend**, danach **Lokal** | Zugriffs-SCIM-Gruppen |
+| Zugriffs-SCIM, SSO an | Lokal oder Workforce SCIM | Zugriffs-SCIM | SSO | Zugriffs-SCIM-Gruppen |
+| Beide SCIM-Feeds | Workforce SCIM | Zugriffs-SCIM | Lokale Aktivierung oder SSO | Zugriffs-SCIM-Gruppen |
+| SSO für vorhandene Benutzer | Lokal oder Workforce SCIM | Bereits vorhanden | SSO | Lokal ohne Synchronisierung; SSO-Gruppen mit Synchronisierung |
+| SSO mit kontrolliertem JIT | Providerdaten bei der ersten Anmeldung | Bei Anmeldung erstellt oder erweitert | SSO | SSO-Gruppen; Synchronisierung ist Pflicht |
+| Lokale Ausnahme bei aktivem Zugriffs-SCIM | Lokal | Lokale Einladung oder Freigabe | Lokales Passwort oder zulässiges SSO | Lokal |
 
-Sie benötigen Integrationsrechte und IdP-Administration. Legen Sie Autorität für Profile, Zugriff, Zugangsdaten und Rollen fest.
+<Note>
+  Eine lokale Ausnahme liegt außerhalb des Zugriffs-SCIM-Umfangs. Das Entfernen der Person beim Identitätsanbieter entzieht diesen lokalen Zugriff nicht; verwalten Sie ihn ausdrücklich in Veviad.
+</Note>
 
-## SSO konfigurieren
+## Rangfolge der Zuständigkeiten
 
-1. Öffnen Sie **Admin → Integrationen** und anschließend die Integration **Identitätsanbieter**.
-2. Wählen Sie **Azure Entra ID**, **Generic OIDC** oder **Generic SAML2**.
-3. Tragen Sie die erforderlichen Anbieterwerte im Tab **SSO** ein.
-4. Öffnen Sie **Rollenzuordnung**, um IdP-Gruppen oder SAML-Attribute Veviad-Rollen zuzuordnen und die sichere Standardrolle festzulegen.
-5. Wählen Sie beim Aktivieren einer neuen oder geänderten Verbindung vor dem Speichern **Verbindung testen**.
-6. Wählen Sie in einem der beiden Tabs **Konfiguration speichern**. Veviad speichert SSO-Einstellungen, Aktivierungsstatus, Zuordnungen des ausgewählten Anbieters und Standardrolle gemeinsam.
-7. Prüfen Sie die Anmeldung mit einem Nicht-Admin-Testkonto.
+| Bereich | Wirksame Zuständigkeit |
+| --- | --- |
+| Profil und Personenstatus | SCIM-Personenverzeichnis, wenn die Person durch diesen Feed verwaltet wird |
+| Anwendungsberechtigung | Zugriffs-SCIM für SCIM-verwalteten Zugriff, sonst lokale Administration |
+| Externe Rollen | Zuerst Zugriffs-SCIM-Gruppen. SSO-Gruppen sind nur bei deaktiviertem Zugriffs-SCIM maßgeblich |
+| Lokale Rollen | Nur wenn weder Zugriffs-SCIM-Gruppen noch wirksame SSO-Gruppensynchronisierung Rollen steuern |
+| Authentifizierung | Lokales Passwort und SSO können unabhängig von der Rollenzuständigkeit nebeneinander bestehen |
 
-### Anbieter wechseln und aktivieren
+## Nächste Konfiguration
 
-Rollenzuordnungen sind anbieterspezifisch. Beim Wechsel des Anbieters lädt das Formular dessen Zuordnungen und setzt den Aktivierungsschalter zurück. Konfigurieren und speichern Sie den ausgewählten Anbieter vollständig, bevor Sie ihn aktivieren.
+<CardGroup cols={2}>
+  <Card title="SCIM: Personenverzeichnis und Anwendungszugriff" icon="users-gear" href="/de/organization/scim-provisioning">
+    Beide Feeds, Entra-Gruppenressourcen, Aktivierung und Abgleich konfigurieren.
+  </Card>
 
-Eine vollständig gespeicherte Konfiguration lässt sich in der Integrationstabelle aktivieren oder deaktivieren. Für die Reaktivierung einer unveränderten gespeicherten Konfiguration ist kein erneuter Verbindungstest erforderlich. Nach Änderungen an verbindungskritischen Anbieterfeldern muss die Verbindung erfolgreich getestet werden, bevor SSO aktiviert gespeichert werden kann. Erkennt die Tabellenaktivierung eine unvollständige Konfiguration, bleibt SSO inaktiv und Veviad öffnet den Konfigurationsdialog.
+  <Card title="SSO, Rollensynchronisierung und JIT" icon="user-plus" href="/de/organization/sso-jit">
+    Reines SSO, maßgebliche Gruppenrollen oder kontrolliertes JIT konfigurieren.
+  </Card>
+</CardGroup>
 
-![SSO-Rollenzuordnung](/images/screenshots/de/sso-role-mapping.webp)
+## Empfohlene Ausgangskonfiguration
 
-## SCIM nach Zweck konfigurieren
-
-### Anwendungszugriff
-
-Verwenden Sie Endpunkt und Token für Personen, die sich anmelden sollen. Provisionierung steuert Zugriff und kann Rollen synchronisieren.
-
-### Personenverzeichnis
-
-Verwenden Sie den Personen-Endpunkt für die breite zuweisbare Belegschaft. Dieser Feed pflegt Profil und Organisation, ohne Anwendungszugriff zu erteilen.
-
-![SCIM für Personenverzeichnis](/images/screenshots/de/scim-people-directory.webp)
-
-## Erwartetes Ergebnis
-
-SSO übernimmt Anmeldung, Access-SCIM die Login-Berechtigung und People-SCIM zuweisbare Personendaten.
-
-## Bewährte Vorgehensweisen
-
-- Verwenden Sie getrennte Enterprise-Anwendungen, Tokens und Gruppen.
-- Token-Regeneration invalidiert den alten Token.
-- Pilotieren Sie Anlegen, Aktualisieren, Deaktivieren und Reaktivieren.
-- Verwenden Sie eine Autorität pro Feld.
-
-## Fehlerbehebung
-
-Eine synchronisierte Person ohne Anmeldung kann korrekt nur im Personenverzeichnis provisioniert sein. Prüfen Sie Zweck, Zugriff, Rolle und Zugangsdatenautorität.
+- Verwenden Sie für die beiden SCIM-Zwecke getrennte Unternehmensanwendungen, Bearer-Token und Zielgruppen.
+- Verwenden Sie unveränderliche Entra-Gruppenobjekt-IDs und direkte Mitgliedschaften.
+- Setzen Sie die Standardrolle auf **Keine**, sofern kein bewusster Fallback benötigt wird.
+- Testen Sie vor der Vollbereitstellung je einen repräsentativen Benutzer aus jeder zugeordneten Gruppe.
+- Behalten Sie einen getesteten lokalen Administratorzugang, sofern **SSO erzwingen** keine bewusste Richtlinie ist.
 
 ## Verwandte Themen
 
 - [Personen und Anwendungszugriff](/de/organization/user-access)
 - [Integrationen](/de/organization/integrations)
-- [Personen](/de/main/people)
+- [Runbook für Personen- und Zugriffsbereitstellung](/de/operations/people-access-provisioning)
