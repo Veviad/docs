@@ -1,36 +1,42 @@
 ---
 title: "Administration"
-sidebarTitle: "Administration"
-description: "Organisation, Asset-Konfiguration, Zugriffe, Integrationen und Identitätsverwaltung einrichten."
+sidebarTitle: "Überblick"
+description: "Organisation, Asset-Konfiguration, Zugriffe, Integrationen und Audit-Protokoll verwalten."
 icon: "book-open-cover"
 ---
 
+Die Administration ist nach Verantwortungsbereichen gegliedert. Welche Bereiche sichtbar sind, hängt von den Berechtigungen des Benutzers ab.
+
 <CardGroup cols={2}>
   <Card title="Organisationseinstellungen" icon="building-cog" href="/de/organization/settings-organization">
-    Währung, Standorte, Abteilungen, Kostenstellen und Geschäftspartner.
+    Währung, Standorte, Abteilungen, Kostenstellen, Lieferanten und Hersteller.
   </Card>
 
   <Card title="Asset-Konfiguration" icon="package-cog" href="/de/organization/settings-assets">
-    Kategorien, Status, Abschreibung, Tags, Zusatzfelder und Feldregeln.
+    Kategorien, Status, Abschreibung, Tags, benutzerdefinierte Felder und Feldregeln.
   </Card>
 
   <Card title="Workflow-Einstellungen" icon="workflow" href="/de/organization/settings-workflows">
-    Checklisten, Actions, Wartung, Benachrichtigungen und Übergaben.
+    Checklisten, Actions, Wartungsarten, Benachrichtigungen und Standardeinstellungen für Übergaben.
   </Card>
 
   <Card title="Personen und Zugriff" icon="users-round" href="/de/organization/user-access">
-    Personen, Benutzer, Einladungen, Rollen und Identitätsautorität.
+    Personen, Anwendungsbenutzer, Einladungen, Rollen und führendes Identitätssystem.
   </Card>
 
   <Card title="Integrationen" icon="plug" href="/de/organization/integrations">
-    AI, OCR, E-Mail, SSO und SCIM.
+    KI-, OCR-, E-Mail-, SSO- und SCIM-Dienste.
   </Card>
 
   <Card title="SSO und SCIM" icon="key-round" href="/de/organization/sso-scim">
-    Authentifizierung, Rollen und getrennte Provisionierungszwecke.
+    Authentifizierung, Rollenzuordnung, Bereitstellung von Anwendungszugängen und Synchronisierung des Personenverzeichnisses.
+  </Card>
+
+  <Card title="Audit-Protokoll" icon="clipboard-list" href="/de/analytics/audit-logs">
+    Sicherheitsereignisse, Benutzeraktivitäten, Konfigurationsänderungen und weitere Nachweise prüfen.
   </Card>
 </CardGroup>
 
 <Warning>
-  Administrative Änderungen können alle Benutzer betreffen. Testen Sie Berechtigungs-, Identitäts- und Automatisierungsänderungen vor breitem Rollout.
+  Administrative Änderungen können alle Benutzer betreffen. Testen Sie Änderungen an Berechtigungen, Identitäten und Automatisierungen mit repräsentativen Konten, bevor Sie sie breit ausrollen.
 </Warning>

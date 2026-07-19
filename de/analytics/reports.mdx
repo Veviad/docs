@@ -1,7 +1,7 @@
 ---
-title: "Berichte, Diagramme und AI-Zusammenfassungen"
-sidebarTitle: "Berichte, Diagramme und AI-Zusammenfassungen"
-description: "Berichte erstellen, visualisieren, planen und mit AI zusammenfassen."
+title: "Berichte, Diagramme und KI-Zusammenfassungen"
+sidebarTitle: "Berichte"
+description: "Berichte erstellen, visualisieren, planen und mit KI zusammenfassen."
 icon:
   name: "file-chart-column"
   library: "lucide"
@@ -9,52 +9,52 @@ icon:
 
 ## Zweck
 
-Eine Berichtsdefinition speichert Domäne, Felder, Filter, Sortierung, Diagramme, AI-Konfiguration, Sichtbarkeit, Zeitplan und Empfänger.
+Berichte machen Veviad-Daten als wiederholbare operative Ansichten nutzbar. Eine Berichtsdefinition speichert Datenbereich, Felder, Filter, Sortierung, Diagramme, KI-Zusammenfassung, Sichtbarkeit, Zeitplan und Empfänger.
 
-![Maschinenbau-Berichte und Läufe](/images/screenshots/de/reports.webp)
+![Maschinenbau-Berichte und Berichtsläufe](/images/screenshots/de/reports.webp)
 
 ## Voraussetzungen
 
-Sie benötigen Bericht-Anzeigerechte; Verwalten, Ausführen, Planen und Administration besitzen getrennte Berechtigungen. AI-Zusammenfassungen benötigen einen aktiven Provider.
+Sie benötigen die Berechtigung zum Anzeigen von Berichten. Verwalten, Ausführen, Planen und Administrieren besitzen getrennte Berechtigungen. KI-Zusammenfassungen benötigen außerdem einen aktiven Veviad-AI-Anbieter.
 
 ## Bericht erstellen
 
-1. Öffnen Sie **Berichte → Bericht erstellen**.
-2. Wählen Sie die unterstützte Domäne: Assets oder Personen.
-3. Wählen Sie nur benötigte Felder.
-4. Setzen Sie Filter und Sortierung.
+1. Öffnen Sie **Berichte** und wählen Sie **Bericht erstellen**.
+2. Wählen Sie den unterstützten Datenbereich: Assets oder Personen.
+3. Wählen Sie nur die Felder, die die Leser benötigen.
+4. Legen Sie Filter und Sortierung fest.
 5. Fügen Sie bis zu zwei Diagramme mit Gruppierung, Kennzahl, Limit und Reihenfolge hinzu.
-6. Aktivieren Sie bei Bedarf AI-Zusammenfassung mit Sprache und optionalem Prompt.
-7. Wählen Sie Sichtbarkeit.
-8. Konfigurieren Sie optional Zeitzone, Zeitplan und Empfänger.
+6. Aktivieren Sie eine KI-Zusammenfassung nur, wenn eine kurze Einordnung hilfreich ist. Legen Sie Sprache und optional eine Anweisung fest.
+7. Wählen Sie die Sichtbarkeit.
+8. Konfigurieren Sie optional einen zeitzonenbewussten Zeitplan und die Empfänger.
 9. Speichern und starten Sie den Bericht.
 
-![Berichts-Builder mit Diagramm](/images/screenshots/de/report-builder.webp)
+![Berichts-Builder mit Diagrammkonfiguration](/images/screenshots/de/report-builder.webp)
 
-## Lauf prüfen
+## Berichtslauf prüfen
 
-Prüfen Sie Status, Zeilen, Diagramm-Snapshot, AI-Status, Ausgabe und Zustellung.
+Öffnen Sie den Lauf und prüfen Sie Status, Zeilenanzahl, Diagramm-Snapshot, Status und Inhalt der KI-Zusammenfassung sowie die Zustellung.
 
-![Abgeschlossener Bericht mit Diagramm und AI](/images/screenshots/de/report-result.webp)
+![Abgeschlossener Bericht mit Diagramm und KI-Zusammenfassung](/images/screenshots/de/report-result.webp)
 
 ## Erwartetes Ergebnis
 
-Jeder Lauf ist ein auditierbarer Snapshot im Berechtigungsumfang des ausführenden Benutzers.
+Jeder Lauf ist eine nachvollziehbare Momentaufnahme im Berechtigungsumfang des ausführenden Benutzers. Diagramme und KI-Zusammenfassungen bleiben mit dem Lauf verbunden, auch wenn die Berichtsdefinition später geändert wird.
 
 ## Bewährte Vorgehensweisen
 
-- Begrenzen Sie Felder und formulieren Sie Filter eindeutig.
-- Nutzen Sie Diagramme für wenige Entscheidungen.
-- Prüfen Sie AI-Aussagen gegen Zeilen und Diagrammwerte.
-- Verwenden Sie eine geschäftlich passende Zeitzone.
-- Verteilen Sie sensible Exporte nicht breit.
+- Beschränken Sie die ausgewählten Felder und formulieren Sie Filter eindeutig.
+- Nutzen Sie Diagramme für konkrete Entscheidungen, nicht als Dekoration.
+- Prüfen Sie KI-Zusammenfassungen anhand der Zeilen und Diagrammwerte.
+- Verwenden Sie eine Zeitzone, die zum Geschäftsprozess passt.
+- Verteilen Sie sensible Exporte nicht an zu große Empfängerkreise.
 
 ## Fehlerbehebung
 
-Ein Lauf kann erfolgreich sein, während AI fehlschlägt. Prüfen Sie Laufstatus, AI-Status, Provider, Berechtigung und Zustellung getrennt.
+Ein Berichtslauf kann erfolgreich sein, obwohl die KI-Zusammenfassung fehlschlägt. Prüfen Sie Laufstatus, Status der KI-Zusammenfassung, Anbieterzustand, Berechtigungsumfang und Zustellung getrennt.
 
 ## Verwandte Themen
 
 - [Dashboard](/de/main/dashboard)
 - [Veviad AI](/de/veviad-ai)
-- [Audit-Logs](/de/analytics/audit-logs)
+- [Audit-Protokoll](/de/analytics/audit-logs)
