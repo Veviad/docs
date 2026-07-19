@@ -60,7 +60,7 @@ Veviad resolves groups before creating or promoting a user. User creation, ident
 
 ### Microsoft Entra ID
 
-Veviad uses the delegated sign-in token and Microsoft Graph **User.Read** to query the signed-in user's direct `memberOf` relationships. It follows only validated HTTPS pagination links for the configured Microsoft cloud, with bounded retries and timeouts.
+Veviad uses the delegated sign-in token and Microsoft Graph **User.Read** to query the signed-in user's direct `memberOf` relationships. It follows only validated HTTPS pagination links for the configured Microsoft cloud, with bounded retries and timeouts. Entra can omit group claims during group overage, so Graph resolution establishes the complete membership set. See [Microsoft Graph direct memberships](https://learn.microsoft.com/en-us/graph/api/user-list-memberof?view=graph-rest-1.0) and [Entra group overage behavior](https://learn.microsoft.com/en-us/security/zero-trust/develop/configure-tokens-group-claims-app-roles).
 
 Only immutable Entra group object-ID UUIDs authorize a user. Display names are diagnostic metadata. Nested membership, app roles, `roles`, and directory-role `wids` are ignored.
 

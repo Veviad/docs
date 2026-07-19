@@ -60,7 +60,7 @@ Veviad löst Gruppen auf, bevor ein Benutzer erstellt oder erweitert wird. Benut
 
 ### Microsoft Entra ID
 
-Veviad verwendet das delegierte Anmeldetoken und Microsoft Graph **User.Read**, um die direkten `memberOf`-Beziehungen des angemeldeten Benutzers abzufragen. Nur validierte HTTPS-Seitenlinks für die konfigurierte Microsoft-Cloud werden mit begrenzten Wiederholungen und Zeitüberschreitungen verfolgt.
+Veviad verwendet das delegierte Anmeldetoken und Microsoft Graph **User.Read**, um die direkten `memberOf`-Beziehungen des angemeldeten Benutzers abzufragen. Nur validierte HTTPS-Seitenlinks für die konfigurierte Microsoft-Cloud werden mit begrenzten Wiederholungen und Zeitüberschreitungen verfolgt. Entra kann Gruppen-Claims bei Gruppen-Overage auslassen; deshalb ermittelt Graph den vollständigen Mitgliedschaftssatz. Siehe [Direkte Mitgliedschaften in Microsoft Graph](https://learn.microsoft.com/en-us/graph/api/user-list-memberof?view=graph-rest-1.0) und [Entra-Verhalten bei Gruppen-Overage](https://learn.microsoft.com/en-us/security/zero-trust/develop/configure-tokens-group-claims-app-roles).
 
 Ausschließlich unveränderliche Entra-Gruppenobjekt-ID-UUIDs autorisieren einen Benutzer. Anzeigenamen dienen der Diagnose. Verschachtelte Mitgliedschaft, App-Rollen, `roles` und Verzeichnisrollen aus `wids` werden ignoriert.
 
