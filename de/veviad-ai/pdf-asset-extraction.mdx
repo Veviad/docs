@@ -1,45 +1,45 @@
 ---
-title: "PDF-Asset-Erfassung"
-sidebarTitle: "PDF-Asset-Erfassung"
-description: "Maschinendokumente prüfen und vorgeschlagene Asset-Daten kontrolliert übernehmen."
+title: "Assets mit KI aus PDFs erstellen"
+sidebarTitle: "Assets mit KI aus PDFs erstellen"
+description: "Asset-Daten mit KI aus PDF-Dokumenten übernehmen, alle vorgeschlagenen Werte prüfen und nur bestätigte Assets erstellen."
 icon: "file-pdf"
 ---
 
 ## Zweck
 
-Die PDF-Erfassung reduziert manuelle Eingabe aus Rechnungen, Lieferscheinen und Gerätedokumenten. Extraktion liefert einen prüfbaren Vorschlag.
+Die KI-gestützte Asset-Erstellung reduziert die manuelle Dateneingabe aus Rechnungen, Lieferscheinen und Gerätedokumenten. Veviad bereitet prüfbare Asset-Vorschläge vor und behandelt extrahierte Daten nicht automatisch als verlässliche Quelle.
 
-![Prüfung eines PDF-Asset-Imports](/images/screenshots/de/pdf-asset-intake.webp)
+![KI-gestützte Asset-Erstellung aus einem PDF prüfen](/images/screenshots/de/pdf-asset-intake.webp)
 
 ## Voraussetzungen
 
-Sie benötigen Asset-Erstell- und AI-Import-Rechte, aktive AI/OCR-Integration und ein unterstütztes PDF.
+Sie benötigen Berechtigungen zum Erstellen von Assets und für den KI-Import, eine aktive KI-/OCR-Integration und ein unterstütztes PDF ohne vertrauliche Inhalte, die nicht zum Asset gehören.
 
-## Extrahieren und erstellen
+## Assets aus einem PDF erstellen
 
-1. Öffnen Sie den Veviad AI Import.
+1. Öffnen Sie in Veviad AI den PDF-Import.
 2. Laden Sie das PDF hoch.
-3. Warten Sie auf OCR und Extraktion.
-4. Prüfen Sie jedes vorgeschlagene Asset und Feld.
-5. Korrigieren Sie Kategorie, Status, Tag, Seriennummer, Kosten, Termine, Partner und Zusatzfelder.
-6. Lösen Sie Pflichtfeldfehler.
-7. Bestätigen Sie nur geprüfte Datensätze.
-8. Öffnen Sie erstellte Assets und prüfen Sie Werte und Anhänge.
+3. Warten Sie, bis Texterkennung und Datenübernahme abgeschlossen sind.
+4. Prüfen Sie jedes vorgeschlagene Asset und alle Felder.
+5. Korrigieren Sie Kategorie, Status, Tag, Seriennummer, Kosten, Termine, Lieferant, Hersteller und benutzerdefinierte Felder.
+6. Beheben Sie Fehler bei Pflichtfeldern.
+7. Bestätigen Sie nur die geprüften Assets.
+8. Öffnen Sie jedes erstellte Asset und prüfen Sie Anhänge und Werte.
 
 ## Erwartetes Ergebnis
 
-Veviad erstellt nur bestätigte Assets und behält den Jobstatus zur Fehlerbehebung.
+Veviad erstellt nur die von Ihnen bestätigten Assets und speichert den Verarbeitungsstatus für die Fehlerbehebung.
 
 ## Bewährte Vorgehensweisen
 
-- Trennen Sie unabhängige Dokumente.
-- Schwärzen Sie Bank-, Personen- und Zugangsdaten.
-- Akzeptieren Sie keine geschätzte Seriennummer oder Kosten ohne Quelle.
-- Nutzen Sie strukturierten Bulk-Import, wenn die Quelle strukturiert ist.
+- Verarbeiten Sie nicht zusammengehörige Dokumente in getrennten Vorgängen.
+- Schwärzen Sie Bankdaten, personenbezogene Daten und Zugangsdaten vor dem Hochladen.
+- Übernehmen Sie geschätzte Seriennummern oder Kosten nie ohne Beleg.
+- Verwenden Sie den Massenimport, wenn die Quelldaten bereits strukturiert vorliegen.
 
 ## Fehlerbehebung
 
-Prüfen Sie Dateityp, Größe, OCR-Provider, Jobstatus, Queue und Pflichtfelder. Eine fehlgeschlagene Extraktion erstellt kein Asset.
+Prüfen Sie Dateityp und -größe, Zustand des OCR-Anbieters, Verarbeitungsstatus, Warteschlange und Pflichtfelder. Eine fehlgeschlagene Extraktion erstellt kein Asset.
 
 ## Verwandte Themen
 

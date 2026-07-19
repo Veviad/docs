@@ -1,46 +1,47 @@
 ---
-title: "Audit-Logs"
-sidebarTitle: "Audit-Logs"
-description: "Änderungen nachvollziehen und Berechtigungs- oder Prozessfragen untersuchen."
+title: "Audit-Protokoll"
+sidebarTitle: "Audit-Protokoll"
+description: "Änderungen, Sicherheitsereignisse und Benutzeraktivitäten nachvollziehen."
 icon: "square-list"
 ---
 
 ## Zweck
 
-Audit-Logs zeigen, wer wann welchen Datensatz geändert hat. Sie ersetzen weder Quelldaten noch Infrastruktur-Logs.
+Das Audit-Protokoll zeigt, wer wann welchen Datensatz geändert hat. Es unterstützt Administration, Untersuchungen und Nachweispflichten, ersetzt aber weder die Quelldaten noch technische Anwendungsprotokolle.
 
-![Audit-Logs für Maschinenbau-Vorgänge](/images/screenshots/de/audit-logs.webp)
+![Audit-Protokoll für Maschinenbau-Vorgänge](/images/screenshots/de/audit-logs.webp)
 
 ## Voraussetzungen
 
-Sie benötigen Audit-Log-Rechte. Quelllinks funktionieren nur mit Berechtigung für den Datensatz.
+Sie benötigen die Berechtigung zum Anzeigen des Audit-Protokolls. Ein Ereignis verlinkt nur dann auf den Quelldatensatz, wenn Sie diesen ebenfalls anzeigen dürfen.
 
 ## Änderung untersuchen
 
-1. Öffnen Sie **Audit-Logs**.
-2. Filtern Sie Zeit, Benutzer, Aktion, Modell oder Datensatz.
+1. Öffnen Sie **Audit Logs**.
+2. Filtern Sie nach Zeitraum, Benutzer, Aktion, Modell oder Datensatz.
 3. Öffnen Sie das Ereignis.
 4. Vergleichen Sie alte und neue Werte.
-5. Folgen Sie dem Quelllink.
-6. Korrelieren Sie bei Bedarf Action, Berichtslauf, Übergabe oder Operator-Log.
+5. Folgen Sie dem Link zum Quelldatensatz, falls vorhanden.
+6. Vergleichen Sie den Zeitpunkt bei Bedarf mit einer Action, einem Berichtslauf, einer Übergabe oder den Betriebsprotokollen.
 
 ## Erwartetes Ergebnis
 
-Akteur, Datensatz, Ereignistyp, Zeit und erfasste Änderungen sind erkennbar.
+Sie können Akteur, betroffenen Datensatz, Ereignistyp, Zeitpunkt und erfasste Feldänderungen bestimmen.
 
 ## Bewährte Vorgehensweisen
 
-- Beginnen Sie mit engem Zeitfenster.
-- Deaktivieren Sie referenzierte Konfiguration statt zu löschen.
-- Verwenden Sie Audit als Nachweis und Logs für Stacktraces.
-- Schwärzen Sie sensible Werte vor Weitergabe.
+- Beginnen Sie mit einem engen Zeitraum.
+- Deaktivieren Sie referenzierte Konfiguration, statt sie zu löschen, damit der Verlauf erhalten bleibt.
+- Verwenden Sie das Audit-Protokoll als Nachweis; für Stacktraces und Dienstfehler verwenden Sie die Anwendungsprotokolle.
+- Schwärzen Sie personenbezogene oder vertrauliche Werte, bevor Sie Ergebnisse weitergeben.
 
 ## Fehlerbehebung
 
-Ein fehlender Quelllink bedeutet meist entfernten Datensatz oder fehlende Berechtigung. Prüfen Sie bei fehlendem Ereignis, ob die Änderung tatsächlich gespeichert wurde.
+Ein fehlender Link zum Quelldatensatz bedeutet meist, dass der Datensatz gelöscht wurde oder Ihre Rolle ihn nicht anzeigen darf. Fehlt ein erwartetes Ereignis, prüfen Sie, ob die Änderung tatsächlich gespeichert wurde.
 
 ## Verwandte Themen
 
-- [Actions](/de/main/workflows)
+- [Systemrollen und Berechtigungen](/de/organization/system-roles)
+- [Benutzer und Berechtigungen](/de/organization/admin)
 - [Berichte](/de/analytics/reports)
 - [Fehlerbehebung](/de/faq/troubleshooting)

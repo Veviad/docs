@@ -1,45 +1,45 @@
 ---
-title: "PDF asset intake"
-sidebarTitle: "PDF asset intake"
-description: "Extract candidate asset data from PDFs and review every field before creation."
+title: "Create assets from PDFs with AI"
+sidebarTitle: "Create assets from PDFs with AI"
+description: "Use AI to extract candidate asset data from PDF documents, review every field, and create only confirmed assets."
 icon: "file-pdf"
 ---
 
 ## Purpose
 
-PDF intake reduces manual entry from invoices, delivery notes, and equipment documents. Extraction produces a reviewable candidate, not an automatic source of truth.
+AI-assisted asset creation reduces manual entry from invoices, delivery notes, and equipment documents. Veviad prepares reviewable asset candidates; it does not treat extracted data as an automatic source of truth.
 
-![PDF asset intake review](/images/screenshots/pdf-asset-intake.webp)
+![Review AI-assisted asset creation from a PDF](/images/screenshots/pdf-asset-intake.webp)
 
 ## Before you begin
 
-You need Asset create and AI-import permission, an active AI/OCR integration, and a supported PDF without secrets unrelated to the asset.
+You need Asset create and AI-import permissions, an active AI/OCR integration, and a supported PDF without secrets unrelated to the asset.
 
-## Extract and create
+## Create assets from a PDF
 
-1. Open the Veviad AI import flow.
+1. Open the Veviad AI PDF import.
 2. Upload the PDF.
-3. Wait for OCR and extraction to finish.
-4. Review every proposed asset and field.
-5. Correct category, status, tag, serial, cost, dates, supplier, manufacturer, and custom fields.
+3. Wait for OCR and data extraction to finish.
+4. Review every suggested asset and field.
+5. Correct category, status, tag, serial number, cost, dates, supplier, manufacturer, and custom fields.
 6. Resolve required-field validation.
-7. Confirm only the reviewed records.
-8. Open each created asset and verify attachments and values.
+7. Confirm only the reviewed assets.
+8. Open each created asset and verify its attachments and values.
 
 ## Expected result
 
-Veviad creates only confirmed assets and retains the extraction job status for troubleshooting.
+Veviad creates only the assets you confirmed and retains the processing status for troubleshooting.
 
 ## Best practices
 
 - Split unrelated documents into separate jobs.
 - Redact bank data, personal data, and credentials before upload.
-- Never accept a guessed serial or cost without source evidence.
-- Use bulk import instead when the source is already structured.
+- Never accept a guessed serial number or cost without source evidence.
+- Use bulk import instead when the source data is already structured.
 
 ## Troubleshooting
 
-Check file type and size, OCR provider health, job status, queue health, and required fields. A failed extraction does not create an asset.
+Check the file type and size, OCR provider health, processing status, queue health, and required fields. A failed extraction does not create an asset.
 
 ## Related topics
 

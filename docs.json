@@ -46,12 +46,11 @@
                 ]
               },
               {
-                "group": "Automation & insights",
+                "group": "Automation, reports & AI",
                 "pages": [
                   "analytics",
                   "main/workflows",
                   "analytics/reports",
-                  "analytics/audit-logs",
                   "veviad-ai",
                   "veviad-ai/assistant",
                   "veviad-ai/pdf-asset-extraction"
@@ -69,7 +68,8 @@
                   "organization/system-roles",
                   "organization/integrations",
                   "organization/admin",
-                  "organization/sso-scim"
+                  "organization/sso-scim",
+                  "analytics/audit-logs"
                 ]
               },
               {
@@ -157,13 +157,12 @@
                 ]
               },
               {
-                "group": "Automatisierung & Erkenntnisse",
+                "group": "Automatisierung, Berichte & KI",
                 "expanded": false,
                 "pages": [
                   "de/analytics",
                   "de/main/workflows",
                   "de/analytics/reports",
-                  "de/analytics/audit-logs",
                   "de/veviad-ai",
                   "de/veviad-ai/assistant",
                   "de/veviad-ai/pdf-asset-extraction"
@@ -182,7 +181,8 @@
                   "de/organization/system-roles",
                   "de/organization/integrations",
                   "de/organization/admin",
-                  "de/organization/sso-scim"
+                  "de/organization/sso-scim",
+                  "de/analytics/audit-logs"
                 ]
               },
               {
