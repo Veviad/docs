@@ -17,11 +17,19 @@ Sie benötigen Integrationsrechte und IdP-Administration. Legen Sie Autorität f
 
 ## SSO konfigurieren
 
-1. Öffnen Sie die SSO-Integration.
-2. Konfigurieren Sie OIDC oder SAML.
-3. Speichern Sie Secrets in geschützten Feldern.
-4. Testen Sie mit einem Nicht-Admin-Konto.
-5. Konfigurieren Sie Gruppen-zu-Rollen-Zuordnung und Sync-Richtlinie.
+1. Öffnen Sie **Admin → Integrationen** und anschließend die Integration **Identitätsanbieter**.
+2. Wählen Sie **Azure Entra ID**, **Generic OIDC** oder **Generic SAML2**.
+3. Tragen Sie die erforderlichen Provider-Werte im Tab **SSO** ein.
+4. Öffnen Sie **Rollenzuordnung**, um IdP-Gruppen oder SAML-Attribute Veviad-Rollen zuzuordnen und die sichere Standardrolle festzulegen.
+5. Wählen Sie beim Aktivieren einer neuen oder geänderten Verbindung vor dem Speichern **Verbindung testen**.
+6. Wählen Sie in einem der beiden Tabs **Konfiguration speichern**. Veviad speichert SSO-Einstellungen, Aktivierungsstatus, Zuordnungen des ausgewählten Providers und Standardrolle gemeinsam.
+7. Prüfen Sie die Anmeldung mit einem Nicht-Admin-Testkonto.
+
+### Provider-Wechsel und Aktivierung
+
+Rollenzuordnungen sind providerbezogen. Beim Provider-Wechsel lädt das Formular dessen Zuordnungen und setzt den Aktivierungsschalter zurück. Konfigurieren und speichern Sie den ausgewählten Provider vollständig, bevor Sie ihn aktivieren.
+
+Eine vollständig gespeicherte Konfiguration lässt sich in der Integrationstabelle aktivieren oder deaktivieren. Für die Reaktivierung einer unveränderten gespeicherten Konfiguration ist kein erneuter Verbindungstest erforderlich. Nach Änderungen an verbindungskritischen Provider-Feldern muss die Verbindung erfolgreich getestet werden, bevor SSO aktiviert gespeichert werden kann. Erkennt die Tabellenaktivierung eine unvollständige Konfiguration, bleibt SSO inaktiv und Veviad öffnet den Konfigurationsdialog.
 
 ![SSO-Rollenzuordnung](/images/screenshots/de/sso-role-mapping.webp)
 
