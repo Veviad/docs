@@ -1,0 +1,67 @@
+---
+title: "Settings, email templates, and integrations"
+sidebarTitle: "Settings & integrations"
+description: "Safely manage global provider settings, secrets, SMTP, health monitoring, email templates, and AI prompts."
+icon: "settings"
+keywords: ["settings", "secrets", "Cloudflare", "SMTP", "GitHub", "email templates", "AI prompts"]
+---
+
+Global **Settings** are shared across deployments. A change can affect provisioning, DNS, backups, email, health monitoring, support integrations, or all future Trials. Record the reason and validate the affected workflow after saving.
+
+## Settings sections
+
+| Section | Controls |
+| --- | --- |
+| Cloudflare DNS | API token, zone, base and available domains, and proxy behavior. |
+| SSL Certificates | Let's Encrypt on instances or Cloudflare edge termination. |
+| Coolify | Shared API URL and root-permission bearer token. |
+| Self-service Trials | Fixed Trial infrastructure, lifecycle, mail warnings, and managed API credentials. |
+| AWS Elastic Beanstalk | Shared AWS credentials used for EB and deployment storage. |
+| Instance Backups | S3-compatible storage, encryption key, default schedule and retention, and pre-upgrade requirement. |
+| Email (SMTP) | Host, port, user, encrypted password, sender, and global upgrade-notification setting. |
+| Health Monitoring | Poll interval, retries, accelerated polling, and latency tolerance. |
+| Integrations | GitHub token for feedback-to-issue workflows. |
+
+## Handling secrets
+
+<Warning>
+  Never paste secrets into customer notes, instance notes, documentation, chat, or screenshots. Use the intended password field only.
+</Warning>
+
+- Stored secret fields return a mask, not the real value. Leaving the mask unchanged preserves the stored secret.
+- Clearing an optional secret field removes the stored value; confirm this is intentional before saving.
+- Trial ingress plaintext is shown only once after generation or rotation. Store it only in the trusted website backend.
+- The Trial identity key is encrypted, internal, and must not be displayed or rotated.
+- A damaged managed Trial secret is not silently replaced by an environment value; investigate the configuration error.
+
+## Backup storage validation
+
+Use the S3 connection test with the values currently in the form, including unsaved changes. It verifies the configured credentials and object operations. If the credential can create but not delete objects, the test may leave its probe object behind; remove it through an approved storage-admin path after fixing permissions.
+
+## SMTP and email templates
+
+SMTP must be working before enabling automated Trial or upgrade communication. The **Email Templates** area contains programmatic keys, subject, body, documented variables, and `draft`, `published`, or `archived` status.
+
+Safe workflow:
+
+1. Copy or create the template with the exact required key; the key cannot be changed later.
+2. Keep it as `draft` while editing subject, HTML body, and the variable list.
+3. Use only variables supplied by the corresponding workflow.
+4. Review links, dates, sender context, privacy wording, and the plain customer outcome.
+5. Publish deliberately. Published templates are used immediately.
+6. Trigger an approved non-production workflow to verify delivery; Central currently has no generic test-send button.
+
+Unknown `{{variables}}` can remain literally in the outgoing message. A missing published template key can break delivery, while an SMTP failure may leave the underlying instance workflow successful.
+
+## AI Prompts
+
+**AI Prompts** stores named prompt definitions with status, description, system prompt, and ordered role/text messages. The current Admin Panel does not show a consumer assignment, preview, execution test, or version history. Keep new prompts as draft, document the intended consumer outside the prompt body, and do not claim a behavior until it has been tested in the consuming application.
+
+## Change checklist
+
+- Capture current values and affected workflows before editing.
+- Change one logical integration at a time.
+- Save, then run its direct health or connection test.
+- Perform an end-to-end non-production action.
+- Check notifications and audit evidence.
+- Keep a rollback value or credential ready without exposing it.

@@ -1,0 +1,81 @@
+---
+title: "Backups und Wiederherstellung"
+sidebarTitle: "Backups & Wiederherstellung"
+description: "Instanzbackups sicher konfigurieren, ausführen, verifizieren, wiederherstellen und löschen."
+icon: "database-backup"
+keywords: ["Backup", "Restore", "Recovery", "S3", "Safety Backup"]
+---
+
+Central verwaltet Anwendungsdaten-Backups für Coolify-Instanzen und speichert die Artefakte im konfigurierten S3-kompatiblen Speicher. Öffne eine Instanz und dort **Backups**, um die vollständige Historie und Recovery-Aktionen zu sehen.
+
+## Backup-Bereitschaft
+
+Backups benötigen:
+
+- eine Coolify-Instanz mit nutzbarem Deployment und gepinntem SSH Host Key;
+- S3 Bucket, Access Key ID und Secret in Settings; der Endpoint ist für AWS S3 optional, Region und Prefix verwenden konfigurierte Werte oder Defaults;
+- den erwarteten App-Service, die Datenbankeinstellungen, persistenten Volumes und den Project Hint im Template;
+- keinen bereits laufenden oder wartenden Backup-Job derselben Instanz.
+
+Geplante Backups benötigen zusätzlich eine aktivierte Backup-Richtlinie. Leere Schedule- und Retention-Werte der Instanz übernehmen die globalen Defaults; manuelle Backups und Safety Backups benötigen keine instanzbezogenen Overrides.
+
+Der Readiness-Banner im Dashboard und die instanzbezogene Begründung bei deaktivierten Aktionen zeigen fehlende Konfiguration. Bereitschaft herstellen, bevor Pre-Upgrade- oder Pre-Decommission-Sicherungen als Schutz angenommen werden.
+
+## Backup-Statuswerte
+
+| Status | Bedeutung |
+| --- | --- |
+| `queued` | Der Worker hat noch nicht begonnen. |
+| `running` | Daten werden erfasst, verifiziert und hochgeladen. |
+| `completed` | Upload ist abgeschlossen. Verification und Recovery Capability zusätzlich prüfen. |
+| `failed` | Sanitisierten Fehler lesen und erst nach Behebung der Ursache erneut versuchen. |
+| `deleting` | Gespeicherte Objekte und Historieneintrag werden entfernt. |
+| `expired` | Aufbewahrungsfrist ist abgelaufen; nicht als nutzbares Artefakt behandeln. |
+
+Ein wiederherstellbares Backup muss ein abgeschlossenes, durch Rücklesen verifiziertes Vollbundle im Format `veviad.instance-backup.v2` sein. Ältere oder partielle Backups können nur die Datenbank enthalten und stellen keine Upload-Dateien wieder her.
+
+## Backup ausführen und prüfen
+
+<Steps>
+  <Step title="Backup-Seite der Instanz öffnen">
+    Instanz, deploytes Image, letzten Backup-Status und einen möglichen aktiven Lauf bestätigen.
+  </Step>
+  <Step title="Backup now wählen">
+    Die Anfrage wird in die Queue gestellt. Solange derselbe Lauf wartet oder läuft, die Aktion nicht wiederholen.
+  </Step>
+  <Step title="Abschluss abwarten">
+    `completed`, Bundle-Größe, Full Recovery Capability, Verification-Badge, Abschlusszeit und gesichertes unveränderliches Image prüfen.
+  </Step>
+  <Step title="Fehler untersuchen">
+    S3-, SSH-, Template-, Service- oder Volume-Ursachen beheben und erst danach Retry wählen. Pre-Upgrade-Backups werden durch erneutes Starten des Upgrades und nicht über den manuellen Backup-Retry wiederholt.
+  </Step>
+</Steps>
+
+## Restore in place
+
+Recovery unterstützt eine vorhandene Coolify-Instanz auf demselben Server. AWS, Cross-Server-Recovery, gelöschte Datensätze und decommissionierte Instanzen werden nicht unterstützt.
+
+<Warning>
+  Ein Restore ersetzt den aktuellen Datenbankinhalt und die gesicherten Dateien. Änderungen nach dem Snapshot gehen verloren, Sessions werden ungültig, Runtime-Queues und Cache werden geleert, und bereits versendete E-Mails oder Webhooks lassen sich nicht rückgängig machen. Die Downtime beträgt häufig 15–30 Minuten und kann länger sein.
+</Warning>
+
+<Steps>
+  <Step title="Verifiziertes Quellbundle wählen">
+    Snapshot-Zeit, Größe, gesichertes Image, Verification, Datenbank- und Datei-Abdeckung sowie Recovery-Secrets prüfen.
+  </Step>
+  <Step title="Safety Backup bestätigen">
+    Die normale Recovery erstellt zuerst ein frisches Vollbackup der aktuellen Instanz, damit ein Rollback möglich bleibt.
+  </Step>
+  <Step title="Exakten Instanznamen eingeben">
+    Recovery in die Queue stellen und die Phasen überwachen: Validation, Stop, Safety Backup, Database, Files, Image Switch, Reconciliation, Search Rebuild und Verification.
+  </Step>
+  <Step title="Ergebnis validieren">
+    `running`, gesunde Komponenten, korrekte Anwendungsdaten, Upload-Dateien, Anmeldung, Suche und Recovery-Audit-Einträge prüfen.
+  </Step>
+</Steps>
+
+Scheitert Recovery, kann auf das Safety Backup zurückgerollt werden. Ein fehlgeschlagener Rollback lässt die Anwendung gestoppt und erfordert manuelles Eingreifen. Ein Emergency Retry ohne Safety Backup ist nur nach dessen Fehlschlag verfügbar und kann Rollback unmöglich machen; dafür ist eine ausdrückliche Incident-Freigabe erforderlich.
+
+## Backup-Historie löschen
+
+Abgeschlossene und fehlgeschlagene Backups können zur Löschung eingeplant werden, sofern keine Recovery-Historie darauf verweist. S3-Objekte und Historieneintrag werden asynchron entfernt. Einen gespeicherten Deletion Error untersuchen; Objekte nicht manuell löschen, ohne den Datensatz abzugleichen.

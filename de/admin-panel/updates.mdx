@@ -1,0 +1,73 @@
+---
+title: "Updates und Zeitpläne"
+sidebarTitle: "Updates & Zeitpläne"
+description: "Instanz-Images mit Backup- und Channel-Schutz aktualisieren, downgraden und planen."
+icon: "arrow-up-circle"
+keywords: ["Upgrade", "Downgrade", "Bulk Update", "Zeitplan", "Image tag"]
+---
+
+Updates ersetzen das deployte Image und starten die Instanz neu. Sie verursachen kurze Downtime und laufen asynchron. Das gewählte Image muss zum Production- oder Development-Release-Channel der Instanz gehören.
+
+## Vor einem Update
+
+- Aktuelle deployte Version, Release Channel, Health und Kunden-Wartungsfenster bestätigen.
+- Backup-Bereitschaft prüfen. Ist **Require pre-upgrade backup** global aktiviert, blockiert ein fehlgeschlagenes Pre-Upgrade-Backup ein Coolify-Upgrade.
+- Release- und Migrationshinweise der Zielversion lesen.
+- Sicherstellen, dass kein Backup, Restore, Lifecycle-Vorgang oder anderes Update aktiv ist.
+- Vor risikoreichen Änderungen eine Rollback- oder Recovery-Entscheidung festlegen.
+
+## Einzelne Instanz upgraden
+
+<Steps>
+  <Step title="Instanz öffnen">
+    **Upgrade** wählen und einen neueren zulässigen Image tag aus demselben Channel auswählen.
+  </Step>
+  <Step title="Datenbank-Reset deaktiviert lassen">
+    Die Option **Reset database (wipe all data and re-seed)** löscht alle Tabellen und vorhandenen Daten dauerhaft. Nur für eine ausdrücklich genehmigte frische Umgebung verwenden.
+  </Step>
+  <Step title="Starten und überwachen">
+    Die Instanz wechselt auf `upgrading`. Backup-Status, Activity, Notifications und Health beobachten, bis wieder `running` erreicht ist.
+  </Step>
+  <Step title="Anwendung validieren">
+    Anmeldung, kritische Kundenabläufe, Dateien, Queues, Suche und deployten Image-Digest oder Tag prüfen.
+  </Step>
+</Steps>
+
+## Downgrade
+
+Downgrade wählt einen älteren Image tag und startet den Dienst neu. Anwendungsmigrationen können nicht rückwärtskompatibel sein; ein Datenbank-Migrationsrollback oder eine vollständige Recovery kann erforderlich werden.
+
+<Warning>
+  Ein erfolgreicher Container-Neustart beweist keine Datenkompatibilität. Niemals ohne versionsspezifische Rollback-Anleitung, aktuelles verifiziertes Backup und genehmigtes Wartungsfenster downgraden.
+</Warning>
+
+## Bulk Update
+
+In der Instances-Liste geeignete Instanzen aus **einem Release Channel** auswählen und die Bulk-Update-Aktion starten. Central berechnet eine Baseline und bietet nur gültige neuere Ziele an. Die Ziele werden nacheinander und nicht gleichzeitig verarbeitet. Für jede Instanz wird ein eigenes Ergebnis protokolliert; ein einzelner Fehler bedeutet nicht, dass alle ausgewählten Instanzen fehlgeschlagen sind.
+
+Prüfen:
+
+- jede ausgewählte Instanz gehört zum vorgesehenen Kunden und Environment;
+- alle Ziele verwenden denselben Release Channel;
+- die Zielversion ist neuer als die berechnete Baseline;
+- Backup-Bereitschaft ist für jedes Ziel ausreichend;
+- Endstatus und Health werden pro Instanz kontrolliert.
+
+## Geplante Updates
+
+Zeitpläne werden aus ausgewählten geeigneten Instanzen erstellt. Die Zielmenge bleibt fest; später angelegte Instanzen werden nicht automatisch ergänzt.
+
+| Auswahl | Verhalten |
+| --- | --- |
+| One time \+ specific version | Läuft einmal zum gewählten zukünftigen lokalen Zeitpunkt und in der angegebenen Zeitzone mit explizitem Tag. |
+| One time \+ latest available | Löst beim Lauf die neueste geeignete unveränderliche Version auf. |
+| Recurring | Täglich, wöchentlich oder monatlich; löst beim Lauf immer die neueste geeignete unveränderliche Channel-Version auf. |
+
+Die aufgelöste Version wird pro Schedule Run gespeichert. Beim einzelnen Coolify-Instanzupdate wird das Image auf einen unveränderlichen Digest aufgelöst. Unter **Update schedules** sind Run-Historie sowie Edit, Pause, Resume, Cancel und Run now verfügbar. Ein pausierter einmaliger Zeitplan in der Vergangenheit muss vor Resume auf einen zukünftigen Zeitpunkt geändert werden.
+
+## Fehlerbehandlung
+
+1. Schedule Run oder Instance Activity lesen und feststellen, ob Backup, Image-Deployment, Restart oder Health-Verifikation fehlschlug.
+2. `upgrading` oder Schedule-Status nicht direkt ändern.
+3. Ursache beheben und Update wiederholen oder **Run now** nur verwenden, wenn die Ziele weiterhin zulässig sind.
+4. Ungesunde Deployments, Migrationskonflikte und Rollback-Entscheidungen mit Source- und Safety-Backup-IDs eskalieren.

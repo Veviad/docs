@@ -1,0 +1,78 @@
+---
+title: "Support, Benachrichtigungen und Audit"
+sidebarTitle: "Support & Audit"
+description: "Betriebliche Notifications und Feedback triagieren, GitHub Issues erstellen und belastbare Instanznachweise sammeln."
+icon: "life-buoy"
+keywords: ["Notifications", "Feedback", "GitHub Issue", "Audit Log", "Instance Activity"]
+---
+
+**Notifications**, **Feedback**, **Audit Log** und Instance **Activity** werden gemeinsam verwendet. Jede Quelle beantwortet eine andere Frage; keine ist allein ein vollständiger Incident-Nachweis.
+
+## Notifications
+
+Notifications entstehen aus Background Jobs für Provisionierung, Health, Backup, Recovery, Update, Trial sowie Integrationsfehler oder wichtige Ergebnisse.
+
+Bei der Triage erfassen:
+
+- Zeitstempel und Severity;
+- Customer-, Instance-, Trial-, Server-, Backup-, Restore-Run- oder Schedule-ID;
+- aktuellen Zustand gegenüber dem in der Notification genannten Zustand;
+- zugehöriges Activity- oder Audit-Ereignis;
+- ob die Ursache noch besteht.
+
+<Warning>
+  Der Read-Status von Notifications ist global und nicht mitarbeiterbezogen. Eine Notification oder alle Notifications als gelesen zu markieren, ändert den Zustand für alle. Notifications werden nach 90 Tagen bereinigt; benötigte Incident-Nachweise deshalb an anderer Stelle sichern.
+</Warning>
+
+## Feedback
+
+Feedback Intake speichert Einreichungen aus der Anwendung mit Kategorie, Status, Beschreibung, Absenderkontext, optionalen Anhängen, internen Kommentaren, Assignment und optionaler GitHub-Issue-Verknüpfung.
+
+Empfohlener Ablauf:
+
+<Steps>
+  <Step title="Meldung validieren">
+    Feedback öffnen, Anhänge vorsichtig prüfen und beobachtetes Verhalten von Annahmen trennen. Personen- oder Secret-Daten nicht in öffentliche Systeme kopieren.
+  </Step>
+  <Step title="Ownership und Status setzen">
+    `new` auf `in_review` ändern, sobald jemand die Bearbeitung übernimmt. Internal Comments für knappen Untersuchungskontext verwenden.
+  </Step>
+  <Step title="Bei Entwicklungsarbeit ein GitHub Issue verknüpfen">
+    Konfigurierten GitHub Token und Repository-Scope bestätigen, Inhalt sanitizen, Issue erstellen und Nummer sowie URL prüfen.
+  </Step>
+  <Step title="Synchronisieren und abschließen">
+    Den verknüpften GitHub-Issue-Status bei Bedarf aktualisieren. Feedback mit dokumentierter Begründung auf `resolved`, `rejected` oder `archived` setzen.
+  </Step>
+</Steps>
+
+Das Löschen von Feedback entfernt einen Betriebsdatensatz und kann die Anhangshistorie beeinflussen. Einen terminalen Status bevorzugen, sofern keine genehmigte Datenlöschanforderung besteht.
+
+## Instance Activity
+
+Die Instanzdetailseite zeigt aktuelle Ereignisse; die vollständige Activity-Seite enthält die längere instanzbezogene Sequenz. Sie ist der wichtigste Nachweis für Create, Deploy, Health Change, Backup, Restore, Restart, Update, Decommission und Fehler.
+
+Bei einer Eskalation angeben:
+
+- Instance ID, Name, Domain, Customer, Server und Provider ID;
+- aktuellen Lifecycle- und Health-Status;
+- deployte und angeforderte Image-Version;
+- relevante Backup- oder Restore-Run-IDs;
+- Event-Zeitstempel und sanitisierte Error Codes oder Messages;
+- bereits versuchte Aktionen.
+
+## Grenzen des globalen Audit Log
+
+Das globale Audit Log fokussiert hauptsächlich Instanz-Lifecycle-Ereignisse. Writes sind best effort und die Liste lädt höchstens 500 Einträge. Änderungen an Settings, Customers, Templates, Email Templates und anderer Konfiguration sind nicht garantiert vollständig abgebildet.
+
+<Note>
+  Die Admin-Panel-Audit-Ansicht nicht als vollständiges Compliance-Audit bezeichnen. Bei Änderungen mit hoher Auswirkung die Nachweise mit Directus Activity/Revisions, Provider-Logs, GitHub-Historie, Deployment-Datensätzen und Incident- oder Change-Ticket kombinieren.
+</Note>
+
+## Incident erst schließen, wenn
+
+- finaler Lifecycle-Status und Health stabil sind;
+- kundenseitiges Verhalten verifiziert ist;
+- Backup- oder Recovery-Auswirkungen verstanden sind;
+- Notifications kein aktives Problem mehr anzeigen;
+- Root Cause und etwaige Retries oder Overrides dokumentiert sind;
+- Folgearbeit in Engineering oder Access einen benannten Owner hat.

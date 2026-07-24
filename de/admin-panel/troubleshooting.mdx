@@ -1,0 +1,73 @@
+---
+title: "Runbooks zur Fehlerbehebung"
+sidebarTitle: "Fehlerbehebungs-Runbooks"
+description: "Sichere Diagnose- und Retry-Pfade für Provisionierung, Health, Backup, Recovery, Trial und E-Mail verwenden."
+icon: "wrench"
+keywords: ["Fehlerbehebung", "Provisionierung fehlgeschlagen", "Server offline", "Backup fehlgeschlagen", "Trial fehlgeschlagen", "E-Mail fehlgeschlagen"]
+---
+
+Diese Runbooks dienen dazu, Nachweise zu sammeln und den kleinsten sicheren Retry zu wählen. Aktionen nicht wiederholt anklicken und Directus-Statusfelder nicht verändern, um Fortschritt zu erzwingen.
+
+## Provisionierung hängt oder ist fehlgeschlagen
+
+1. Prüfen, ob der Status noch `pending`, `deploying`, `awaiting_confirmation` oder `error` ist und seit wann er unverändert besteht.
+2. Instance Notes oder Fehlerdarstellung, Notifications, Recent Activity und vollständige Activity-Seite lesen.
+3. Server Health, Provider-Ziel, Restkapazität, Coolify Project/Environment/Destination und globale Provider-Credentials prüfen.
+4. Eindeutigkeit der Domain, Cloudflare-Konfiguration und weiterhin verfügbare Base Domain bestätigen.
+5. Sicherstellen, dass das Template veröffentlicht ist, der Image tag zum Channel gehört und bei Bedarf eine Initial-Admin-E-Mail vorhanden ist.
+6. Bei `awaiting_confirmation` die destruktive Seed-/Reset-Warnung lesen und nur mit Freigabe bestätigen oder abbrechen.
+7. Wenn bei einem Trial das Flag `cleanup_required` gesetzt ist, teilweise angelegte DNS-, Provider-, Volume-, Customer- und Instance-Ressourcen vor dem Provisioning-Retry abgleichen.
+
+Keine Ersatzinstanz erstellen, solange Ownership der ursprünglichen Domain und Provider-Ressourcen unbekannt ist.
+
+## Instanz ist unhealthy oder unreachable
+
+1. Lifecycle-Status und Health-Status unterscheiden. Eine `running` Instanz kann trotzdem Down oder SSL Invalid sein.
+2. **Health Status → Check** ausführen und Anwendung, Datenbank, Redis, Meilisearch, Queue, HTTP-Latenz, TLS und Provider-Diagnostik prüfen.
+3. Serverdatensatz öffnen und dessen Healthcheck ausführen. Bei Offline-Server zuerst Provider-Verbindung reparieren.
+4. Bei `SSL Pending` Zeit für Zertifikatsausstellung lassen. Bei Invalid oder Expired DNS/Proxy Mode und Provider-Domainkonfiguration prüfen.
+5. Nur neu starten, wenn Lifecycle-Status es erlaubt und kein Update, Backup oder Restore läuft.
+6. Trat das Problem nach einem Update auf, requested, deployed und gemeldete Anwendungsversion vergleichen und Recovery statt wiederholter Restarts bewerten.
+
+## Backup schlägt fehl
+
+1. Sanitisierten Fehler, Trigger, Format, Verification State und Zeitstempel des Backups lesen.
+2. Bestätigen, dass eine laufende Coolify-Instanz vorliegt und kein konkurrierender Backup-, Restore- oder Lifecycle-Job aktiv ist.
+3. Globale S3-Felder prüfen und Connection Test ausführen; Write-, Read- und Delete-Berechtigung bestätigen.
+4. Deployment Host, SSH User/Port, verschlüsselten Private Key und gepinnte öffentliche Host-Key-Zeile über einen vertrauenswürdigen Kanal prüfen.
+5. Backup Profile des Templates mit echten App- und Database-Service-Namen, Database Env Keys, persistenten Volumes, File Path und Project Hint abgleichen. Die Wiederherstellung von Secrets wird separat abgeleitet.
+6. Ursache beheben und fehlgeschlagenes manuelles oder geplantes Backup wiederholen. Ein Pre-Upgrade-Backup wird durch erneutes Upgrade wiederholt.
+
+Ein abgeschlossenes altes Database-only-Backup niemals als verifiziertes Full-Recovery-Bundle behandeln.
+
+## Recovery schlägt fehl
+
+1. Fehlgeschlagene Phase identifizieren: Validation, Stop, Safety Backup, Database, Files, Image, Reconciliation, Search, Verification oder Rollback.
+2. Source Backup ID, Safety Backup ID und Restore Run ID sichern.
+3. Bei erfolgreichem automatischem Rollback den wiederhergestellten Ursprungszustand validieren, bevor erneut versucht wird.
+4. Bei fehlgeschlagenem Rollback Anwendung gestoppt lassen und manuelles Eingreifen eskalieren.
+5. Nach Ursachenbehebung normal retryen. Emergency Retry ohne Safety Backup nur verwenden, wenn die UI ihn nach Safety-Backup-Fehler ausdrücklich erlaubt und Incident-Verantwortliche irreversiblen Verlust akzeptieren.
+
+## Trial hängt oder ist fehlgeschlagen
+
+| Symptom | Prüfung und Aktion |
+| --- | --- |
+| `waiting_capacity` | Status und `max_instances` des festen Trial-Servers; Kapazität freigeben oder Profil für künftige Trials ändern. |
+| Provisioning `failed` | Sanitisierten Fehler, mehrdeutige Kunden-E-Mail, Domain/DNS-Kollision, Image-Auflösung, Template und `cleanup_required` prüfen. Erst nach Cleanup retryen. |
+| Active, aber Credentials fehlen | SMTP und veröffentlichtes Credentials Template prüfen; Credential Email ohne Reprovisioning erneut senden. |
+| Pause blockiert | Abschluss-Vollbackup und Verification prüfen. Instanz bleibt gestoppt; Backup-Bereitschaft korrigieren und Lifecycle Stage retryen. |
+| Decommission/Delete blockiert | Pflichtbackup-Relation und Lifecycle Run Error prüfen. Nie durch direkte Statusänderung umgehen. |
+| Antragsteller sieht dauerhaft `pending` | Die öffentliche Status API liefert für unbekannte oder unterdrückte Keys absichtlich neutrales `pending`. Begrenztes Polling stoppen und auf E-Mail verweisen. |
+
+## E-Mail wird nicht zugestellt
+
+1. Bestätigen, ob die zugrunde liegende Instance- oder Trial-Aktion erfolgreich war; E-Mail-Fehler sind häufig entkoppelt.
+2. SMTP Host, Port, Username, verschlüsseltes Passwort, Sender, Netzwerkzugriff und Provider-Logs prüfen.
+3. Sicherstellen, dass der benötigte Email Template Key existiert und `published` ist.
+4. Subject- und Body-Variablen prüfen; unbekannte Platzhalter können wörtlich zugestellt werden.
+5. Wenn verfügbar, den dedizierten Credential-Email-Retry verwenden. Reguläre Initial Credentials können derzeit im Admin-Panel weder erneut gelesen noch allgemein erneut versendet werden.
+6. Niemals eine zweite Instanz nur für ein neues Passwort erzeugen.
+
+## Eskalationspaket
+
+IDs, exakte Zeitstempel mit Zeitzone, aktuelle und vorherige Statuswerte, Health-Ausgabe, sanitisierte Fehlertexte, relevante Activity-Links, Provider IDs, Ziel-Image, Template, Source-/Safety-Backup-IDs, Trial-Lifecycle-Occurrence und alle bereits versuchten Aktionen angeben. API-Keys, Passwörter, Private Keys, rohe verschlüsselte Werte und unnötige persönliche Daten ausschließen.

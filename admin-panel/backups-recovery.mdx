@@ -1,0 +1,81 @@
+---
+title: "Backups and recovery"
+sidebarTitle: "Backups & recovery"
+description: "Configure, run, verify, restore, retry, and delete instance backups safely."
+icon: "database-backup"
+keywords: ["backup", "restore", "recovery", "S3", "safety backup"]
+---
+
+Central manages application-data backups for Coolify instances and stores artifacts in the configured S3-compatible storage. Open an instance and use **Backups** for the full history and recovery controls.
+
+## Backup readiness
+
+Backups require:
+
+- a Coolify instance with a usable deployment and pinned SSH host key;
+- S3 bucket, access key ID, and secret configured in Settings; the endpoint is optional for AWS S3, while region and prefix use configured or default values;
+- the expected template app service, database settings, persistent volumes, and project hint;
+- no other backup already queued or running for that instance.
+
+Scheduled backups additionally require the backup policy to be enabled. Blank instance schedule and retention values inherit the global defaults; manual and safety backups do not require per-instance schedule or retention overrides.
+
+The dashboard readiness banner and instance-level disabled reason identify missing configuration. Fix readiness before relying on pre-upgrade or pre-decommission safeguards.
+
+## Backup states
+
+| Status | Meaning |
+| --- | --- |
+| `queued` | The worker has not started yet. |
+| `running` | Data is being captured, verified, and uploaded. |
+| `completed` | Artifact upload completed. Confirm verification and recovery capability. |
+| `failed` | Read the sanitized error and retry only after correcting the cause. |
+| `deleting` | Stored objects and the history entry are being removed. |
+| `expired` | Retention has elapsed; do not treat the record as a usable artifact. |
+
+A restorable backup must be a completed, read-back-verified `veviad.instance-backup.v2` full bundle. Older or partial backups may be marked database-only and cannot restore uploaded files.
+
+## Run and verify a backup
+
+<Steps>
+  <Step title="Open the instance backup page">
+    Confirm the instance, deployed image, last backup state, and any active backup.
+  </Step>
+  <Step title="Choose Backup now">
+    The request is queued. Do not repeat the action while the same run is queued or running.
+  </Step>
+  <Step title="Wait for completion">
+    Verify `completed`, bundle size, full recovery capability, verification badge, completion time, and backed-up immutable image.
+  </Step>
+  <Step title="Investigate failures">
+    Correct S3, SSH, template, service, or volume issues before choosing Retry. Pre-upgrade backups are retried by retrying the upgrade, not by the manual backup retry.
+  </Step>
+</Steps>
+
+## Restore in place
+
+Recovery supports an existing Coolify instance on the same server. It does not support AWS, cross-server recovery, deleted records, or decommissioned instances.
+
+<Warning>
+  A restore replaces current database content and backed-up files. Changes newer than the selected snapshot are lost, sessions are invalidated, runtime queues and cache are cleared, and already-sent email or webhooks cannot be undone. Expected downtime is commonly 15–30 minutes and can be longer.
+</Warning>
+
+<Steps>
+  <Step title="Choose the verified source bundle">
+    Check snapshot time, size, backed-up image, verification status, database and file coverage, and recovery-secrets coverage.
+  </Step>
+  <Step title="Confirm the safety backup">
+    Normal recovery first creates a fresh full safety backup of the current instance so rollback remains possible.
+  </Step>
+  <Step title="Type the exact instance name">
+    Queue the recovery and monitor its phase: validation, stop, safety backup, database, files, image switch, reconciliation, search rebuild, and verification.
+  </Step>
+  <Step title="Validate the result">
+    Confirm `running`, healthy components, correct application data, uploaded files, sign-in, search, and the recovery audit entries.
+  </Step>
+</Steps>
+
+If recovery fails, the application may be rolled back to the safety backup. A failed rollback leaves it stopped and requires manual intervention. An emergency retry without a safety backup is available only after safety-backup failure and may make rollback impossible; require explicit incident approval.
+
+## Delete backup history
+
+Completed and failed backups can be queued for deletion unless recovery history references them. Deletion removes S3 objects and the history entry asynchronously. A stored deletion error requires investigation; do not delete objects manually without reconciling the record.

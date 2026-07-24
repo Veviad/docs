@@ -1,0 +1,75 @@
+---
+title: "Instanzen und Provisionierung"
+sidebarTitle: "Instanzen & Provisionierung"
+description: "Kundeninstanzen in Veviad Central anlegen, konfigurieren und verifizieren."
+icon: "box"
+keywords: ["Instanzen", "Provisionierung", "Domain", "Initial Admin", "Release Channel"]
+---
+
+Eine Instanz ist ein Kundendeployment mit Server, Domain, Image-Version und optionalem Deployment-Template. Öffne **Instances**, um vorhandene Deployments zu suchen und zu filtern, oder wähle **New Instance**.
+
+## Voraussetzungen
+
+- Soll die Instanz einem Kunden gehören, existiert dieser mit der korrekten E-Mail-Adresse. Die Kundenzuordnung ist optional.
+- Mindestens ein geeigneter Server ist online oder ungeprüft und besitzt freie Kapazität.
+- Die Base Domain ist in Settings konfiguriert.
+- Das vorgesehene Deployment Template ist veröffentlicht und passt zum Anwendungsaufbau.
+- Im ausgewählten Production- oder Development-Kanal existiert ein zulässiger unveränderlicher Image-Tag.
+- Der Backup-Speicher ist bereit, wenn Backups aktiviert werden.
+
+<Note>
+  `Max Instances` wird für die automatische Trial-Kapazität erzwungen, blockiert die manuelle Instanzerstellung derzeit aber nicht hart. Operations muss die reale Kapazität vor dem Speichern selbst prüfen.
+</Note>
+
+## Instanz anlegen
+
+<Steps>
+  <Step title="Deployment identifizieren">
+    Einen eindeutigen internen Namen eintragen. Die Subdomain muss mindestens vier Zeichen lang sein und aus Kleinbuchstaben, Zahlen und Bindestrichen bestehen. Base Domain wählen und das grüne Ergebnis der Verfügbarkeitsprüfung abwarten.
+  </Step>
+  <Step title="Eigentümer und Infrastruktur zuordnen">
+    Server und gegebenenfalls Customer auswählen; **None** wird unterstützt. Den Server nicht nur anhand des Namens wählen, sondern Provider, Status und Restkapazität prüfen.
+  </Step>
+  <Step title="Template und Version wählen">
+    Deployment Template, Instance type (`Production` oder `Development`) und einen erlaubten unveränderlichen Image tag wählen. Der Channel bestimmt auch später die auswählbaren Tags.
+  </Step>
+  <Step title="Initial Admin festlegen">
+    Wenn das Template einen Initial-User verlangt, die verifizierte Kunden-E-Mail oder eine ausdrücklich freigegebene Custom-Adresse verwenden. Das generierte Passwort wird per E-Mail zugestellt und gehört niemals in Notes.
+  </Step>
+  <Step title="Backup-Richtlinie festlegen">
+    Backups aktiviert lassen, sofern keine genehmigte Ausnahme besteht. Schedule und Retention können die globalen Standardwerte für diese Instanz überschreiben.
+  </Step>
+  <Step title="Erstellen und überwachen">
+    Speichern und anschließend Status, Health-Karte, Benachrichtigungen und Activity verfolgen, bis der vorgesehene Endzustand erreicht ist.
+  </Step>
+</Steps>
+
+## Häufige Instanzzustände
+
+| Status | Bedeutung und Vorgehen |
+| --- | --- |
+| `pending` | Datensatz existiert; Provisionierung wurde noch nicht gestartet oder wartet. |
+| `deploying` | Infrastruktur und Anwendung werden erstellt. Abwarten und Activity beobachten. |
+| `awaiting_confirmation` | Ein Deploymentschritt benötigt eine Bestätigung, häufig wegen möglichem destruktivem Seed oder Reset. Text vollständig lesen. |
+| `running` | Dienst sollte erreichbar sein. Health und Anmeldung separat bestätigen. |
+| `unhealthy` | Deployment existiert, aber die Health-Verifikation ist fehlgeschlagen. Komponenten und Logs vor einem Retry prüfen. |
+| `error` | Workflow ist fehlgeschlagen. Über Audit-Historie und Notification den sicheren Retry-Pfad bestimmen. |
+| `stopped` | Dienst ist absichtlich offline und kann normalerweise erneut gestartet werden. |
+| `decommissioned` | Runtime-Ressourcen und DNS wurden entfernt; Datensatz und Backup-Historie bleiben bestehen. |
+
+## Bearbeiten
+
+Die Domain ist gesperrt, solange eine Instanz provisioniert ist. Für eine Änderung zuerst decommissionieren, den decommissionierten Datensatz bearbeiten und anschließend recommissionieren. Eine Änderung des Server-Felds ist Konfiguration und kein Live-Infrastruktur-Migrationsworkflow. Änderungen an Template, Channel oder Version können das Runtime-Verhalten verändern; für laufende Instanzen den vorgesehenen Update-Ablauf verwenden.
+
+<Warning>
+  Eine Bestätigung mit Datenbank-Reset ist destruktiv. Nur bestätigen, wenn Datenverlustumfang und Backup verstanden sind. Niemals den Directus-Status einer Instanz ändern, um eine Bestätigung oder einen fehlgeschlagenen Workflow zu umgehen.
+</Warning>
+
+## Erfolgskontrolle
+
+- Status erreicht `running` und Health ist Healthy.
+- Die URL löst auf die richtige Instanz auf und TLS ist gültig.
+- Der Initial-Administrator kann sich anmelden, wenn einer angefordert wurde.
+- Kunde, Server, Template, Channel und deploytes Image stimmen.
+- Backup-Richtlinie ist aktiviert und der nächste Lauf plausibel.
+- Die Activity enthält die erwarteten Create- und Deploy-Ereignisse.

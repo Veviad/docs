@@ -1,0 +1,66 @@
+---
+title: "Instance lifecycle actions"
+sidebarTitle: "Instance lifecycle"
+description: "Start, stop, restart, decommission, recommission, and delete instances with the correct safeguards."
+icon: "power"
+keywords: ["start", "stop", "restart", "decommission", "recommission", "delete instance"]
+---
+
+The available controls on an instance detail page depend on its current status, provider, and whether another operation is running.
+
+## Reversible runtime actions
+
+| Action | Eligible state | Result |
+| --- | --- | --- |
+| Restart | `running`, `unhealthy`, or `error` | Restarts the runtime. Brief downtime is expected. |
+| Stop | `running` or `unhealthy` | Stops containers; DNS and persistent data remain. Status becomes `stopped`. |
+| Start | `stopped` | Starts the existing runtime and returns it online. |
+
+After each action, wait for the transitional status (`restarting`, `stopping`, or `starting`) to finish. Confirm both the final status and the health check.
+
+## Decommission
+
+Decommission removes runtime resources while retaining the Central instance record and backup history. For a provisioned Coolify instance, it also removes DNS and all application, PostgreSQL, Redis, Meilisearch, and file volumes.
+
+<Steps>
+  <Step title="Confirm the target">
+    Verify customer, instance name, domain, server, and recent activity. A Coolify instance must be running so a consistent full backup can be captured.
+  </Step>
+  <Step title="Review the backup requirement">
+    Central queues a fresh read-back-verified full backup before deleting volumes. Type the instance name exactly to confirm.
+  </Step>
+  <Step title="Monitor the workflow">
+    The instance moves to `decommissioning`. Confirm the backup completes before resource deletion and wait for `decommissioned`.
+  </Step>
+  <Step title="Verify cleanup">
+    Confirm the service and DNS are gone, the instance record remains, and the final backup is visible and verified.
+  </Step>
+</Steps>
+
+<Warning>
+  If the required backup fails, decommissioning stops without deleting volumes. The UI may offer a permanent volume-delete override only for the same recent failed backup. This override can destroy the latest data permanently and requires a second destructive confirmation. Use it only under an approved incident decision.
+</Warning>
+
+## Recommission
+
+Only a `decommissioned` instance can be recommissioned. Before starting:
+
+- edit the domain if it must change;
+- confirm the server, template, release channel, and image tag;
+- add an initial-admin email when the template requires one;
+- ensure no active instance already owns the domain;
+- verify infrastructure credentials and capacity.
+
+Recommissioning provisions a new runtime. It does **not** automatically restore the old final backup. If the old data is required, plan recovery explicitly after the new runtime is ready.
+
+## Delete the Central record
+
+Deletion is permitted only after the instance is `decommissioned`. It permanently removes the Central record; if infrastructure was removed manually outside Central, orphaned services or DNS may still exist. Confirm provider state and required audit evidence first.
+
+## Never do this
+
+- Do not edit lifecycle statuses directly in Directus.
+- Do not decommission during an active restore or another transitional operation.
+- Do not assume recommission restores data.
+- Do not delete the Central record as a shortcut for failed infrastructure cleanup.
+- Do not use the backup override merely to save time.

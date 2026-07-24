@@ -1,0 +1,103 @@
+---
+title: "Self-Service-Trials"
+sidebarTitle: "Self-Service-Trials"
+description: "Trial Intake, Zugangsdaten, Provisionierung, Lifecycle-Aktionen und datenschutzfreundliche Statusabfrage konfigurieren."
+icon: "flask-conical"
+keywords: ["Trials", "Intake API", "Status API", "Idempotency", "Lifecycle", "Eligibility"]
+---
+
+Self-Service-Trials erstellen zeitlich begrenzte Coolify-Instanzen aus einem authentifizierten Aufruf des Website-Backends ohne manuelle Freigabe. Das globale Profil befindet sich unter **Settings → Self-service Trials**, einzelne Anträge unter **Trials**.
+
+## Globales Trial-Profil konfigurieren
+
+Änderungen gelten nur für neue Trials. Jeder angenommene Antrag speichert einen unveränderlichen Policy Snapshot. Das Deaktivieren des Intake stoppt bestehende Trial-Lifecycles nicht.
+
+<Steps>
+  <Step title="Server und Template vorbereiten">
+    Einen festen Coolify Server mit Kapazität und ein veröffentlichtes Deployment Template mit aktiviertem **Requires initial user** auswählen. Vollständige Backup-Zuordnungen bestätigen.
+  </Step>
+  <Step title="Domain- und Image-Richtlinie wählen">
+    Base Domain und Prefix festlegen. Central ergänzt ein zufälliges zehnstelliges Base32-Suffix. Production oder Development sowie latest immutable oder einen festen unveränderlichen Tag wählen.
+  </Step>
+  <Step title="Lifecycle festlegen">
+    Active Days, Decommission-Abstand nach Expiry und optionalen Delete-Abstand konfigurieren. Die erzwungene Reihenfolge lautet Pause, Decommission und optional Delete. Zeitpunkte müssen aufsteigen.
+  </Step>
+  <Step title="Warnungen festlegen">
+    Expiry Warning und Decommission Warning konfigurieren. `0` deaktiviert die jeweilige Warnung.
+  </Step>
+  <Step title="API-Zugangsdaten generieren">
+    **Generate API credentials** wählen. Den Ingress API Key sofort kopieren; der Klartext wird nur einmal angezeigt. Central erzeugt den stabilen Identity Key intern und zeigt ihn niemals an.
+  </Step>
+  <Step title="Vor Aktivierung validieren">
+    SMTP, die veröffentlichten Templates `trial_credentials`, `trial_expiring`, `trial_paused` und `trial_decommission_warning`, S3-Backup-Bereitschaft, Serverkapazität, DNS, Deployment Template und Website-Integration prüfen. Automatic Trials erst nach einem End-to-End-Test aktivieren.
+  </Step>
+</Steps>
+
+<Warning>
+  Eine Rotation des Ingress Keys macht den alten Website-Key sofort ungültig. Der stabile Identity Key darf nicht rotiert werden, weil er die One-Trial-per-Email-Eligibility schützt. Secret-Felder zeigen Masken; eine unveränderte Maske bewahrt den gespeicherten Wert.
+</Warning>
+
+## Intake API
+
+Nur aus einem vertrauenswürdigen Website-Backend oder einer Serverless Function aufrufen. Den Bearer Key niemals in Browser-JavaScript ausliefern.
+
+```http
+POST /api/trials/intake
+Authorization: Bearer <TRIAL_INGRESS_API_KEY>
+Idempotency-Key: <neue UUID für diese logische Einreichung>
+Content-Type: application/json
+```
+
+Pflichtfelder im JSON sind `full_name`, `email`, `company_name`, `privacy_notice_version`, `privacy_notice_acknowledged: true`, `trial_terms_version` und `trial_terms_accepted: true`. Optional sind Phone, Industry, Use Case, Marketing Consent, Referrer und UTM-Werte. Das Schema ist strikt und der Body darf maximal 16 KiB groß sein.
+
+Ein gültiger Antrag liefert `202 Accepted` mit einer opaken Request ID. Dieselbe Idempotency-UUID darf nur beim Retry derselben logischen Einreichung wiederverwendet werden. Eine nicht berechtigte E-Mail erhält dieselbe generische Annahmeantwort, erzeugt aber keine weitere Instanz.
+
+## Status API
+
+Dasselbe vertrauenswürdige Backend kann mit der ursprünglichen UUID pollen:
+
+```http
+GET /api/trials/intake/status
+Authorization: Bearer <TRIAL_INGRESS_API_KEY>
+Idempotency-Key: <ursprüngliche UUID>
+```
+
+Eine `200`-Antwort enthält ausschließlich:
+
+```json
+{
+  "status": "pending | provisioning | active | paused | ended | converted | failed",
+  "activated_at": "ISO-Zeitstempel oder null",
+  "expires_at": "ISO-Zeitstempel oder null"
+}
+```
+
+Unbekannte und bewusst unterdrückte Keys liefern ebenfalls `pending` mit null-Zeitwerten. Das schützt die Eligibility-Privatsphäre; `pending` ist deshalb keine Zusage, dass eine Instanz entsteht. Nur zeitlich begrenzt pollen und den Antragsteller auf seine E-Mails verweisen. Fehlercodes: `400` bei ungültiger UUID, `401` bei falschem Bearer Key und `503` bei nicht verfügbarem Dienst.
+
+## Trial-Antrag betreiben
+
+| Interner Status | Bedeutung für Operations |
+| --- | --- |
+| `accepted`, `waiting_capacity` | Gespeichert und wartet auf Worker oder Kapazität des festen Servers. |
+| `provisioning` | Kunde, Domain, DNS, Version und Instanz werden vorbereitet. |
+| `active` | Instanz läuft; die Trial-Zeit begann bei `activated_at`. |
+| `pausing`, `paused` | Expiry erreicht; ein verifiziertes Abschlussbackup ist erforderlich und die Instanz wird gestoppt. |
+| `decommissioning`, `decommissioned`, `deleting`, `completed` | Destruktiver Lifecycle läuft oder ist abgeschlossen. |
+| `failed` | Sanitisierten Fehler, Cleanup-Flag und zulässige Retry-Aktion prüfen. |
+| `converted` | Trial wurde reguläre Instanz; automatischer Trial-Lifecycle ist dauerhaft beendet. |
+
+Verfügbare Admin-Aktionen:
+
+- **Extend** ändert Expiry; eine pausierte Instanz wird wieder gestartet und das alte Abschlussbackup invalidiert.
+- **Convert** macht aus einem aktiven oder pausierten Trial eine reguläre Instanz und beendet den Trial-Lifecycle dauerhaft.
+- **End now** setzt Expiry auf jetzt und startet den normalen Grace-Lifecycle; es löscht nicht sofort.
+- Provisioning, Credential Email oder fehlgeschlagene Lifecycle Stage erst nach Behebung der Ursache erneut versuchen.
+- **Release eligibility** erlaubt nach ausdrücklicher Bestätigung einen weiteren automatischen Trial für die normalisierte E-Mail.
+
+## Fehlerregeln
+
+- SMTP-Fehler stoppen eine laufende Instanz nicht. Credential Email separat erneut senden.
+- Ein fehlgeschlagenes Abschlussbackup lässt die Instanz gestoppt und blockiert Decommission, bis ein gültiges Backup existiert.
+- `cleanup_required` bedeutet, dass teilweise angelegte Provider-Ressourcen vor einem zweiten Provisionierungsversuch abgeglichen werden müssen.
+- Decommission und Delete dürfen ohne das erforderliche verifizierte Vollbackup nicht fortgesetzt werden.
+- Bei finaler Löschung werden Trial-PII anonymisiert; Eligibility Fingerprint und Audit-Historie bleiben bestehen.

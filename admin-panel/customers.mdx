@@ -1,0 +1,60 @@
+---
+title: "Customers"
+sidebarTitle: "Customers"
+description: "Create and maintain customer records, contact data, ownership, and upgrade-email preferences."
+icon: "building-2"
+keywords: ["customers", "email", "instances", "upgrade notifications"]
+---
+
+Customer records connect a company and contact to one or more application instances. Open **Customers** from the Management section.
+
+## Required and optional data
+
+| Field | Use |
+| --- | --- |
+| Company Name | Required display name for the organization. |
+| Email | Required contact address. It is also relevant to initial-admin creation and automatic Trial identity matching. |
+| Name, Phone | Optional primary contact details. |
+| Status | `active`, `inactive`, or `archived`. Prefer archiving over deletion when history must remain. |
+| Notes | Internal operating context; do not store passwords or API keys. |
+| Upgrade email preference | Per-customer override for successful instance-upgrade notifications. `Default` inherits the global setting; the global setting remains the master switch and a customer override cannot re-enable globally disabled mail. |
+
+Only `active` customers are offered in the new-instance form. Use `inactive` or `archived` only when no new instance should be assigned.
+
+## Create a customer
+
+<Steps>
+  <Step title="Check for an existing record">
+    Search the customer list by company name, then verify the email on possible matches. Reusing the correct record avoids split instance history and ambiguous Trial matching.
+  </Step>
+  <Step title="Open New Customer">
+    Enter the company name and a valid email. Add the contact name, phone, status, and operational notes when known.
+  </Step>
+  <Step title="Save and verify">
+    Open the customer detail page and confirm the displayed data. Related instances appear on the right after they have been assigned.
+  </Step>
+</Steps>
+
+<Warning>
+  Multiple customer records with the same normalized email can block automatic Trial provisioning because Central cannot choose an unambiguous owner. Resolve duplicates before retrying the Trial.
+</Warning>
+
+## Edit and archive
+
+Use the customer detail page to update contact data or the upgrade-email preference. Changing the email can affect future initial-user communication and Trial-to-customer matching; verify the new address before saving.
+
+Set a customer to `archived` when the relationship is no longer active but records must remain. Delete only after confirming that no instance or other relevant relation still uses the customer. Some delete buttons use a simple browser confirmation and deletion may fail when Directus relations protect the record.
+
+## Success checks
+
+- The customer appears once in the list with the intended status.
+- The detail page shows the correct contact and upgrade-email preference.
+- Every related instance belongs to the expected customer.
+- No secrets or credentials are stored in Notes.
+
+## Escalate when
+
+- duplicate emails cannot be safely consolidated;
+- an expected related instance is missing or belongs to another customer;
+- a delete operation is blocked by an unknown relation;
+- the contact change could redirect credentials or operational email to the wrong person.

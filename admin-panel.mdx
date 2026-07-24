@@ -1,0 +1,82 @@
+---
+title: "Veviad Admin Panel"
+sidebarTitle: "Overview"
+description: "Operate customers, instances, Trials, infrastructure, and support workflows safely in Veviad Central."
+icon: "layout-dashboard"
+keywords: ["admin panel", "central", "operations", "customers", "instances", "trials"]
+---
+
+Veviad Central is the internal control plane for customer records, application instances, Trial automation, infrastructure configuration, and operational support.
+
+<Warning>
+  All signed-in users can see the main navigation. Directus permissions still decide whether an operation succeeds. Treat the responsibilities below as an operating model, not as a technically enforced role matrix.
+</Warning>
+
+## Intended responsibilities
+
+| Responsibility | Typical work |
+| --- | --- |
+| Support | Review customers, instances, feedback, notifications, and audit history. Escalate infrastructure or destructive actions. |
+| Operations | Provision and operate instances, run backups and restores, manage updates, and handle Trial retries. |
+| Platform administration | Configure servers, deployment templates, DNS, SMTP, backup storage, API credentials, and global policies. |
+
+## Start with the dashboard
+
+The dashboard summarizes customer, instance, server, and published-template counts. It also shows server capacity, instance health distribution, and recently created instances. Use it to spot capacity pressure or a growing unhealthy population, then open the relevant record for detail.
+
+## Status principles
+
+- Long-running work is asynchronous. Transitional states such as `provisioning`, `upgrading`, `restoring`, `pausing`, or `decommissioning` are expected.
+- Do not repair a stuck workflow by editing status fields directly in Directus. Check notifications, instance activity, the audit log, and the relevant retry action first.
+- A green UI message confirms that an action was accepted. Confirm the final state and health separately.
+- Recovery and decommission workflows enforce a verified backup. Database reset, downgrade, and updates with **Require pre-upgrade backup** disabled may not; manually confirm a current backup before any destructive change.
+
+<CardGroup cols={2}>
+  <Card title="Customers" icon="building-2" href="/admin-panel/customers">
+    Maintain customer identity, contact details, and instance ownership.
+  </Card>
+
+  <Card title="Instances and provisioning" icon="box" href="/admin-panel/instances">
+    Create instances and understand their configuration and status.
+  </Card>
+
+  <Card title="Instance lifecycle" icon="power" href="/admin-panel/instance-lifecycle">
+    Start, stop, restart, decommission, recommission, or delete safely.
+  </Card>
+
+  <Card title="Backups and recovery" icon="database-backup" href="/admin-panel/backups-recovery">
+    Verify backup readiness and perform controlled restores.
+  </Card>
+
+  <Card title="Updates and schedules" icon="arrow-up-circle" href="/admin-panel/updates">
+    Upgrade individual or selected instances and manage schedules.
+  </Card>
+
+  <Card title="Self-service Trials" icon="flask-conical" href="/admin-panel/trials">
+    Configure, monitor, extend, convert, and troubleshoot Trials.
+  </Card>
+
+  <Card title="Infrastructure" icon="server" href="/admin-panel/infrastructure">
+    Manage servers, capacity, deployment templates, and backup profiles.
+  </Card>
+
+  <Card title="Settings and integrations" icon="settings" href="/admin-panel/settings">
+    Configure DNS, Coolify, S3, SMTP, GitHub, health checks, and secrets.
+  </Card>
+
+  <Card title="Support and audit" icon="life-buoy" href="/admin-panel/support-audit">
+    Triage notifications and feedback, then collect evidence.
+  </Card>
+
+  <Card title="Troubleshooting runbooks" icon="wrench" href="/admin-panel/troubleshooting">
+    Follow safe checks for common stuck or failed workflows.
+  </Card>
+</CardGroup>
+
+## Before any high-impact action
+
+1. Confirm the customer and exact instance, including domain and server.
+2. Read the current status, health result, and recent activity.
+3. Confirm a current verified full backup when data may be removed or replaced.
+4. State the expected downtime and final state.
+5. After the action, verify status, health, DNS, and the audit trail.
