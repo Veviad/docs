@@ -1,0 +1,73 @@
+---
+title: "Troubleshooting runbooks"
+sidebarTitle: "Troubleshooting runbooks"
+description: "Follow safe diagnostic and retry paths for provisioning, health, backup, recovery, Trial, and email failures."
+icon: "wrench"
+keywords: ["troubleshooting", "provisioning failed", "server offline", "backup failed", "trial failed", "email failed"]
+---
+
+Use these runbooks to collect evidence and choose the narrowest safe retry. Do not repeatedly click actions or edit Directus status fields to force progress.
+
+## Provisioning is stuck or failed
+
+1. Confirm whether the status is still `pending`, `deploying`, `awaiting_confirmation`, or `error` and how long it has been unchanged.
+2. Read instance Notes/error presentation, Notifications, Recent Activity, and the full Activity page.
+3. Check server health, provider target, remaining capacity, Coolify project/environment/destination, and global provider credentials.
+4. Verify the domain is unique, Cloudflare configuration is valid, and the selected base domain is still available.
+5. Confirm the template is published, the image tag belongs to the correct channel, and an initial-admin email exists when required.
+6. If `awaiting_confirmation`, read the destructive seed/reset warning and either confirm with approval or cancel.
+7. If a Trial has `cleanup_required`, reconcile partial DNS, provider service, volumes, customer, and instance relations before retrying provisioning.
+
+Do not create a replacement instance until ownership of the original domain and provider resources is known.
+
+## Instance is unhealthy or unreachable
+
+1. Distinguish lifecycle status from health status. A `running` instance can still be Down or SSL Invalid.
+2. Run **Health Status → Check** and inspect application, database, Redis, Meilisearch, queue, HTTP latency, TLS, and provider diagnostics.
+3. Open the Server record and run its health check. If the server is offline, fix provider connectivity before instance actions.
+4. For `SSL Pending`, allow certificate issuance time. For Invalid or Expired, verify DNS/proxy mode and the provider domain configuration.
+5. Restart only when the lifecycle state permits it and no update, backup, or restore is active.
+6. If the issue followed an update, compare requested, deployed, and reported application versions and evaluate recovery rather than repeated restart.
+
+## Backup fails
+
+1. Read the backup's sanitized error, trigger, format, verification state, and timestamps.
+2. Confirm the instance is a running Coolify deployment and no competing backup/restore/lifecycle job exists.
+3. Check global S3 fields and run the connection test; confirm write, read, and delete permissions.
+4. Verify Deployment Host, SSH user/port, encrypted private key, and the pinned public host-key line through a trusted channel.
+5. Check the template backup profile against actual app and database service names, database environment keys, persistent volumes, file path, and project hint. Secret recovery is derived separately.
+6. Correct the cause, then retry a failed manual or scheduled backup. Retry a pre-upgrade backup by retrying the upgrade.
+
+Never treat a completed database-only legacy backup as a verified full recovery bundle.
+
+## Recovery fails
+
+1. Identify the failed phase: validation, stop, safety backup, database, files, image, reconciliation, search, verification, or rollback.
+2. Preserve source-backup, safety-backup, and restore-run IDs.
+3. If automatic rollback succeeded, validate the restored original state before deciding on another attempt.
+4. If rollback failed, keep the application stopped and escalate for manual intervention.
+5. Retry normally after correcting the cause. Use emergency retry without a safety backup only when the UI explicitly allows it after safety-backup failure and incident leadership accepts irreversible loss.
+
+## Trial is stuck or failed
+
+| Symptom | Check and action |
+| --- | --- |
+| `waiting_capacity` | Fixed Trial server status and `max_instances`; free capacity or select a suitable profile for future Trials. |
+| Provisioning `failed` | Sanitized error, customer-email ambiguity, domain/DNS collision, image resolution, template, and `cleanup_required`. Retry only after cleanup. |
+| Active but credentials missing | SMTP and published credentials template; retry the credential email without reprovisioning. |
+| Pause blocked | Final full backup and verification. The instance remains stopped; correct backup readiness and retry the lifecycle stage. |
+| Decommission/delete blocked | Required final backup relation and lifecycle run error. Never bypass with direct status changes. |
+| Applicant sees endless `pending` | The public status API intentionally returns neutral `pending` for unknown or suppressed keys. Stop bounded polling and direct them to email. |
+
+## Email is not delivered
+
+1. Confirm the underlying instance or Trial action succeeded; email failure is often separate.
+2. Check SMTP host, port, username, encrypted password, sender, network access, and provider logs.
+3. Confirm the required Email Template key exists and is `published`.
+4. Review subject/body variables; unknown placeholders may be delivered literally.
+5. Retry the dedicated credential email when available. Regular initial credentials cannot currently be re-read or generically resent from the Admin Panel.
+6. Never generate a second instance merely to obtain another password.
+
+## Escalation package
+
+Include IDs, exact timestamps and timezone, current and prior statuses, health output, sanitized error text, relevant Activity links, provider IDs, target image, template, source/safety backup IDs, Trial lifecycle occurrence, and every action already attempted. Exclude API keys, passwords, private keys, raw encrypted values, and unnecessary personal data.

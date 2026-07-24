@@ -1,0 +1,82 @@
+---
+title: "Veviad Admin-Panel"
+sidebarTitle: "Überblick"
+description: "Kunden, Instanzen, Trials, Infrastruktur und Support-Abläufe sicher in Veviad Central betreiben."
+icon: "layout-dashboard"
+keywords: ["Admin-Panel", "Central", "Betrieb", "Kunden", "Instanzen", "Trials"]
+---
+
+Veviad Central ist die interne Steuerungsoberfläche für Kundendaten, Anwendungsinstanzen, Trial-Automatisierung, Infrastrukturkonfiguration und operativen Support.
+
+<Warning>
+  Alle angemeldeten Benutzer sehen grundsätzlich die Hauptnavigation. Directus-Berechtigungen entscheiden weiterhin, ob ein Zugriff gelingt. Die folgenden Zuständigkeiten sind deshalb ein Betriebsmodell und keine technisch erzwungene Rollenmatrix.
+</Warning>
+
+## Vorgesehene Zuständigkeiten
+
+| Zuständigkeit | Typische Aufgaben |
+| --- | --- |
+| Support | Kunden, Instanzen, Feedback, Benachrichtigungen und Audit-Historie prüfen; Infrastruktur- oder Löschaktionen eskalieren. |
+| Operations | Instanzen provisionieren und betreiben, Backups und Restores ausführen, Updates verwalten und Trial-Retries bearbeiten. |
+| Plattformadministration | Server, Deployment-Templates, DNS, SMTP, Backup-Speicher, API-Zugangsdaten und globale Richtlinien konfigurieren. |
+
+## Am Dashboard beginnen
+
+Das Dashboard fasst die Anzahl von Kunden, Instanzen, Servern und veröffentlichten Templates zusammen. Es zeigt außerdem Serverkapazität, die Verteilung der Instanzgesundheit und zuletzt angelegte Instanzen. Nutze es, um Kapazitätsengpässe oder eine wachsende Zahl ungesunder Instanzen zu erkennen, und öffne anschließend den betroffenen Datensatz.
+
+## Grundregeln für Statuswerte
+
+- Längere Vorgänge laufen asynchron. Übergangszustände wie `provisioning`, `upgrading`, `restoring`, `pausing` oder `decommissioning` sind zunächst normal.
+- Einen festhängenden Ablauf nicht durch direkte Statusänderungen in Directus reparieren. Zuerst Benachrichtigungen, Instanzaktivität, Audit Log und die passende Retry-Aktion prüfen.
+- Eine grüne UI-Meldung bestätigt die Annahme einer Aktion. Endstatus und Health müssen danach separat geprüft werden.
+- Recovery- und Decommission-Abläufe erzwingen ein verifiziertes Backup. Database Reset, Downgrade und Updates mit deaktiviertem **Require pre-upgrade backup** tun dies möglicherweise nicht; vor jeder destruktiven Änderung manuell ein aktuelles Backup bestätigen.
+
+<CardGroup cols={2}>
+  <Card title="Kunden" icon="building-2" href="/de/admin-panel/customers">
+    Identität, Kontaktdaten und Instanzzuordnung pflegen.
+  </Card>
+
+  <Card title="Instanzen und Provisionierung" icon="box" href="/de/admin-panel/instances">
+    Instanzen erstellen und Konfiguration sowie Status verstehen.
+  </Card>
+
+  <Card title="Instanz-Lifecycle" icon="power" href="/de/admin-panel/instance-lifecycle">
+    Sicher starten, stoppen, neu starten, decommissionieren oder löschen.
+  </Card>
+
+  <Card title="Backups und Wiederherstellung" icon="database-backup" href="/de/admin-panel/backups-recovery">
+    Backup-Bereitschaft prüfen und kontrollierte Restores ausführen.
+  </Card>
+
+  <Card title="Updates und Zeitpläne" icon="arrow-up-circle" href="/de/admin-panel/updates">
+    Einzelne oder ausgewählte Instanzen aktualisieren und Zeitpläne verwalten.
+  </Card>
+
+  <Card title="Self-Service-Trials" icon="flask-conical" href="/de/admin-panel/trials">
+    Trials konfigurieren, überwachen, verlängern, konvertieren und reparieren.
+  </Card>
+
+  <Card title="Infrastruktur" icon="server" href="/de/admin-panel/infrastructure">
+    Server, Kapazität, Deployment-Templates und Backup-Profile verwalten.
+  </Card>
+
+  <Card title="Einstellungen und Integrationen" icon="settings" href="/de/admin-panel/settings">
+    DNS, Coolify, S3, SMTP, GitHub, Healthchecks und Secrets konfigurieren.
+  </Card>
+
+  <Card title="Support und Audit" icon="life-buoy" href="/de/admin-panel/support-audit">
+    Benachrichtigungen und Feedback triagieren und Nachweise sammeln.
+  </Card>
+
+  <Card title="Runbooks zur Fehlerbehebung" icon="wrench" href="/de/admin-panel/troubleshooting">
+    Sichere Prüfpfade für häufige festhängende oder fehlgeschlagene Abläufe nutzen.
+  </Card>
+</CardGroup>
+
+## Vor jeder Aktion mit hoher Auswirkung
+
+1. Kunde und exakte Instanz einschließlich Domain und Server bestätigen.
+2. Aktuellen Status, Health-Ergebnis und letzte Aktivität lesen.
+3. Bei möglichem Entfernen oder Ersetzen von Daten ein aktuelles verifiziertes Vollbackup bestätigen.
+4. Erwartete Downtime und gewünschten Endstatus festhalten.
+5. Nach der Aktion Status, Health, DNS und Audit-Historie prüfen.

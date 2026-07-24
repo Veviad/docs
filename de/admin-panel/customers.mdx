@@ -1,0 +1,60 @@
+---
+title: "Kunden verwalten"
+sidebarTitle: "Kunden"
+description: "Kundendatensätze, Kontaktdaten, Instanzzuordnung und Update-Mail-Präferenzen pflegen."
+icon: "building-2"
+keywords: ["Kunden", "E-Mail", "Instanzen", "Update-Benachrichtigungen"]
+---
+
+Kundendatensätze verbinden ein Unternehmen und seinen Kontakt mit einer oder mehreren Anwendungsinstanzen. Öffne **Customers** im Bereich Management.
+
+## Pflicht- und optionale Angaben
+
+| Feld in der Oberfläche | Verwendung |
+| --- | --- |
+| Company Name | Erforderlicher Anzeigename des Unternehmens. |
+| Email | Erforderliche Kontaktadresse. Sie ist außerdem für die Initial-Admin-Erstellung und automatische Trial-Zuordnung relevant. |
+| Name, Phone | Optionale Angaben zum Hauptkontakt. |
+| Status | `active`, `inactive` oder `archived`. Wenn Historie erhalten bleiben soll, archivieren statt löschen. |
+| Notes | Interner Betriebskontext; niemals Passwörter oder API-Keys speichern. |
+| Upgrade email preference | Kundenspezifische Einstellung für erfolgreiche Instanz-Updates. `Default` übernimmt die globale Einstellung; die globale Einstellung bleibt der Master-Schalter und kann durch eine Kundenoption nicht wieder aktiviert werden. |
+
+Nur `active` Kunden werden im New-Instance-Formular angeboten. `inactive` oder `archived` nur verwenden, wenn keine neue Instanz mehr zugeordnet werden soll.
+
+## Kunden anlegen
+
+<Steps>
+  <Step title="Vorhandenen Datensatz suchen">
+    Suche in der Kundenliste nach dem Firmennamen und prüfe anschließend die E-Mail möglicher Treffer. Die Wiederverwendung des korrekten Datensatzes verhindert geteilte Instanzhistorien und mehrdeutige Trial-Zuordnungen.
+  </Step>
+  <Step title="New Customer öffnen">
+    Company Name und eine gültige Email eintragen. Name, Phone, Status und betriebliche Notes ergänzen, sofern bekannt.
+  </Step>
+  <Step title="Speichern und prüfen">
+    Die Kundendetailseite öffnen und die Angaben bestätigen. Zugehörige Instanzen erscheinen rechts, sobald sie zugeordnet sind.
+  </Step>
+</Steps>
+
+<Warning>
+  Mehrere Kundendatensätze mit derselben normalisierten E-Mail können die automatische Trial-Provisionierung blockieren, weil Central keinen eindeutigen Eigentümer wählen kann. Dubletten vor einem Retry bereinigen.
+</Warning>
+
+## Bearbeiten und archivieren
+
+Auf der Kundendetailseite können Kontaktdaten und die Upgrade-Mail-Präferenz geändert werden. Eine neue E-Mail kann künftige Initial-User-Kommunikation und die Trial-Zuordnung beeinflussen; die Adresse vor dem Speichern verifizieren.
+
+Den Status auf `archived` setzen, wenn die Geschäftsbeziehung nicht mehr aktiv ist, die Historie aber erhalten bleiben soll. Nur löschen, wenn keine Instanz oder andere relevante Relation den Kunden noch verwendet. Einige Löschschaltflächen verwenden lediglich eine Browser-Bestätigung; Directus kann die Löschung bei geschützten Relationen ablehnen.
+
+## Erfolgskontrolle
+
+- Der Kunde erscheint genau einmal mit dem vorgesehenen Status.
+- Die Detailseite zeigt den richtigen Kontakt und die gewünschte Upgrade-Mail-Präferenz.
+- Alle zugehörigen Instanzen gehören zum erwarteten Kunden.
+- In Notes befinden sich keine Secrets oder Zugangsdaten.
+
+## Eskalieren, wenn
+
+- E-Mail-Dubletten nicht sicher zusammengeführt werden können;
+- eine erwartete Instanz fehlt oder einem anderen Kunden gehört;
+- eine Löschung durch eine unbekannte Relation blockiert wird;
+- eine Kontaktänderung Zugangsdaten oder Betriebs-E-Mails an die falsche Person umleiten könnte.

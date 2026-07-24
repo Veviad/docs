@@ -89,6 +89,23 @@
             "icon": "lock",
             "groups": [
               {
+                "group": "Admin Panel",
+                "icon": "panel-top",
+                "pages": [
+                  "admin-panel",
+                  "admin-panel/customers",
+                  "admin-panel/instances",
+                  "admin-panel/instance-lifecycle",
+                  "admin-panel/backups-recovery",
+                  "admin-panel/updates",
+                  "admin-panel/trials",
+                  "admin-panel/infrastructure",
+                  "admin-panel/settings",
+                  "admin-panel/support-audit",
+                  "admin-panel/troubleshooting"
+                ]
+              },
+              {
                 "group": "Release Management",
                 "icon": "rocket",
                 "expanded": true,
@@ -204,6 +221,23 @@
             "tab": "Intern",
             "icon": "lock",
             "groups": [
+              {
+                "group": "Admin-Panel",
+                "icon": "panel-top",
+                "pages": [
+                  "de/admin-panel",
+                  "de/admin-panel/customers",
+                  "de/admin-panel/instances",
+                  "de/admin-panel/instance-lifecycle",
+                  "de/admin-panel/backups-recovery",
+                  "de/admin-panel/updates",
+                  "de/admin-panel/trials",
+                  "de/admin-panel/infrastructure",
+                  "de/admin-panel/settings",
+                  "de/admin-panel/support-audit",
+                  "de/admin-panel/troubleshooting"
+                ]
+              },
               {
                 "group": "Release-Management",
                 "icon": "rocket",

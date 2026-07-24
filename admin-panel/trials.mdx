@@ -1,0 +1,103 @@
+---
+title: "Self-service Trials"
+sidebarTitle: "Self-service Trials"
+description: "Configure Trial intake, credentials, provisioning, lifecycle actions, and privacy-safe status polling."
+icon: "flask-conical"
+keywords: ["trials", "intake API", "status API", "idempotency", "lifecycle", "eligibility"]
+---
+
+Self-service Trials create time-limited Coolify instances from an authenticated website-backend request without manual approval. Open **Settings → Self-service Trials** for the global profile and **Trials** for individual requests.
+
+## Configure the global Trial profile
+
+Changes apply only to new Trials. Every accepted request stores an immutable policy snapshot; disabling intake does not stop existing Trial lifecycles.
+
+<Steps>
+  <Step title="Prepare server and template">
+    Select one fixed Coolify server with capacity and a published deployment template that has **Requires initial user** enabled. Confirm that backup mappings are complete.
+  </Step>
+  <Step title="Choose domain and image policy">
+    Set the base domain and prefix. Central appends a random ten-character Base32 label. Select Production or Development and either the latest immutable version or a fixed immutable tag.
+  </Step>
+  <Step title="Set the lifecycle">
+    Configure active days, decommission offset after expiry, and optional deletion offset. The enforced order is pause, decommission, then optional delete. Offsets must increase.
+  </Step>
+  <Step title="Set warnings">
+    Configure the expiry warning and decommission warning. `0` disables the respective warning.
+  </Step>
+  <Step title="Generate API credentials">
+    Choose **Generate API credentials**. Copy the ingress API key immediately; plaintext is shown once. Central generates the stable identity key internally and never displays it.
+  </Step>
+  <Step title="Validate before enabling">
+    Confirm SMTP; the published templates `trial_credentials`, `trial_expiring`, `trial_paused`, and `trial_decommission_warning`; S3 backup readiness; server capacity; DNS; the deployment template; and website integration. Enable automatic Trials only after an end-to-end test.
+  </Step>
+</Steps>
+
+<Warning>
+  Rotating the ingress key invalidates the website's old key immediately. The stable identity key must not be rotated: it protects one-Trial-per-email eligibility. Secret fields display masks; leaving a mask unchanged preserves the stored value.
+</Warning>
+
+## Intake API
+
+Call from a trusted website backend or serverless function only. Never expose the Bearer key in browser JavaScript.
+
+```http
+POST /api/trials/intake
+Authorization: Bearer <TRIAL_INGRESS_API_KEY>
+Idempotency-Key: <new UUID for this logical submission>
+Content-Type: application/json
+```
+
+Required JSON fields are `full_name`, `email`, `company_name`, `privacy_notice_version`, `privacy_notice_acknowledged: true`, `trial_terms_version`, and `trial_terms_accepted: true`. Optional fields include phone, industry, use case, marketing consent, referrer, and UTM values. The schema is strict and the maximum body size is 16 KiB.
+
+A valid request returns `202 Accepted` with an opaque request ID. The same idempotency UUID must be reused only when retrying the same logical submission. An email that is not eligible receives the same generic acceptance shape but does not create another instance.
+
+## Status API
+
+The same trusted backend can poll with the original UUID:
+
+```http
+GET /api/trials/intake/status
+Authorization: Bearer <TRIAL_INGRESS_API_KEY>
+Idempotency-Key: <original UUID>
+```
+
+A `200` response contains only:
+
+```json
+{
+  "status": "pending | provisioning | active | paused | ended | converted | failed",
+  "activated_at": "ISO timestamp or null",
+  "expires_at": "ISO timestamp or null"
+}
+```
+
+Unknown and intentionally suppressed keys also return `pending` with null timestamps. This protects eligibility privacy, so `pending` is not a guarantee that an instance will be created. Use bounded polling and tell the applicant to check email. Error responses are `400` for an invalid UUID, `401` for invalid Bearer authentication, and `503` when the service is unavailable.
+
+## Operate a Trial request
+
+| Internal status | Operator meaning |
+| --- | --- |
+| `accepted`, `waiting_capacity` | Stored and waiting for worker or fixed-server capacity. |
+| `provisioning` | Customer, domain, DNS, version, and instance are being prepared. |
+| `active` | Instance is running; the Trial clock started at `activated_at`. |
+| `pausing`, `paused` | Expiry reached; a verified final backup is required and the instance is stopped. |
+| `decommissioning`, `decommissioned`, `deleting`, `completed` | Destructive lifecycle is progressing or complete. |
+| `failed` | Inspect sanitized error, cleanup flag, and eligible retry action. |
+| `converted` | Trial became a regular instance; automated Trial lifecycle is permanently stopped. |
+
+Available admin actions:
+
+- **Extend** changes the expiry; a paused instance is started again and the old final backup is invalidated.
+- **Convert** turns an active or paused Trial into a regular instance and cancels Trial lifecycle permanently.
+- **End now** sets expiry to now and starts the normal grace lifecycle; it does not delete immediately.
+- Retry provisioning, credential email, or the failed lifecycle stage only after correcting the cause.
+- **Release eligibility** allows another automatic Trial for the normalized email and requires explicit confirmation.
+
+## Failure rules
+
+- SMTP failure does not stop a running instance. Retry the credential email separately.
+- A failed final backup leaves the instance stopped and blocks decommission until a valid backup exists.
+- `cleanup_required` means partial provider resources must be reconciled before a second provisioning attempt.
+- Decommission and deletion must not proceed without the required verified full backup.
+- At final deletion, Trial PII is anonymized while the eligibility fingerprint and audit history remain.

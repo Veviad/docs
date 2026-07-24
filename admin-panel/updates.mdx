@@ -1,0 +1,73 @@
+---
+title: "Updates and schedules"
+sidebarTitle: "Updates & schedules"
+description: "Upgrade, downgrade, bulk-update, and schedule instance image changes with backup and channel safeguards."
+icon: "arrow-up-circle"
+keywords: ["upgrade", "downgrade", "bulk update", "schedule", "image tag"]
+---
+
+Updates replace the deployed image and restart the instance. They cause brief downtime and run asynchronously. The selected image must belong to the instance's Production or Development release channel.
+
+## Before updating
+
+- Confirm the current deployed version, release channel, health, and customer maintenance window.
+- Verify backup readiness. When **Require pre-upgrade backup** is enabled globally, a failed pre-upgrade backup blocks a Coolify upgrade.
+- Read release and migration notes for the target version.
+- Ensure no backup, restore, lifecycle action, or other update is active.
+- Define a rollback or recovery decision before high-risk changes.
+
+## Upgrade one instance
+
+<Steps>
+  <Step title="Open the instance">
+    Choose **Upgrade** and select a newer allowed image tag from the same channel.
+  </Step>
+  <Step title="Keep database reset off">
+    The optional **Reset database (wipe all data and re-seed)** drops all tables and permanently erases existing data. Use only for an explicitly approved fresh environment.
+  </Step>
+  <Step title="Start and monitor">
+    The instance enters `upgrading`; monitor backup state, Activity, notifications, and health until it returns to `running`.
+  </Step>
+  <Step title="Validate the application">
+    Check login, critical customer workflows, files, queues, search, and the deployed image digest or tag.
+  </Step>
+</Steps>
+
+## Downgrade
+
+Downgrade selects an older image tag and restarts the service. Application migrations may not be backward compatible; a database migration rollback or full recovery can be required.
+
+<Warning>
+  A successful container restart does not prove data compatibility. Do not downgrade without version-specific rollback instructions, a current verified backup, and an approved maintenance window.
+</Warning>
+
+## Bulk update
+
+On the Instances list, select eligible instances from **one release channel** and choose the bulk update action. Central calculates a baseline and only offers valid newer targets. Targets are processed sequentially, not all at once. The request records a separate result for each instance; one failure does not prove that every selected instance failed.
+
+Check:
+
+- every selected target belongs to the intended customer and environment;
+- all selected instances use the same release channel;
+- the target is newer than the computed baseline;
+- backup readiness is acceptable for every target;
+- final status and health are reviewed per instance.
+
+## Scheduled updates
+
+Schedules are created from selected eligible instances. Their target set is fixed; newly created instances are not added automatically.
+
+| Choice | Behavior |
+| --- | --- |
+| One time \+ specific version | Runs once at the chosen future local date and timezone against an explicit tag. |
+| One time \+ latest available | Resolves the latest eligible immutable version when the schedule runs. |
+| Recurring | Daily, weekly, or monthly; always resolves the latest eligible immutable channel version at execution time. |
+
+The resolved version is recorded per schedule run. During each Coolify instance update, the deployment resolves that image to an immutable digest. Use **Update schedules** to inspect run history and to edit, pause, resume, cancel, or run an eligible schedule now. A paused one-time schedule in the past must be edited to a future time before it can resume.
+
+## Failure handling
+
+1. Read the schedule run or instance Activity and identify whether failure occurred in backup, image deployment, restart, or health verification.
+2. Do not change `upgrading` or schedule status directly.
+3. Correct the underlying issue and retry the update or use **Run now** only when targets remain eligible.
+4. Escalate unhealthy deployments, migration conflicts, and rollback decisions with the source and safety-backup IDs.

@@ -1,0 +1,80 @@
+---
+title: "Servers and deployment templates"
+sidebarTitle: "Infrastructure"
+description: "Configure deployment targets, capacity, health, Docker Compose templates, initial users, and backup profiles."
+icon: "server"
+keywords: ["servers", "Coolify", "AWS", "capacity", "deployment templates", "Docker Compose", "backup profile"]
+---
+
+The **Servers** and **Templates** areas define where and how instances are provisioned. Changes can affect new provisioning, backups, recovery, recommissioning, and Trials.
+
+## Servers
+
+A server has an immutable provider type: Coolify or AWS. Choose the provider correctly when creating the record; it cannot be changed later.
+
+### Coolify fields
+
+- **Name** and **IP Address** identify the target in Central.
+- **Coolify Server UUID**, **Project UUID**, **Environment Name**, and **Destination ID** select the exact Coolify placement.
+- **Max Instances** drives capacity display and automated Trial admission; decommissioned instances do not count as active capacity. Manual instance creation currently requires an operator capacity check.
+- **Deployment Host**, **SSH User**, **SSH Port**, and the encrypted **Private Key** support managed backup and recovery.
+- **Pinned Host Key** prevents silent SSH host substitution. A missing or changed key intentionally blocks backup and recovery until the server identity is verified.
+
+Coolify API URL and root-permission bearer token are global Settings values shared by all Coolify server records.
+
+### AWS fields
+
+AWS server records use region, Elastic Beanstalk application name, deployment S3 bucket, and maximum instance capacity. Central's managed backup and in-place recovery UI currently supports Coolify only.
+
+### Health and capacity
+
+Open a server to run a health check, inspect `online`, `offline`, or `unchecked`, review hosted instances, and compare active instance count to the maximum. Do not increase capacity merely to bypass a real resource limit; confirm provider CPU, memory, disk, and workload headroom.
+
+<Warning>
+  Deleting a server record does not prove that provider resources are removed. Confirm that no active instance or Trial depends on it and decommission workloads before deletion. There is currently no separate control that takes a server out of selection.
+</Warning>
+
+## Deployment templates
+
+A template contains:
+
+| Field | Purpose |
+| --- | --- |
+| Name and Version | Operator-readable identity of the template definition. |
+| Status | `draft`, `published`, or `archived`; only published templates should be used for new automated deployments. |
+| Docker Compose Template | Compose YAML rendered for provisioning. |
+| Default Template | Stores and displays a default marker. The New Instance form does not currently auto-select it, so operators must still choose the template explicitly. |
+| Requires Initial User | Requires an email during instance creation and causes Central to create an initial administrator. Required for the Trial template. |
+| Backup Profile | Defines the app service, database settings, persistent volumes, and project hint used by managed backup and recovery. Secret recovery is derived separately. |
+
+## Safe template workflow
+
+<Steps>
+  <Step title="Create as draft">
+    Copy a known-compatible template, give it an explicit version, and keep it out of automated selection while editing.
+  </Step>
+  <Step title="Validate structure">
+    Check service names, images, environment placeholders, volumes, networks, dependencies, health checks, and the complete backup profile.
+  </Step>
+  <Step title="Test on a disposable instance">
+    Provision, verify initial-user behavior, run a full backup, and if applicable test recovery and decommission in a non-production environment.
+  </Step>
+  <Step title="Publish deliberately">
+    Publish only after the test evidence exists. If it will serve Trials, enable **Requires Initial User** and select it in the Trial Settings separately.
+  </Step>
+  <Step title="Archive superseded templates">
+    Preserve history instead of deleting a template that existing instances reference.
+  </Step>
+</Steps>
+
+<Warning>
+  Central validates Docker Compose and backup-profile YAML syntax, not the real provider semantics. A syntactically valid template can still reference the wrong service, volume, environment key, or image and fail only during provisioning or backup.
+</Warning>
+
+## Escalate when
+
+- an SSH host key changes unexpectedly;
+- server health and provider state disagree;
+- capacity is exhausted or Trial requests remain in `waiting_capacity`;
+- a published template must change in a way that affects existing instances;
+- backup mapping cannot be proven with a full verified test.

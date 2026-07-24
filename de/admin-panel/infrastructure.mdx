@@ -1,0 +1,80 @@
+---
+title: "Server und Deployment-Templates"
+sidebarTitle: "Infrastruktur"
+description: "Deployment-Ziele, Kapazität, Health, Docker-Compose-Templates, Initial-User und Backup-Profile konfigurieren."
+icon: "server"
+keywords: ["Server", "Coolify", "AWS", "Kapazität", "Deployment Templates", "Docker Compose", "Backup Profile"]
+---
+
+Die Bereiche **Servers** und **Templates** legen fest, wo und wie Instanzen provisioniert werden. Änderungen können neue Provisionierungen, Backups, Recovery, Recommission und Trials beeinflussen.
+
+## Server
+
+Ein Server besitzt einen unveränderlichen Provider-Typ: Coolify oder AWS. Den Provider bei Erstellung korrekt wählen; später kann er nicht geändert werden.
+
+### Coolify-Felder
+
+- **Name** und **IP Address** identifizieren das Ziel in Central.
+- **Coolify Server UUID**, **Project UUID**, **Environment Name** und **Destination ID** wählen die genaue Coolify-Platzierung.
+- **Max Instances** steuert Kapazitätsanzeige und automatische Trial-Zulassung; decommissionierte Instanzen zählen nicht als aktive Kapazität. Bei manueller Instanzerstellung muss Operations die Kapazität derzeit selbst prüfen.
+- **Deployment Host**, **SSH User**, **SSH Port** und der verschlüsselte **Private Key** ermöglichen verwaltete Backups und Recovery.
+- **Pinned Host Key** verhindert unbemerkten Austausch des SSH-Ziels. Ein fehlender oder geänderter Key blockiert Backup und Recovery absichtlich, bis die Serveridentität geprüft wurde.
+
+Coolify API URL und Bearer Token mit Root-Berechtigung sind globale Settings-Werte und werden von allen Coolify-Serverdatensätzen gemeinsam verwendet.
+
+### AWS-Felder
+
+AWS-Serverdatensätze verwenden Region, Elastic Beanstalk Application Name, Deployment S3 Bucket und maximale Instanzkapazität. Die verwaltete Backup- und In-place-Recovery-Oberfläche von Central unterstützt derzeit nur Coolify.
+
+### Health und Kapazität
+
+Einen Server öffnen, um einen Healthcheck auszuführen, `online`, `offline` oder `unchecked` zu prüfen, gehostete Instanzen zu sehen und die aktive Anzahl mit Max Instances zu vergleichen. Kapazität nicht nur erhöhen, um ein echtes Ressourcenlimit zu umgehen; CPU-, RAM-, Disk- und Workload-Reserven beim Provider bestätigen.
+
+<Warning>
+  Die Löschung eines Serverdatensatzes beweist nicht, dass Provider-Ressourcen entfernt wurden. Sicherstellen, dass keine aktive Instanz und kein Trial davon abhängt, und Workloads vor der Löschung kontrolliert decommissionieren. Eine separate Funktion zum Entfernen eines Servers aus der Auswahl gibt es derzeit nicht.
+</Warning>
+
+## Deployment-Templates
+
+Ein Template enthält:
+
+| Feld | Zweck |
+| --- | --- |
+| Name und Version | Für Operations lesbare Identität der Template-Definition. |
+| Status | `draft`, `published` oder `archived`; für neue automatisierte Deployments nur veröffentlichte Templates verwenden. |
+| Docker Compose Template | Compose-YAML, das für die Provisionierung gerendert wird. |
+| Default Template | Speichert und zeigt eine Default-Markierung. Das New-Instance-Formular wählt sie derzeit nicht automatisch; Operations muss das Template weiterhin ausdrücklich auswählen. |
+| Requires Initial User | Verlangt bei der Instanzerstellung eine E-Mail und lässt Central einen Initial-Administrator erzeugen. Für das Trial-Template erforderlich. |
+| Backup Profile | Definiert App-Service, Datenbankeinstellungen, persistente Volumes und Project Hint für verwaltete Backups und Recovery. Die Wiederherstellung von Secrets wird separat abgeleitet. |
+
+## Sicherer Template-Ablauf
+
+<Steps>
+  <Step title="Als Draft erstellen">
+    Ein bekannt kompatibles Template kopieren, eine eindeutige Version vergeben und während der Bearbeitung aus automatischer Auswahl heraushalten.
+  </Step>
+  <Step title="Struktur validieren">
+    Service-Namen, Images, Env-Platzhalter, Volumes, Networks, Abhängigkeiten, Healthchecks und das vollständige Backup Profile prüfen.
+  </Step>
+  <Step title="Mit Wegwerf-Instanz testen">
+    In einer Nicht-Produktionsumgebung provisionieren, Initial-User-Verhalten prüfen, ein Vollbackup ausführen und gegebenenfalls Recovery sowie Decommission testen.
+  </Step>
+  <Step title="Bewusst veröffentlichen">
+    Erst mit Testnachweis veröffentlichen. Soll es Trials bedienen, **Requires Initial User** aktivieren und es zusätzlich in Trial Settings auswählen.
+  </Step>
+  <Step title="Abgelöste Templates archivieren">
+    Historie erhalten, statt ein von bestehenden Instanzen referenziertes Template zu löschen.
+  </Step>
+</Steps>
+
+<Warning>
+  Central validiert die YAML-Syntax von Docker Compose und Backup Profile, nicht die tatsächliche Provider-Semantik. Ein syntaktisch gültiges Template kann trotzdem falsche Services, Volumes, Env Keys oder Images referenzieren und erst bei Provisionierung oder Backup fehlschlagen.
+</Warning>
+
+## Eskalieren, wenn
+
+- sich ein SSH Host Key unerwartet ändert;
+- Server Health und Provider-Zustand widersprechen;
+- Kapazität erschöpft ist oder Trials in `waiting_capacity` bleiben;
+- ein veröffentlichtes Template bestehende Instanzen beeinflussen würde;
+- Backup-Zuordnungen nicht durch einen vollständigen verifizierten Test bewiesen werden können.

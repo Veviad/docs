@@ -1,0 +1,66 @@
+---
+title: "Instanz-Lifecycle"
+sidebarTitle: "Instanz-Lifecycle"
+description: "Instanzen mit den richtigen Schutzmaßnahmen starten, stoppen, neu starten, decommissionieren und löschen."
+icon: "power"
+keywords: ["Start", "Stop", "Restart", "Decommission", "Recommission", "Instanz löschen"]
+---
+
+Die verfügbaren Aktionen auf einer Instanzdetailseite hängen vom aktuellen Status, Provider und einem möglicherweise bereits laufenden Vorgang ab.
+
+## Umkehrbare Runtime-Aktionen
+
+| Aktion | Zulässiger Zustand | Ergebnis |
+| --- | --- | --- |
+| Restart | `running`, `unhealthy` oder `error` | Startet die Runtime neu. Kurze Downtime ist zu erwarten. |
+| Stop | `running` oder `unhealthy` | Stoppt Container; DNS und persistente Daten bleiben erhalten. Status wird `stopped`. |
+| Start | `stopped` | Startet die bestehende Runtime und bringt sie wieder online. |
+
+Nach jeder Aktion den Übergangszustand (`restarting`, `stopping` oder `starting`) abwarten. Anschließend Endstatus und Healthcheck bestätigen.
+
+## Decommission
+
+Decommission entfernt Runtime-Ressourcen, während der Central-Instanzdatensatz und die Backup-Historie erhalten bleiben. Bei einer provisionierten Coolify-Instanz werden außerdem DNS sowie alle Anwendungs-, PostgreSQL-, Redis-, Meilisearch- und Dateivolumes entfernt.
+
+<Steps>
+  <Step title="Ziel bestätigen">
+    Kunde, Instanzname, Domain, Server und letzte Activity prüfen. Eine Coolify-Instanz muss laufen, damit ein konsistentes Vollbackup erzeugt werden kann.
+  </Step>
+  <Step title="Backup-Anforderung prüfen">
+    Central stellt vor dem Löschen der Volumes ein frisches, durch Rücklesen verifiziertes Vollbackup in die Queue. Zur Bestätigung den Instanznamen exakt eingeben.
+  </Step>
+  <Step title="Workflow überwachen">
+    Die Instanz wechselt auf `decommissioning`. Sicherstellen, dass das Backup vor der Ressourcenlöschung abgeschlossen ist, und `decommissioned` abwarten.
+  </Step>
+  <Step title="Bereinigung bestätigen">
+    Prüfen, dass Service und DNS entfernt sind, der Instanzdatensatz bestehen bleibt und das Abschlussbackup sichtbar und verifiziert ist.
+  </Step>
+</Steps>
+
+<Warning>
+  Wenn das Pflichtbackup scheitert, stoppt Decommission ohne Volumes zu löschen. Die UI kann nur für dasselbe aktuelle fehlgeschlagene Backup einen permanenten Volume-Delete-Override anbieten. Dieser kann den neuesten Datenstand dauerhaft zerstören und verlangt eine zweite destruktive Bestätigung. Nur nach genehmigter Incident-Entscheidung verwenden.
+</Warning>
+
+## Recommission
+
+Nur eine `decommissioned` Instanz kann recommissioniert werden. Vor dem Start:
+
+- Domain bearbeiten, falls sie geändert werden muss;
+- Server, Template, Release Channel und Image tag bestätigen;
+- Initial-Admin-E-Mail ergänzen, wenn das Template einen Initial-User verlangt;
+- sicherstellen, dass keine aktive Instanz die Domain bereits verwendet;
+- Infrastruktur-Zugangsdaten und Kapazität prüfen.
+
+Recommission provisioniert eine neue Runtime. Das frühere Abschlussbackup wird **nicht** automatisch wiederhergestellt. Falls alte Daten benötigt werden, den Restore nach Bereitstellung der neuen Runtime separat planen.
+
+## Central-Datensatz löschen
+
+Die Löschung ist erst bei Status `decommissioned` zulässig. Sie entfernt den Central-Datensatz dauerhaft. Wurde Infrastruktur außerhalb von Central manuell entfernt, können trotzdem verwaiste Services oder DNS-Einträge bestehen. Vorher Provider-Zustand und benötigte Audit-Nachweise prüfen.
+
+## Niemals
+
+- Lifecycle-Status direkt in Directus ändern.
+- Während eines aktiven Restores oder anderen Übergangsvorgangs decommissionieren.
+- Annehmen, dass Recommission Daten wiederherstellt.
+- Den Central-Datensatz als Abkürzung für fehlgeschlagene Infrastruktur-Bereinigung löschen.
+- Den Backup-Override nur zur Zeitersparnis verwenden.

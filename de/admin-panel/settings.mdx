@@ -1,0 +1,67 @@
+---
+title: "Einstellungen, E-Mail-Templates und Integrationen"
+sidebarTitle: "Settings & Integrationen"
+description: "Globale Provider-Einstellungen, Secrets, SMTP, Health-Monitoring, E-Mail-Templates und AI Prompts sicher verwalten."
+icon: "settings"
+keywords: ["Settings", "Secrets", "Cloudflare", "SMTP", "GitHub", "E-Mail-Templates", "AI Prompts"]
+---
+
+Globale **Settings** werden von mehreren Deployments gemeinsam verwendet. Eine Änderung kann Provisionierung, DNS, Backups, E-Mail, Health-Monitoring, Support-Integrationen oder alle künftigen Trials beeinflussen. Grund dokumentieren und betroffenen Workflow nach dem Speichern validieren.
+
+## Bereiche in Settings
+
+| Bereich | Steuert |
+| --- | --- |
+| Cloudflare DNS | API Token, Zone, Base und Available Domains sowie Proxy-Verhalten. |
+| SSL Certificates | Let's Encrypt auf Instanzen oder TLS-Terminierung am Cloudflare Edge. |
+| Coolify | Gemeinsame API URL und Bearer Token mit Root-Berechtigung. |
+| Self-service Trials | Feste Trial-Infrastruktur, Lifecycle, Mailwarnungen und verwaltete API-Zugangsdaten. |
+| AWS Elastic Beanstalk | Gemeinsame AWS-Zugangsdaten für EB und Deployment-Speicher. |
+| Instance Backups | S3-kompatibler Speicher, Encryption Key, Default Schedule und Retention sowie Pre-Upgrade-Pflicht. |
+| Email (SMTP) | Host, Port, User, verschlüsseltes Passwort, Absender und globale Update-Benachrichtigung. |
+| Health Monitoring | Poll-Intervall, Retries, beschleunigtes Polling und Latenztoleranz. |
+| Integrations | GitHub Token für Feedback-to-Issue-Abläufe. |
+
+## Secrets behandeln
+
+<Warning>
+  Secrets niemals in Customer Notes, Instance Notes, Dokumentation, Chat oder Screenshots kopieren. Ausschließlich das dafür vorgesehene Passwortfeld verwenden.
+</Warning>
+
+- Gespeicherte Secret-Felder liefern eine Maske und nicht den echten Wert. Eine unveränderte Maske bewahrt das gespeicherte Secret.
+- Das Leeren eines optionalen Secret-Felds entfernt den gespeicherten Wert; vor dem Speichern bewusst bestätigen.
+- Der Klartext des Trial Ingress Key wird nur einmal nach Generate oder Rotate angezeigt. Nur im vertrauenswürdigen Website-Backend speichern.
+- Der Trial Identity Key ist verschlüsselt, intern und darf weder angezeigt noch rotiert werden.
+- Beschädigtes verwaltetes Trial-Material wird nicht still durch einen Environment-Wert ersetzt; den Konfigurationsfehler untersuchen.
+
+## Backup-Speicher validieren
+
+Der S3 Connection Test verwendet die aktuell im Formular stehenden Werte, einschließlich ungespeicherter Änderungen. Er prüft Zugangsdaten und Objektoperationen. Kann der Credential Objekte erstellen, aber nicht löschen, bleibt möglicherweise ein Probeobjekt zurück; nach Korrektur der Berechtigung über einen genehmigten Storage-Admin-Pfad entfernen.
+
+## SMTP und E-Mail-Templates
+
+SMTP muss funktionieren, bevor automatisierte Trial- oder Update-Kommunikation aktiviert wird. **Email Templates** enthalten Programmatic Key, Subject, Body, dokumentierte Variables und den Status `draft`, `published` oder `archived`.
+
+Sicherer Ablauf:
+
+1. Template mit exakt benötigtem Key kopieren oder erstellen; der Key kann später nicht geändert werden.
+2. Beim Bearbeiten von Subject, HTML Body und Variablenliste zunächst `draft` verwenden.
+3. Nur Variablen einsetzen, die der jeweilige Workflow tatsächlich liefert.
+4. Links, Datumsangaben, Absenderkontext, Datenschutztext und Kundenergebnis prüfen.
+5. Bewusst veröffentlichen; Published Templates werden sofort verwendet.
+6. Einen genehmigten Nicht-Produktionsworkflow zur Zustellprüfung auslösen; Central besitzt derzeit keinen allgemeinen Test-Send-Button.
+
+Unbekannte `{{variablen}}` können wörtlich in der ausgehenden Nachricht stehen bleiben. Ein fehlender veröffentlichter Template-Key kann Zustellung abbrechen, während ein SMTP-Fehler den eigentlichen Instanzworkflow nicht zwingend fehlschlagen lässt.
+
+## AI Prompts
+
+**AI Prompts** speichert benannte Prompt-Definitionen mit Status, Description, System Prompt und geordneten Role/Text-Nachrichten. Das aktuelle Admin-Panel zeigt keine Verbraucherzuordnung, Vorschau, Ausführungstest oder Versionshistorie. Neue Prompts als Draft halten, vorgesehenen Verbraucher außerhalb des Prompt-Texts dokumentieren und keine Wirkung behaupten, bevor sie in der konsumierenden Anwendung getestet wurde.
+
+## Änderungscheckliste
+
+- Aktuelle Werte und betroffene Workflows vor der Änderung erfassen.
+- Jeweils nur eine logische Integration ändern.
+- Speichern und direkten Health- oder Connection-Test ausführen.
+- Einen End-to-End-Vorgang in Nicht-Produktion durchführen.
+- Notifications und Audit-Nachweise prüfen.
+- Rollback-Wert oder Credential bereithalten, ohne ihn offenzulegen.

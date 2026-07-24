@@ -1,0 +1,75 @@
+---
+title: "Instances and provisioning"
+sidebarTitle: "Instances & provisioning"
+description: "Create, configure, and verify customer application instances in Veviad Central."
+icon: "box"
+keywords: ["instances", "provisioning", "domain", "initial admin", "release channel"]
+---
+
+An instance is a customer deployment tied to a server, domain, image version, and optional deployment template. Open **Instances** to search and filter existing deployments or choose **New Instance**.
+
+## Prerequisites
+
+- If the instance should be assigned to a customer, that customer exists and has the correct email. Customer assignment is optional.
+- At least one suitable server is online or unchecked and has capacity.
+- The base domain is configured in Settings.
+- The intended deployment template is published and matches the application layout.
+- A permitted immutable image tag exists in the selected Production or Development channel.
+- Backup storage is ready if backups are enabled.
+
+<Note>
+  `Max Instances` is enforced for automatic Trial capacity but is not currently a hard block for manual instance creation. The operator must still verify real capacity before saving.
+</Note>
+
+## Create an instance
+
+<Steps>
+  <Step title="Identify the deployment">
+    Enter a clear internal name. The subdomain must be at least four characters and use lowercase letters, numbers, and hyphens. Select a base domain and wait for the green availability result before continuing.
+  </Step>
+  <Step title="Assign ownership and infrastructure">
+    Select the server and, when applicable, the customer; **None** is supported. Do not choose a server only by name: verify provider, status, and remaining capacity.
+  </Step>
+  <Step title="Choose template and version">
+    Select the deployment template, instance type (`Production` or `Development`), and an allowed immutable image tag. The channel controls which tags can be selected later.
+  </Step>
+  <Step title="Set the initial admin">
+    If the template requires an initial user, use the verified customer email or enter an explicitly approved custom address. The generated password is delivered by email; it must not be copied into Notes.
+  </Step>
+  <Step title="Set backup policy">
+    Keep backups enabled unless there is an approved exception. Optional schedule and retention values override the global defaults for this instance.
+  </Step>
+  <Step title="Create and monitor">
+    Save the instance, then follow its status, health card, notifications, and activity until it reaches the intended final state.
+  </Step>
+</Steps>
+
+## Common instance states
+
+| Status | Meaning and action |
+| --- | --- |
+| `pending` | Record exists; provisioning has not started or is queued. |
+| `deploying` | Infrastructure and application are being created. Wait and monitor activity. |
+| `awaiting_confirmation` | A deployment step requires explicit confirmation, commonly because a destructive seed/reset is possible. Read the confirmation text before continuing. |
+| `running` | Service is expected to be available. Confirm health and sign-in separately. |
+| `unhealthy` | Deployment exists but health verification failed. Inspect component results and logs before retrying anything. |
+| `error` | The workflow failed. Use the audit trail and notification details to determine the safe retry path. |
+| `stopped` | Service is intentionally offline and can normally be started again. |
+| `decommissioned` | Runtime resources and DNS have been removed; the record and backup history remain. |
+
+## Editing
+
+The domain is locked while an instance is provisioned. To change it, decommission first, edit the decommissioned record, and then recommission. Changing the server field is configuration, not a live infrastructure-migration workflow. Changing template, channel, or version can alter runtime behavior; use the dedicated update flow for a running instance rather than treating an edit as an upgrade.
+
+<Warning>
+  A confirmation that mentions resetting the database is destructive. Confirm only when the data-loss scope and backup are understood. Never change the Directus instance status to bypass confirmation or a failed workflow.
+</Warning>
+
+## Success checks
+
+- Status reaches `running` and health is Healthy.
+- The URL resolves to the intended instance with valid TLS.
+- The initial administrator can sign in when one was requested.
+- Customer, server, template, channel, and deployed image are correct.
+- Backup policy is enabled and the next scheduled run is plausible.
+- The activity timeline contains the expected create/deploy events.
